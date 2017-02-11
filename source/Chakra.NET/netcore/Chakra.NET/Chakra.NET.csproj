@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+  </PropertyGroup>
+  <Import Project="..\..\Shared\Chakra.NET.projitems" Label="Shared" />
+  <ItemGroup>
+    <Compile Include="..\..\Shared\JSValueConverterEX.cs" Link="JSValueConverterEX.cs" />
+    <Compile Include="..\..\Shared\JSValueWithContextEX.cs" Link="JSValueWithContextEX.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="C:\GitHubRepros\Chakra.NET\source\Chakra.NET\Shared\JSValueConverterEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JSValueConverterEX.cs</LastGenOutput>
+    </None>
+    <None Update="C:\GitHubRepros\Chakra.NET\source\Chakra.NET\Shared\JSValueWithContextEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JSValueWithContextEX.cs</LastGenOutput>
+    </None>
+    <None Update="JSValueWithContextEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JSValueWithContextEX.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="C:\GitHubRepros\Chakra.NET\source\Chakra.NET\Shared\JSValueWithContextEX.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JSValueWithContextEX.tt</DependentUpon>
+    </Compile>
+    <Compile Update="JSValueWithContextEX.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JSValueWithContextEX.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="C:\GitHubRepros\Chakra.NET\source\Chakra.NET\Shared\JSValueConverterEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+  </ItemGroup>
+</Project>

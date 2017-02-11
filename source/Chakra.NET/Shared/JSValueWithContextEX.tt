@@ -1,0 +1,91 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<# int totalItems=7;
+int startFrom=1;
+
+#>
+using ChakraHost.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace Chakra.NET
+{
+    public partial class JSValueWithContext
+    {
+        <#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+
+        public JSValueWithContext SetMethod<<#= getGenericName(i,"T{0}") #>>(string name, Action<<#= getGenericName(i,"T{0}") #>> a)
+        {
+            context.ValueConverter.RegisterMethodConverter<<#= getGenericName(i,"T{0}") #>>();
+            context.WriteProperty<Action<<#= getGenericName(i,"T{0}") #>>>(target, name, a);
+            return this;
+        }
+
+        public JSValueWithContext SetFunction<<#= getGenericName(i,"T{0}",true) #>>(string name, Func<<#= getGenericName(i,"T{0}",true) #>> a)
+        {
+            context.ValueConverter.RegisterFunctionConverter<<#= getGenericName(i,"T{0}",true) #>>();
+            context.WriteProperty<Func<<#= getGenericName(i,"T{0}",true) #>>>(target, name, a);
+            return this;
+        }
+
+        public void CallMethod<<#= getGenericName(i,"T{0}") #>>(string name,<#= getGenericName(i,"T{0} para{0}") #>)
+        {
+            object tmpHolder = new object();//temp object to hold potencial call back during this call
+            using (var w=context.With(CallContextOption.NewDotnetRelease, target, $"Call Method [{name}]"))
+            {
+                context.ValueConverter.RegisterMethodConverter<<#= getGenericName(i,"T{0}") #>>();
+                var m=GetField<Action<<#= getGenericName(i,"T{0}") #>>>(name);
+                m.Invoke(<#= getGenericName(i,"para{0}") #>);
+            }
+        }
+
+        public TResult CallFunction<<#= getGenericName(i,"T{0}",true) #>>(string name<#= getGenericName(i-1,",T{0} para{0}",false,"") #>)
+        {
+            object tmpHolder = new object();//temp object to hold potencial call back during this call
+            using (var w = context.With(CallContextOption.NewDotnetRelease, target, $"Call Function [{name}]"))
+            {
+                context.ValueConverter.RegisterFunctionConverter<<#= getGenericName(i,"T{0}",true) #>>();
+                var f=GetField<Func<<#= getGenericName(i,"T{0}",true) #>>>(name);
+                var result= f.Invoke(<#= getGenericName(i-1,"para{0}") #>);
+                return result;
+            }
+        }
+        <#  
+    }
+    #>
+
+    }
+}
+<#+
+private string getGenericName(int currentIndex,string pattern,bool isFunction=false,string joinWith=",")
+{
+    StringBuilder sb=new StringBuilder();
+    for (int i = 1; i <= currentIndex; i++)
+    {
+        if (isFunction && i==currentIndex)
+        {
+            sb.Append("TResult");
+        }
+        else
+        {
+           sb.AppendFormat(pattern,i); 
+        }
+        sb.Append(joinWith);
+    }
+    if (sb.Length>1)
+    {
+        sb.Length-=joinWith.Length;
+    }
+    return sb.ToString();
+}
+
+#>

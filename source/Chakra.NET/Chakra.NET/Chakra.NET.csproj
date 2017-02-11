@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="GC\**" />
+    <Compile Remove="Hosting\**" />
+    <EmbeddedResource Remove="GC\**" />
+    <EmbeddedResource Remove="Hosting\**" />
+    <None Remove="GC\**" />
+    <None Remove="Hosting\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ChakraContext.cs" />
+    <Compile Remove="ChakraRuntime.cs" />
+    <Compile Remove="DebugHelper.cs" />
+    <Compile Remove="JSCallContext.cs" />
+    <Compile Remove="JSHelper.cs" />
+    <Compile Remove="JSValueConverter.cs" />
+    <Compile Remove="JSValueConverterEX.cs" />
+    <Compile Remove="JSValueConverterExtend.cs" />
+    <Compile Remove="JSValueWithContext.cs" />
+    <Compile Remove="JSValueWithContextEX.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="JSValueConverterEX.tt" />
+    <None Remove="JSValueWithContextEX.tt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+</Project>

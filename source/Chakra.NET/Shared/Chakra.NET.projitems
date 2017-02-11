@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>43b6722b-146b-429b-b7d0-fc4651d70db7</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Chakra.NET</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ChakraContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChakraRuntime.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DebugHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GC\DelegateHolder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GC\DelegateHolderManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptBackgroundWorkItemCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptBeforeCollectCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptEngineException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptErrorCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptFatalException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptMemoryAllocationCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptMemoryEventType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptNativeFunction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptObjectBeforeCollectCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptObjectFinalizeCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptProjectionEnqueueCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptPromiseContinuationCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptPropertyId.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptPropertyIdType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptRuntime.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptRuntimeAttributes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptRuntimeVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptScriptException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptSerializedScriptLoadSourceCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptSerializedScriptUnloadCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptSourceContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptThreadServiceCallback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptTypedArrayType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptUsageException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\JavaScriptValueType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Hosting\Native.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSCallContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSValueConverterExtend.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSValueWithContext.cs" />
+  </ItemGroup>
+</Project>

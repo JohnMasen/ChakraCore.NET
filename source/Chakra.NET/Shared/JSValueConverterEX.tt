@@ -1,0 +1,142 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+<# int totalItems=7;
+int startFrom=1;
+
+#>
+using ChakraHost.Hosting;
+using System;
+using System.Collections.Generic;
+using static ChakraHost.Hosting.JavaScriptContext;
+namespace Chakra.NET
+{
+public partial class JSValueConverter
+{
+    <#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+
+        public Action<<#= getGenericName(i,"T{0}") #>> FromJSMethod<<#=getGenericName(i,"T{0}")  #>>(JavaScriptValue value)
+        {
+            return new Action<<#= getGenericName(i,"T{0}")  #>>((<#= getGenericName(i,"para{0}")#>) =>
+            {
+                using (context.With())
+                {
+                    value.CallFunction(context.CallContext.StackInfo.CurrentObject,<#= getGenericName(i,"ToJSValue(para{0})")#>);
+                }
+            });
+
+        }
+        
+        public Func<<#= getGenericName(i,"T{0}",true)#>> FromJSFunction<<#= getGenericName(i,"T{0}",true)#>>(JavaScriptValue value)
+        {
+            return new Func<<#= getGenericName(i,"T{0}",true)#>>((<#= getGenericName(i-1,"para{0}")#>) =>
+            {
+                using (context.With())
+                {
+                    if (typeof(TResult)==typeof(JavaScriptValue))
+                    {
+                        return FromJSValue<TResult>(value.ConstructObject(JavaScriptValue.Undefined<#= getGenericName(i-1,",ToJSValue(para{0})",false,"")#>));
+                    }
+                    else
+                    {
+                        return FromJSValue<TResult>(value.CallFunction(context.CallContext.StackInfo.CurrentObject<#= getGenericName(i-1,",ToJSValue(para{0})",false,"")#>));
+                    }
+                    
+                }
+            });
+
+        }
+
+        public JavaScriptValue ToJSMethod<<#= getGenericName(i,"T{0}") #>>(Action<<#= getGenericName(i,"T{0}") #>> a)
+        {
+            return context.CallContext.StackInfo.Holder.CreateCallback((JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
+          ushort argumentCount, IntPtr callbackData) =>
+            {
+				using (context.With())
+                {
+					<#= getGenericName(i,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
+
+					a(<#= getGenericName(i,"para{0}")#>);
+				}
+                return JavaScriptValue.Undefined;
+            });
+        }
+
+        public JavaScriptValue ToJSFunction<<#= getGenericName(i,"T{0}",true) #>>(Func<<#= getGenericName(i,"T{0}",true) #>> a)
+        {
+            return context.CallContext.StackInfo.Holder.CreateCallback((JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
+          ushort argumentCount, IntPtr callbackData) =>
+            {
+				using (context.With())
+                {
+					<#= getGenericName(i-1,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
+					return ToJSValue<TResult>(a(<#= getGenericName(i-1,"para{0}")#>));
+                }
+            });
+        }
+
+        public JSValueConverter RegisterFunctionConverter<<#= getGenericName(i,"T{0}",true) #>>()
+        {
+            return RegisterConverter<Func<<#= getGenericName(i,"T{0}",true) #>>>(
+                (func, helper) =>
+                {
+                    return ToJSFunction(func);
+                },
+                (value, helper) =>
+                {
+                    return FromJSFunction<<#= getGenericName(i,"T{0}",true) #>>(value);
+                },
+                false);
+        }
+
+        public JSValueConverter RegisterMethodConverter<<#= getGenericName(i,"T{0}") #>>()
+        {
+            return RegisterConverter<Action<<#= getGenericName(i,"T{0}") #>>>(
+                (func, helper) =>
+                {
+                    return ToJSMethod(func);
+                },
+                (value, helper) =>
+                {
+                    return FromJSMethod<<#= getGenericName(i,"T{0}") #>>(value);
+                },
+                false);
+        }
+        
+      <#  
+    }
+    #>
+    
+}
+}
+<#+
+private string getGenericName(int currentIndex,string pattern,bool isFunction=false,string joinWith=",")
+{
+    StringBuilder sb=new StringBuilder();
+    for (int i = 1; i <= currentIndex; i++)
+    {
+        if (isFunction && i==currentIndex)
+        {
+            sb.Append("TResult");
+        }
+        else
+        {
+           sb.AppendFormat(pattern,i); 
+        }
+        sb.Append(joinWith);
+    }
+    if (sb.Length>1)
+    {
+        sb.Length-=joinWith.Length;
+    }
+    return sb.ToString();
+}
+
+#>
