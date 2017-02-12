@@ -56,7 +56,7 @@ public partial class JSValueConverter
 
         public JavaScriptValue ToJSMethod<<#= getGenericName(i,"T{0}") #>>(Action<<#= getGenericName(i,"T{0}") #>> a)
         {
-            return context.CallContext.StackInfo.Holder.CreateCallback((JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
+            return context.CallContext.StackInfo.Holder.CreateCallback(context,(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
           ushort argumentCount, IntPtr callbackData) =>
             {
 				using (context.With())
@@ -71,7 +71,7 @@ public partial class JSValueConverter
 
         public JavaScriptValue ToJSFunction<<#= getGenericName(i,"T{0}",true) #>>(Func<<#= getGenericName(i,"T{0}",true) #>> a)
         {
-            return context.CallContext.StackInfo.Holder.CreateCallback((JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
+            return context.CallContext.StackInfo.Holder.CreateCallback(context,(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
           ushort argumentCount, IntPtr callbackData) =>
             {
 				using (context.With())
@@ -82,9 +82,9 @@ public partial class JSValueConverter
             });
         }
 
-        public JSValueConverter RegisterFunctionConverter<<#= getGenericName(i,"T{0}",true) #>>()
+        public void RegisterFunctionConverter<<#= getGenericName(i,"T{0}",true) #>>()
         {
-            return RegisterConverter<Func<<#= getGenericName(i,"T{0}",true) #>>>(
+            RegisterConverter<Func<<#= getGenericName(i,"T{0}",true) #>>>(
                 (func, helper) =>
                 {
                     return ToJSFunction(func);
@@ -96,9 +96,9 @@ public partial class JSValueConverter
                 false);
         }
 
-        public JSValueConverter RegisterMethodConverter<<#= getGenericName(i,"T{0}") #>>()
+        public void RegisterMethodConverter<<#= getGenericName(i,"T{0}") #>>()
         {
-            return RegisterConverter<Action<<#= getGenericName(i,"T{0}") #>>>(
+            RegisterConverter<Action<<#= getGenericName(i,"T{0}") #>>>(
                 (func, helper) =>
                 {
                     return ToJSMethod(func);

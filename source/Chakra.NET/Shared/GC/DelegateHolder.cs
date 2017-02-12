@@ -31,13 +31,17 @@ namespace Chakra.NET.GC
             isActive = CanReleaseFromExternal || CanReleaseFromInternal;
         }
         
-        public JavaScriptValue CreateCallback(JavaScriptNativeFunction callback)
+        public JavaScriptValue CreateCallback(ChakraContext context, JavaScriptNativeFunction callback)
         {
             if (isActive==false)//I'm root
             {
                 throw new InvalidOperationException("cannot register callback at top level");
             }
-            var result=JavaScriptValue.CreateFunction(callback);
+            JavaScriptValue result;
+            using (context.With())
+            {
+                result = JavaScriptValue.CreateFunction(callback);
+            }
             callbackList.Add(callback);
             return result;
         }

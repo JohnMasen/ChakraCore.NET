@@ -18,85 +18,131 @@ namespace Chakra.NET
 
         private void createDefaultConveters()
         {
-            
+
             RegisterConverter<float>(
                     (value, helper) =>
                     {
-                        return JavaScriptValue.FromDouble(Convert.ToDouble(value));
+                        using (helper.With())
+                        {
+                            return JavaScriptValue.FromDouble(Convert.ToDouble(value));
+                        }
+
                     }
                     ,
                     (value, helper) =>
                     {
-                        return Convert.ToSingle(value.ToDouble());
+                        using (helper.With())
+                        {
+                            return Convert.ToSingle(value.ToDouble());
+                        }
+
                     }
                     );
             RegisterConverter<double>(
                 (value, helper) =>
                 {
-                    return JavaScriptValue.FromDouble(value);
+                    using (helper.With())
+                    {
+                        return JavaScriptValue.FromDouble(value);
+                    }
+
                 }
                 ,
                 (value, helper) =>
                 {
-                    return value.ToDouble();
+                    using (helper.With())
+                    {
+                        return value.ToDouble();
+                    }
+
                 }
                 );
             RegisterConverter<int>(
                 (value, helper) =>
                 {
-                    return JavaScriptValue.FromInt32(value);
+                    using (helper.With())
+                    {
+                        return JavaScriptValue.FromInt32(value);
+                    }
+
                 }
                 ,
                 (value, helper) =>
                 {
-                    return value.ToInt32();
+                    using (helper.With())
+                    {
+                        return value.ToInt32();
+                    }
+
                 }
                 );
             RegisterConverter<byte>(
                 (value, helper) =>
                 {
-                    return JavaScriptValue.FromDouble(Convert.ToInt32(value));
+                    using (helper.With())
+                    {
+                        return JavaScriptValue.FromDouble(Convert.ToInt32(value));
+                    }
+
                 }
                 ,
                 (value, helper) =>
                 {
-                    return BitConverter.GetBytes(((int)value.ToDouble()))[0];
+                    using (helper.With())
+                    {
+                        return BitConverter.GetBytes(value.ToInt32())[0];
+                    }
+
                 }
                 );
             RegisterConverter<string>(
                 (value, helper) =>
                 {
-                    return JavaScriptValue.FromString(value);
+                    using (helper.With())
+                    {
+                        return JavaScriptValue.FromString(value);
+                    }
+
                 }
                 ,
                 (value, helper) =>
                 {
-                    return value.ConvertToString().ToString();
+                    using (helper.With())
+                    {
+                        return value.ToString();
+                    }
+
                 }
                 );
             RegisterConverter<bool>(
                 (value, helper) =>
                 {
-                    return JavaScriptValue.FromBoolean(value);
+                    using (helper.With())
+                    {
+                        return JavaScriptValue.FromBoolean(value);
+                    }
+
                 }
                 ,
                 (value, helper) =>
                 {
-                    return value.ToBoolean();
+                    using (helper.With())
+                    {
+                        return value.ToBoolean();
+                    }
+
                 }
                 );
             RegisterConverter<Action>(
                 (value, helper) =>
                 {
-                    return context.CallContext.StackInfo.Holder.CreateCallback((JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
-          ushort argumentCount, IntPtr callbackData) =>
-                    {
-                        using (context.With())
-                        {
-                            value();
-                        }
-                        return JavaScriptValue.Undefined;
-                    });
+
+                    return context.CallContext.StackInfo.Holder.CreateCallback(helper, (JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
+       ushort argumentCount, IntPtr callbackData) =>
+                     {
+                         value();
+                         return JavaScriptValue.Undefined;
+                     });
                 }
                 ,
                 (value, helper) =>
@@ -121,7 +167,7 @@ namespace Chakra.NET
 
         private Dictionary<Type, Tuple<object, object>> converters = new Dictionary<Type, Tuple<object, object>>();
 
-        public JSValueConverter RegisterConverter<T>(Func<T, ChakraContext, JavaScriptValue> toJSValue, Func<JavaScriptValue, ChakraContext, T> fromJSValue, bool throewIfExists = true)
+        public void RegisterConverter<T>(Func<T, ChakraContext, JavaScriptValue> toJSValue, Func<JavaScriptValue, ChakraContext, T> fromJSValue, bool throewIfExists = true)
         {
             if (converters.ContainsKey(typeof(T)))
             {
@@ -131,11 +177,10 @@ namespace Chakra.NET
                 }
                 else
                 {
-                    return this;
+                    return;
                 }
             }
             converters.Add(typeof(T), new Tuple<object, object>(toJSValue, fromJSValue));
-            return this;
         }
 
         //public void RegisterProxyConverter<T>(Action<JSValueWithContext> initMeta)
@@ -148,7 +193,7 @@ namespace Chakra.NET
         //                JavaScriptValue result=context.CreateProxyObject<>
         //            }
         //        }
-                
+
         //        );
         //}
 
@@ -163,7 +208,7 @@ namespace Chakra.NET
                 }
                 else
                 {
-                        return f(value, context);
+                    return f(value, context);
 
                 }
 
@@ -224,7 +269,7 @@ namespace Chakra.NET
                     {
                         return helper.ValueConverter.ToJSArray<T>(value);
                     }
-                    
+
                 },
                 (value, helper) =>
                 {
@@ -232,7 +277,7 @@ namespace Chakra.NET
                     {
                         return helper.ValueConverter.FromJSArray<T>(value);
                     }
-                    
+
                 }
                 , false);
             return this;

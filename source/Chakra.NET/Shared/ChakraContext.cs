@@ -2,6 +2,7 @@
 using Chakra.NET.API;
 using System.Collections.Generic;
 using Chakra.NET.GC;
+using System.Threading;
 
 namespace Chakra.NET
 {
@@ -14,6 +15,8 @@ namespace Chakra.NET
 
         internal JavaScriptContext jsContext;
         public JSValueConverter ValueConverter { get; set; }
+
+        private AutoResetEvent waitHanlder;
 
         //public GC.StackTraceNode GCStackTrace { get; private set; }
 
@@ -36,9 +39,10 @@ namespace Chakra.NET
             }
         }
         private bool isDebug;
-        internal ChakraContext(JavaScriptContext jsContext)
+        internal ChakraContext(JavaScriptContext jsContext,AutoResetEvent syncHandler)
         {
             this.jsContext = jsContext;
+            this.waitHanlder = syncHandler;
         }
         
         internal void init(bool enableDebug)
@@ -124,12 +128,13 @@ namespace Chakra.NET
             //{
             //    throw new InvalidOperationException("CreateProxyObject can only be called inside a Using(With(timespan,object)){} block. possible incorrect valueconverter registered");
             //}
-            using (var h=With(CallContextOption.NewJSRelease,null,"CreateProxyObject"))
+            JavaScriptValue result;
+            using (var h = With(CallContextOption.NewJSRelease, null, "CreateProxyObject"))
             {
-                var result= JavaScriptValue.CreateExternalObject(IntPtr.Zero, CallContext.StackInfo.Holder.GetExternalReleaseDelegate());
+                result = JavaScriptValue.CreateExternalObject(IntPtr.Zero, CallContext.StackInfo.Holder.GetExternalReleaseDelegate());
+            }
                 injector(result.WithContext(this));
                 return result;
-            }
         }
 
         //public ContextSwitcher With(TimeSpan timeout)
@@ -139,7 +144,16 @@ namespace Chakra.NET
 
         public ContextSwitcher With(CallContextOption stackOperate,JavaScriptValue? newJSObject,string text)
         {
-            return ContextSwitcher.waitAndSwitch(this,stackOperate,newJSObject,text);
+            return ContextSwitcher.waitAndSwitch(this,stackOperate,newJSObject,text,waitHanlder);
+        }
+        public void Enter()
+        {
+            JavaScriptContext.Current = jsContext;
+        }
+
+        public void Leave()
+        {
+            JavaScriptContext.Current = JavaScriptContext.Invalid;
         }
 
         public ContextSwitcher With()
@@ -261,10 +275,7 @@ namespace Chakra.NET
             }
         }
 
-        //private static void initPrivate()
-        //{
-        //    runtime = JavaScriptRuntime.Create(JavaScriptRuntimeAttributes.None,JavaScriptRuntimeVersion.VersionEdge);
-        //}
+        
 
         
 
@@ -272,18 +283,15 @@ namespace Chakra.NET
         {
             JavaScriptContext previous;
             ChakraContext context;
-
+            AutoResetEvent syncHandler;
             /// <summary>
-            /// hold this handler if you want handle the delegates in your code
+            /// hold this handler if you want handle the delegate release in your code
             /// </summary>
             public DelegateHolder.InternalHanlder Handler { get; private set; }
             
-            private ContextSwitcher(ChakraContext newContext, CallContextOption stackOperate,JavaScriptValue? newJSObject,string text)
+            private ContextSwitcher(ChakraContext context, CallContextOption stackOperate,JavaScriptValue? newJSObject,string text, AutoResetEvent syncHandler)
             {
-                this.previous = JavaScriptContext.Current;
-                context = newContext;
-                JavaScriptContext.Current = newContext.jsContext;
-                
+                this.context = context;
                 context.CallContext.Push(text, stackOperate, newJSObject, null);
                 if (stackOperate.HasFlag(CallContextOption.NewDotnetRelease))
                 {
@@ -292,10 +300,11 @@ namespace Chakra.NET
             }
 
 
-            internal static ContextSwitcher waitAndSwitch(ChakraContext context, CallContextOption stackOperate, JavaScriptValue? newJSObject,string text)
+            internal static ContextSwitcher waitAndSwitch(ChakraContext context, CallContextOption stackOperate, JavaScriptValue? newJSObject,string text,AutoResetEvent syncHandler)
             {
-                //TODO: implement wait
-                return  new ContextSwitcher(context, stackOperate,newJSObject,text);
+                syncHandler.WaitOne();
+                context.Enter();
+                return  new ContextSwitcher(context, stackOperate,newJSObject,text,syncHandler);
 
             }
             #region IDisposable Support
@@ -303,8 +312,8 @@ namespace Chakra.NET
             public void Dispose()
             {
                 context.CallContext.Pop();
-                
-                JavaScriptContext.Current = previous;
+                context.Leave();
+                syncHandler.Set();
             }
             #endregion
 
