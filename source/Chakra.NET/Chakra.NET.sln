@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chakra.NET", "netcore\Chakr
 		{DC0F934A-83B1-4B77-9450-9C17D17DCA90} = {DC0F934A-83B1-4B77-9450-9C17D17DCA90}
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Chakra.NET", "Shared\Chakra.NET.shproj", "{43B6722B-146B-429B-B7D0-FC4651D70DB7}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Chakra.NET.Shared", "Shared\Chakra.NET.Shared.shproj", "{43B6722B-146B-429B-B7D0-FC4651D70DB7}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
