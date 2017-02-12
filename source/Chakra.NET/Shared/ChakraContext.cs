@@ -1,5 +1,5 @@
 ﻿using System;
-using ChakraHost.Hosting;
+using Chakra.NET.API;
 using System.Collections.Generic;
 using Chakra.NET.GC;
 

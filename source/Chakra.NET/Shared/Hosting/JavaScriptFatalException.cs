@@ -1,7 +1,6 @@
-﻿namespace ChakraHost.Hosting
+﻿namespace Chakra.NET.API
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     ///     A fatal exception occurred.

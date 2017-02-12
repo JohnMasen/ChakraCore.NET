@@ -1,4 +1,4 @@
-﻿namespace ChakraHost.Hosting
+﻿namespace Chakra.NET.API
 {
     /// <summary>
     ///     The type of a typed JavaScript array.

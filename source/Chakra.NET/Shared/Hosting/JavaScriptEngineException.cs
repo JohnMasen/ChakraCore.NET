@@ -1,7 +1,6 @@
-namespace ChakraHost.Hosting
+namespace Chakra.NET.API
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     ///     An exception that occurred in the workings of the JavaScript engine itself.

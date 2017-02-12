@@ -1,4 +1,4 @@
-﻿namespace ChakraHost.Hosting
+﻿namespace Chakra.NET.API
 {
     /// <summary>
     ///     Version of the runtime.

@@ -1,4 +1,4 @@
-﻿using ChakraHost.Hosting;
+﻿using Chakra.NET.API;
 using System;
 namespace Chakra.NET
 {

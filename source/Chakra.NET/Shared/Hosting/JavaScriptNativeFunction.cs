@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChakraHost.Hosting
+namespace Chakra.NET.API
 {
     using System.Runtime.InteropServices;
 

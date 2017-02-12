@@ -1,4 +1,4 @@
-﻿using ChakraHost.Hosting;
+﻿using Chakra.NET.API;
 using System;
 using System.Collections.Generic;
 

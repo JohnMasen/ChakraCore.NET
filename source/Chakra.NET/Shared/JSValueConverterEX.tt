@@ -9,10 +9,10 @@
 int startFrom=1;
 
 #>
-using ChakraHost.Hosting;
+using Chakra.NET.API;
 using System;
 using System.Collections.Generic;
-using static ChakraHost.Hosting.JavaScriptContext;
+using static Chakra.NET.API.JavaScriptContext;
 namespace Chakra.NET
 {
 public partial class JSValueConverter

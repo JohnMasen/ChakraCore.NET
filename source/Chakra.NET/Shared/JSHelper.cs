@@ -1,4 +1,4 @@
-﻿using ChakraHost.Hosting;
+﻿using Chakra.NET.API;
 namespace Chakra.NET
 {
     public  static partial class JSHelper
