@@ -402,6 +402,7 @@
                 {
                     return;
                 }
+
                 Current = previousContext;
                 disposed = true;
             }

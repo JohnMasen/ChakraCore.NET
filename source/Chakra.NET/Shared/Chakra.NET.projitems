@@ -48,5 +48,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)JSValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JSValueConverterExtend.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JSValueWithContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native.cs" />
   </ItemGroup>
 </Project>

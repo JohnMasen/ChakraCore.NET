@@ -1,6 +1,7 @@
 namespace ChakraHost.Hosting
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///     A script exception.

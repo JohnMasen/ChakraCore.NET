@@ -44,12 +44,12 @@ namespace Chakra.NET
             RegisterConverter<int>(
                 (value, helper) =>
                 {
-                    return JavaScriptValue.FromDouble(Convert.ToInt32(value));
+                    return JavaScriptValue.FromInt32(value);
                 }
                 ,
                 (value, helper) =>
                 {
-                    return Convert.ToInt32(value.ToDouble());
+                    return value.ToInt32();
                 }
                 );
             RegisterConverter<byte>(
