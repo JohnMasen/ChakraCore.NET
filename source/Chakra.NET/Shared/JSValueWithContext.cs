@@ -50,10 +50,10 @@ namespace Chakra.NET
 
         public void CallMethod(string name)
         {
-            using (context.With())
-            {
+            //using (context.With())
+            //{
                 GetField<Action>(name).Invoke();
-            }
+            //}
             
         }
 

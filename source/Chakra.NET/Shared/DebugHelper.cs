@@ -10,19 +10,25 @@ namespace Chakra.NET
         static Action<string> jsEcho;
         static Action<string> debugWrite = (s) => { Debug.WriteLine(s); };
 
+        public void Echo(string s)
+        {
+            debugWrite(s);
+        }
+
         public static void Inject(ChakraContext context)
         {
             jsEcho = (s) => { debugWrite(s); };
-            using (var h=context.With(CallContextOption.NewDotnetRelease, null, "debug inject"))
-            {
-                handler = h.Handler;
-                context.GlobalObjectWithContext.SetMethod<string>("echo", jsEcho);
-            }
+            context.ValueConverter.RegisterProxyConverter<DebugHelper>(
+                (output, source) =>
+                {
+                    output.SetMethod<string>("echo", source.Echo);
+                });
+            context.WriteProperty<DebugHelper>(context.GlobalObject, "debug", new DebugHelper());
             
         }
         public static void RedirectEcho(Action<string> a)
         {
-            jsEcho = a;
+            debugWrite = a;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Chakra.NET
 {
-    public class ChakraContext:IDisposable
+    public class ChakraContext : IDisposable
     {
         private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
@@ -24,10 +24,12 @@ namespace Chakra.NET
         {
             get
             {
+                JavaScriptValue result ;
                 using (With())
                 {
-                    return JavaScriptValue.GlobalObject;
+                    result = JavaScriptValue.GlobalObject;
                 }
+                return result;
             }
         }
 
@@ -39,12 +41,12 @@ namespace Chakra.NET
             }
         }
         private bool isDebug;
-        internal ChakraContext(JavaScriptContext jsContext,AutoResetEvent syncHandler)
+        internal ChakraContext(JavaScriptContext jsContext, AutoResetEvent syncHandler)
         {
             this.jsContext = jsContext;
             this.waitHanlder = syncHandler;
         }
-        
+
         internal void init(bool enableDebug)
         {
             isDebug = enableDebug;
@@ -65,12 +67,12 @@ namespace Chakra.NET
 
             this.CallContext = JSCallContext.CreateRoot(JavaScriptValue.GlobalObject);
             ValueConverter = new JSValueConverter(this);
-            JSValueConverterExtend.Inject(this);
             JavaScriptContext.Current = JavaScriptContext.Invalid;
+            JSValueConverterExtend.Inject(this);
             //GCStackTrace = StackTraceNode.CreateRoot();//stack trace root
             //PushCaller(GlobalObject);
-            
-            
+
+
 
         }
 
@@ -122,7 +124,7 @@ namespace Chakra.NET
             }
         }
 
-        public JavaScriptValue CreateProxyObject<T>(T owner,Action<JSValueWithContext> injector)
+        public JavaScriptValue CreateProxyObject<T>(T owner, Action<JSValueWithContext> injector)
         {
             //if (GCStackTrace.IsRoot)
             //{
@@ -133,8 +135,8 @@ namespace Chakra.NET
             {
                 result = JavaScriptValue.CreateExternalObject(IntPtr.Zero, CallContext.StackInfo.Holder.GetExternalReleaseDelegate());
             }
-                injector(result.WithContext(this));
-                return result;
+            injector(result.WithContext(this));
+            return result;
         }
 
         //public ContextSwitcher With(TimeSpan timeout)
@@ -142,13 +144,22 @@ namespace Chakra.NET
         //    return With(timeout, null);
         //}
 
-        public ContextSwitcher With(CallContextOption stackOperate,JavaScriptValue? newJSObject,string text)
+        public ContextSwitcher With(CallContextOption stackOperate, JavaScriptValue? newJSObject, string text)
         {
-            return ContextSwitcher.waitAndSwitch(this,stackOperate,newJSObject,text,waitHanlder);
+            return ContextSwitcher.waitAndSwitch(this, stackOperate, newJSObject, text, waitHanlder);
         }
         public void Enter()
         {
             JavaScriptContext.Current = jsContext;
+            var x = IsCurrentContext;
+        }
+
+        public bool IsCurrentContext
+        {
+            get
+            {
+                return JavaScriptContext.Current.reference == jsContext.reference;
+            }
         }
 
         public void Leave()
@@ -165,9 +176,9 @@ namespace Chakra.NET
 
         public T RunScript<T>(string script)
         {
+            JavaScriptValue result;
             using (With())
             {
-                JavaScriptValue result;
                 if (isDebug)
                 {
                     result = JavaScriptContext.RunScript(script, currentSourceContext++, string.Empty);
@@ -176,8 +187,8 @@ namespace Chakra.NET
                 {
                     result = JavaScriptContext.RunScript(script);
                 }
-                return ValueConverter.FromJSValue<T>(result);
             }
+            return ValueConverter.FromJSValue<T>(result);
         }
 
         //public void HoldObject(object obj)
@@ -234,77 +245,95 @@ namespace Chakra.NET
         //    return result;
         //}
 
-        public void WriteProperty<T>(JavaScriptValue target,string name,T value)
+        public void WriteProperty<T>(JavaScriptValue target, string name, T value)
         {
+            var tmp = ValueConverter.ToJSValue<T>(value);
             using (With())
             {
-                target.SetProperty(name, ValueConverter.ToJSValue<T>(value));
+                target.SetProperty(JavaScriptPropertyId.FromString(name), tmp,true);
             }
         }
 
-        public T ReadProperty<T>(JavaScriptValue target,string name)
+        public T ReadProperty<T>(JavaScriptValue target, string name)
         {
+            JavaScriptValue tmp;
             using (With())
             {
                 var id = JavaScriptPropertyId.FromString(name);
+                
                 if (target.HasProperty(id))
                 {
-                    return ValueConverter.FromJSValue<T>(target.GetProperty(name));
+                    tmp=target.GetProperty(JavaScriptPropertyId.FromString(name));
                 }
                 else
                 {
                     return default(T);
                 }
-                
             }
+            return ValueConverter.FromJSValue<T>(tmp);
         }
 
         public T ReadValue<T>(JavaScriptValue target)
         {
-            using (With())
-            {
-                return ValueConverter.FromJSValue<T>(target);
-            }
+            //using (With())
+            //{
+            return ValueConverter.FromJSValue<T>(target);
+            //}
         }
 
         public JavaScriptValue CreateValue<T>(T source)
         {
-            using (With())
-            {
-                return ValueConverter.ToJSValue<T>(source);
-            }
+            //using (With())
+            //{
+            return ValueConverter.ToJSValue<T>(source);
+            //}
         }
 
-        
 
-        
 
-        public class ContextSwitcher:IDisposable
+
+
+        public class ContextSwitcher : IDisposable
         {
-            JavaScriptContext previous;
+            static bool alreadyCalled = false;
             ChakraContext context;
             AutoResetEvent syncHandler;
+            bool isNested;
             /// <summary>
             /// hold this handler if you want handle the delegate release in your code
             /// </summary>
             public DelegateHolder.InternalHanlder Handler { get; private set; }
-            
-            private ContextSwitcher(ChakraContext context, CallContextOption stackOperate,JavaScriptValue? newJSObject,string text, AutoResetEvent syncHandler)
+
+            private ContextSwitcher(bool isNested, ChakraContext context, CallContextOption stackOperate, JavaScriptValue? newJSObject, string text, AutoResetEvent syncHandler)
             {
+                this.isNested = isNested;
                 this.context = context;
                 context.CallContext.Push(text, stackOperate, newJSObject, null);
                 if (stackOperate.HasFlag(CallContextOption.NewDotnetRelease))
                 {
                     this.Handler = context.CallContext.StackInfo.Holder.GetInternalHandler();
                 }
+                this.syncHandler = syncHandler;
             }
 
 
-            internal static ContextSwitcher waitAndSwitch(ChakraContext context, CallContextOption stackOperate, JavaScriptValue? newJSObject,string text,AutoResetEvent syncHandler)
+            internal static ContextSwitcher waitAndSwitch(ChakraContext context, CallContextOption stackOperate, JavaScriptValue? newJSObject, string text, AutoResetEvent syncHandler)
             {
+                if (context.IsCurrentContext)//nested call from callback, do not block 
+                {
+                    return new ContextSwitcher(true,context, stackOperate, newJSObject, text, syncHandler);
+                }
+                if (alreadyCalled)
+                {
+                    throw new InvalidOperationException("With method cannot be nested");
+                }
+                else
+                {
+                    alreadyCalled = true;
+                }
                 syncHandler.WaitOne();
                 context.Enter();
-                return  new ContextSwitcher(context, stackOperate,newJSObject,text,syncHandler);
+                return new ContextSwitcher(false,context, stackOperate, newJSObject, text, syncHandler);
 
             }
             #region IDisposable Support
@@ -312,8 +341,13 @@ namespace Chakra.NET
             public void Dispose()
             {
                 context.CallContext.Pop();
-                context.Leave();
-                syncHandler.Set();
+                if (!isNested)//do not leave in a nested call
+                {
+                    context.Leave();
+                    syncHandler.Set();
+                }
+                alreadyCalled = false;
+
             }
             #endregion
 

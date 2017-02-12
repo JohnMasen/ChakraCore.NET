@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Chakra.NET
 {
@@ -33,7 +34,7 @@ namespace Chakra.NET
                     {
                         using (helper.With())
                         {
-                            return Convert.ToSingle(value.ToDouble());
+                            return Convert.ToSingle(value.ConvertToNumber().ToDouble());
                         }
 
                     }
@@ -52,7 +53,7 @@ namespace Chakra.NET
                 {
                     using (helper.With())
                     {
-                        return value.ToDouble();
+                        return value.ConvertToNumber().ToDouble();
                     }
 
                 }
@@ -71,7 +72,7 @@ namespace Chakra.NET
                 {
                     using (helper.With())
                     {
-                        return value.ToInt32();
+                        return value.ConvertToNumber().ToInt32();
                     }
 
                 }
@@ -90,7 +91,7 @@ namespace Chakra.NET
                 {
                     using (helper.With())
                     {
-                        return BitConverter.GetBytes(value.ToInt32())[0];
+                        return BitConverter.GetBytes(value.ConvertToNumber().ToInt32())[0];
                     }
 
                 }
@@ -109,7 +110,7 @@ namespace Chakra.NET
                 {
                     using (helper.With())
                     {
-                        return value.ToString();
+                        return value.ConvertToString().ToString();
                     }
 
                 }
@@ -128,7 +129,7 @@ namespace Chakra.NET
                 {
                     using (helper.With())
                     {
-                        return value.ToBoolean();
+                        return value.ConvertToBoolean().ToBoolean();
                     }
 
                 }
@@ -167,7 +168,7 @@ namespace Chakra.NET
 
         private Dictionary<Type, Tuple<object, object>> converters = new Dictionary<Type, Tuple<object, object>>();
 
-        public void RegisterConverter<T>(Func<T, ChakraContext, JavaScriptValue> toJSValue, Func<JavaScriptValue, ChakraContext, T> fromJSValue, bool throewIfExists = true)
+        internal void RegisterConverter<T>(Func<T, ChakraContext, JavaScriptValue> toJSValue, Func<JavaScriptValue, ChakraContext, T> fromJSValue, bool throewIfExists = true)
         {
             if (converters.ContainsKey(typeof(T)))
             {
@@ -183,19 +184,34 @@ namespace Chakra.NET
             converters.Add(typeof(T), new Tuple<object, object>(toJSValue, fromJSValue));
         }
 
-        //public void RegisterProxyConverter<T>(Action<JSValueWithContext> initMeta)
-        //{
-        //    RegisterConverter<T>(
-        //        (value,helper)=>
-        //        {
-        //            using (helper.With(value))
-        //            {
-        //                JavaScriptValue result=context.CreateProxyObject<>
-        //            }
-        //        }
+        public void RegisterProxyConverter<T>(Action<JSValueWithContext,T> initializer) where T : class
+        {
+            RegisterConverter<T>((value, helper) =>
+            {
+                JavaScriptValue result;
+                using (var h = helper.With(CallContextOption.NewJSRelease, null, "CreateProxyObject"))
+                {
+                    IntPtr p = (IntPtr)GCHandle.Alloc(value);
+                    result = JavaScriptValue.CreateExternalObject(p, helper.CallContext.StackInfo.Holder.GetExternalReleaseDelegate());
+                }
+                initializer(result.WithContext(helper),value);
+                return result;
+            },
+            (value, helper) =>
+            {
+                if (!value.HasExternalData)
+                {
+                    throw new InvalidOperationException("cannot convert proxy type from none proxy JS object");
+                }
+                //TODO:should check the handler before use, need more research
+                return (T)GCHandle.FromIntPtr(value.ExternalData).Target;
+            });
+        }
 
-        //        );
-        //}
+        public void RegisterValueConverter<T>(Func<T, ChakraContext, JavaScriptValue> toJSValue, Func<JavaScriptValue, ChakraContext, T> fromJSValue) where T : struct
+        {
+            RegisterConverter<T>(toJSValue, fromJSValue);
+        }
 
         public JavaScriptValue ToJSValue<T>(T value)
         {
@@ -253,7 +269,7 @@ namespace Chakra.NET
 
         public IEnumerable<T> FromJSArray<T>(JavaScriptValue value)
         {
-            int length = FromJSValue<int>(value.GetProperty("length"));
+            int length = context.ReadProperty<int>(value, "length");
             for (int i = 0; i < length; i++)
             {
                 yield return FromJSValue<T>(value.GetIndexedProperty(ToJSValue<int>(i)));

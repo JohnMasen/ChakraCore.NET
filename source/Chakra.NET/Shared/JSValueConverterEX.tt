@@ -26,9 +26,10 @@ public partial class JSValueConverter
         {
             return new Action<<#= getGenericName(i,"T{0}")  #>>((<#= getGenericName(i,"para{0}")#>) =>
             {
+                <#= getGenericName(i,"JavaScriptValue p{0} = ToJSValue<T{0}>(para{0});",false,Environment.NewLine) #>
                 using (context.With())
                 {
-                    value.CallFunction(context.CallContext.StackInfo.CurrentObject,<#= getGenericName(i,"ToJSValue(para{0})")#>);
+                    value.CallFunction(context.CallContext.StackInfo.CurrentObject,<#= getGenericName(i,"p{0}")#>);
                 }
             });
 
@@ -38,17 +39,19 @@ public partial class JSValueConverter
         {
             return new Func<<#= getGenericName(i,"T{0}",true)#>>((<#= getGenericName(i-1,"para{0}")#>) =>
             {
+                <#= getGenericName(i-1,"JavaScriptValue p{0} = ToJSValue<T{0}>(para{0});",false,Environment.NewLine) #>
+                JavaScriptValue result;
                 using (context.With())
                 {
                     if (typeof(TResult)==typeof(JavaScriptValue))
                     {
-                        return FromJSValue<TResult>(value.ConstructObject(JavaScriptValue.Undefined<#= getGenericName(i-1,",ToJSValue(para{0})",false,"")#>));
+                        result= value.ConstructObject(JavaScriptValue.Undefined<#= getGenericName(i-1,",p{0}",false,"")#>);
                     }
                     else
                     {
-                        return FromJSValue<TResult>(value.CallFunction(context.CallContext.StackInfo.CurrentObject<#= getGenericName(i-1,",ToJSValue(para{0})",false,"")#>));
+                        result= value.CallFunction(context.CallContext.StackInfo.CurrentObject<#= getGenericName(i-1,",p{0}",false,"")#>);
                     }
-                    
+                    return FromJSValue<TResult>(result);
                 }
             });
 
@@ -59,9 +62,10 @@ public partial class JSValueConverter
             return context.CallContext.StackInfo.Holder.CreateCallback(context,(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
           ushort argumentCount, IntPtr callbackData) =>
             {
+                <#= getGenericName(i,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
 				using (context.With())
                 {
-					<#= getGenericName(i,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
+					
 
 					a(<#= getGenericName(i,"para{0}")#>);
 				}
@@ -74,11 +78,8 @@ public partial class JSValueConverter
             return context.CallContext.StackInfo.Holder.CreateCallback(context,(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
           ushort argumentCount, IntPtr callbackData) =>
             {
-				using (context.With())
-                {
-					<#= getGenericName(i-1,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
-					return ToJSValue<TResult>(a(<#= getGenericName(i-1,"para{0}")#>));
-                }
+                <#= getGenericName(i-1,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
+                return ToJSValue<TResult>(a(<#= getGenericName(i-1,"para{0}")#>));
             });
         }
 
