@@ -46,7 +46,7 @@ public partial class JSValueConverter
             }
         }
         
-        private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (ValueConvertContext context, Func<#=genCode(i,"T{1}",true)#> a)
+        private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (ValueConvertContext context, Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -59,7 +59,7 @@ public partial class JSValueConverter
 
                 context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
-                TResult result=a(<#=genCode(i,"para{1}",false,",","{0}")#>);
+                TResult result=callback(isConstructCall<#=genCode(i,",para{1}",false,"","{0}")#>);
 
                 context.Context.Enter();//restore context
                 return ToJSValue<TResult>(context,result);;
@@ -88,16 +88,23 @@ public partial class JSValueConverter
             return result;
         }
 
-        private Func<#=genCode(i,"T{1}",true)#> fromJSFunction<#=genCode(i,"T{1}",true)#>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSFunction<#=genCode(i,"T{1}",true)#>(ValueConvertContext context, JavaScriptValue value)
         {
-            Func<#=genCode(i,"T{1}",true)#> result = (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
+            Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> result = (bool isConstruct<#=genCode(i,",T{1} para{1}",false,"","{0}")#>) =>
             {
                 <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
 
                 JavaScriptValue r;
                 using (context.Context.With())
                 {
-                    r=value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                    if (isConstruct)
+                    {
+                        r = value.ConstructObject(context.Context.JSValue_Undefined);
+                    }
+                    else
+                    {
+                        r=value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                    }
                 }
                 return FromJSValue<TResult>(context,r);
             };
@@ -106,6 +113,15 @@ public partial class JSValueConverter
 
 
 
+        public void RegisterMethodConverter<#=genCode(i,"T{1}")#>()
+        {
+            RegisterConverter<Action<#=genCode(i,"T{1}")#>>(toJSMethod<#=genCode(i,"T{1}")#>, fromJSMethod<#=genCode(i,"T{1}")#>, false);
+        }
+
+        public void RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>()
+        {
+            RegisterConverter<Func<bool<#=genCode(i,",T{1}",true,"","")#>,TResult>>(toJSFunction<#=genCode(i,"T{1}",true)#>, fromJSFunction<#=genCode(i,"T{1}",true)#>);
+        }
 
 
 
@@ -135,7 +151,7 @@ private string genCode(int currentIndex,string pattern,bool genTResult=false,str
     }
     if (genTResult)
     {
-        sb.AppendFormat("TResult");
+        sb.Append("TResult");
         sb.Append(joinWith);
     }
     if (sb.Length>1)

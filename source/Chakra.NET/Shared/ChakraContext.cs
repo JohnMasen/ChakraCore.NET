@@ -112,7 +112,6 @@ namespace Chakra.NET
         }
 
 
-
         public string RunScript(string script)
         {
             JavaScriptValue result;
