@@ -107,7 +107,7 @@ public partial class JSValueConverter
 
         public void RegisterFunctionConverter<TResult>()
         {
-            RegisterConverter<Func<bool,TResult>>(toJSFunction<TResult>, fromJSFunction<TResult>);
+            RegisterConverter<Func<bool,TResult>>(toJSFunction<TResult>, fromJSFunction<TResult>,false);
         }
 
 
@@ -215,7 +215,7 @@ public partial class JSValueConverter
 
         public void RegisterFunctionConverter<T1,TResult>()
         {
-            RegisterConverter<Func<bool,T1,TResult>>(toJSFunction<T1,TResult>, fromJSFunction<T1,TResult>);
+            RegisterConverter<Func<bool,T1,TResult>>(toJSFunction<T1,TResult>, fromJSFunction<T1,TResult>,false);
         }
 
 
@@ -327,7 +327,7 @@ JavaScriptValue p2 = ToJSValue<T2>(context,para2);
 
         public void RegisterFunctionConverter<T1,T2,TResult>()
         {
-            RegisterConverter<Func<bool,T1,T2,TResult>>(toJSFunction<T1,T2,TResult>, fromJSFunction<T1,T2,TResult>);
+            RegisterConverter<Func<bool,T1,T2,TResult>>(toJSFunction<T1,T2,TResult>, fromJSFunction<T1,T2,TResult>,false);
         }
 
 
@@ -443,7 +443,7 @@ JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 
         public void RegisterFunctionConverter<T1,T2,T3,TResult>()
         {
-            RegisterConverter<Func<bool,T1,T2,T3,TResult>>(toJSFunction<T1,T2,T3,TResult>, fromJSFunction<T1,T2,T3,TResult>);
+            RegisterConverter<Func<bool,T1,T2,T3,TResult>>(toJSFunction<T1,T2,T3,TResult>, fromJSFunction<T1,T2,T3,TResult>,false);
         }
 
 
@@ -563,7 +563,7 @@ JavaScriptValue p4 = ToJSValue<T4>(context,para4);
 
         public void RegisterFunctionConverter<T1,T2,T3,T4,TResult>()
         {
-            RegisterConverter<Func<bool,T1,T2,T3,T4,TResult>>(toJSFunction<T1,T2,T3,T4,TResult>, fromJSFunction<T1,T2,T3,T4,TResult>);
+            RegisterConverter<Func<bool,T1,T2,T3,T4,TResult>>(toJSFunction<T1,T2,T3,T4,TResult>, fromJSFunction<T1,T2,T3,T4,TResult>,false);
         }
 
 
@@ -687,7 +687,7 @@ JavaScriptValue p5 = ToJSValue<T5>(context,para5);
 
         public void RegisterFunctionConverter<T1,T2,T3,T4,T5,TResult>()
         {
-            RegisterConverter<Func<bool,T1,T2,T3,T4,T5,TResult>>(toJSFunction<T1,T2,T3,T4,T5,TResult>, fromJSFunction<T1,T2,T3,T4,T5,TResult>);
+            RegisterConverter<Func<bool,T1,T2,T3,T4,T5,TResult>>(toJSFunction<T1,T2,T3,T4,T5,TResult>, fromJSFunction<T1,T2,T3,T4,T5,TResult>,false);
         }
 
 
@@ -815,7 +815,7 @@ JavaScriptValue p6 = ToJSValue<T6>(context,para6);
 
         public void RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,TResult>()
         {
-            RegisterConverter<Func<bool,T1,T2,T3,T4,T5,T6,TResult>>(toJSFunction<T1,T2,T3,T4,T5,T6,TResult>, fromJSFunction<T1,T2,T3,T4,T5,T6,TResult>);
+            RegisterConverter<Func<bool,T1,T2,T3,T4,T5,T6,TResult>>(toJSFunction<T1,T2,T3,T4,T5,T6,TResult>, fromJSFunction<T1,T2,T3,T4,T5,T6,TResult>,false);
         }
 
 
@@ -947,7 +947,7 @@ JavaScriptValue p7 = ToJSValue<T7>(context,para7);
 
         public void RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,T7,TResult>()
         {
-            RegisterConverter<Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult>>(toJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>, fromJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>);
+            RegisterConverter<Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult>>(toJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>, fromJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>,false);
         }
 
 

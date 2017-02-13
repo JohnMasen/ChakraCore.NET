@@ -120,7 +120,7 @@ public partial class JSValueConverter
 
         public void RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>()
         {
-            RegisterConverter<Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult>>(toJSFunction<#=genCode(i,"T{1}",true)#>, fromJSFunction<#=genCode(i,"T{1}",true)#>);
+            RegisterConverter<Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult>>(toJSFunction<#=genCode(i,"T{1}",true)#>, fromJSFunction<#=genCode(i,"T{1}",true)#>,false);
         }
 
 

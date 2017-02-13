@@ -80,7 +80,28 @@ namespace Chakra.NET
 
         public void RegisterProxyConverter<T>(Action<JSValueBinding> callback)
         {
-
+            toJSValueDelegate<T> tojs = (ValueConvertContext convertContext, T value) =>
+              {
+                  JavaScriptValue result = convertContext.RuntimeContext.CreateProxy<T>(value, out GC.DelegateHandler handler);
+                  JSValueBinding binding = new JSValueBinding(
+                      convertContext.RuntimeContext, 
+                      result, new ValueConvertContext(convertContext.RuntimeContext, handler));//create value binding object for user setup binding
+                  callback(binding);
+                  return result;
+              };
+            fromJSValueDelegate<T> fromjs = (ValueConvertContext convertContext, JavaScriptValue value) =>
+              {
+                  if (!value.HasExternalData)
+                  {
+                      throw new InvalidOperationException("try to convert a none proxy object as proxy object");
+                  }
+                  if (value.ExternalData == IntPtr.Zero)
+                  {
+                      throw new InvalidOperationException("failed to convert from proxy object, pointer is empty");
+                  }
+                  return (T)GCHandle.FromIntPtr(value.ExternalData).Target;
+              };
+            RegisterConverter<T>(tojs, fromjs);
         }
 
 
