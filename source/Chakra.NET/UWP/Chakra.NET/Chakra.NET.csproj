@@ -113,12 +113,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>JSValueConverterEX.tt</DependentUpon>
     </Compile>
-    <Compile Include="..\..\Shared\JSValueWithContextEX.cs">
-      <Link>JSValueWithContextEX.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>JSValueWithContextEX.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Chakra.NET.rd.xml" />
   </ItemGroup>
@@ -130,11 +124,6 @@
       <Link>JSValueConverterEX.tt</Link>
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>JSValueConverterEX.cs</LastGenOutput>
-    </Content>
-    <Content Include="..\..\Shared\JSValueWithContextEX.tt">
-      <Link>JSValueWithContextEX.tt</Link>
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>JSValueWithContextEX.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="..\..\Shared\Chakra.NET.projitems" Label="Shared" />

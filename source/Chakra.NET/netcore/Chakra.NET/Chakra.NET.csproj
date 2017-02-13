@@ -5,7 +5,6 @@
   <Import Project="..\..\Shared\Chakra.NET.projitems" Label="Shared" />
   <ItemGroup>
     <Compile Include="..\..\Shared\JSValueConverterEX.cs" Link="JSValueConverterEX.cs" />
-    <Compile Include="..\..\Shared\JSValueWithContextEX.cs" Link="JSValueWithContextEX.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Update="C:\GitHubRepros\Chakra.NET\source\Chakra.NET\Shared\JSValueConverterEX.tt">

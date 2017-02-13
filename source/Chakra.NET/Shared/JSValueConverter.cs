@@ -78,7 +78,7 @@ namespace Chakra.NET
             }
         }
 
-        public T ToJSProxy<T>(ValueConvertContext context, T value)
+        public void RegisterProxyConverter<T>(Action<JSValueBinding> callback)
         {
 
         }

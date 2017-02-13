@@ -31,16 +31,16 @@ public partial class JSValueConverter
                 context.JSClass = arguments[0];//put the caller object to context
                 <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
 
-                context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+                context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 a(<#=genCode(i,"para{1}",false,",","{0}")#>);
 
-                context.Context.Enter();//restore context
-                return context.Context.JSValue_Undefined;
+                context.RuntimeContext.Enter();//restore context
+                return context.RuntimeContext.JSValue_Undefined;
             };
             context.Handler.Hold(f);
 
-            using (context.Context.With())
+            using (context.RuntimeContext.With())
             {
                 return JavaScriptValue.CreateFunction(f);
             }
@@ -57,16 +57,16 @@ public partial class JSValueConverter
                 context.JSClass = arguments[0];//put the caller object to context
                 <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
 
-                context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+                context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall<#=genCode(i,",para{1}",false,"","{0}")#>);
 
-                context.Context.Enter();//restore context
+                context.RuntimeContext.Enter();//restore context
                 return ToJSValue<TResult>(context,result);;
             };
             context.Handler.Hold(f);
 
-            using (context.Context.With())
+            using (context.RuntimeContext.With())
             {
                 return JavaScriptValue.CreateFunction(f);
             }
@@ -80,7 +80,7 @@ public partial class JSValueConverter
                   <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
                   
 
-                  using (context.Context.With())
+                  using (context.RuntimeContext.With())
                   {
                       value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
                   }
@@ -95,11 +95,11 @@ public partial class JSValueConverter
                 <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
 
                 JavaScriptValue r;
-                using (context.Context.With())
+                using (context.RuntimeContext.With())
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.Context.JSValue_Undefined);
+                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
@@ -120,7 +120,7 @@ public partial class JSValueConverter
 
         public void RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>()
         {
-            RegisterConverter<Func<bool<#=genCode(i,",T{1}",true,"","")#>,TResult>>(toJSFunction<#=genCode(i,"T{1}",true)#>, fromJSFunction<#=genCode(i,"T{1}",true)#>);
+            RegisterConverter<Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult>>(toJSFunction<#=genCode(i,"T{1}",true)#>, fromJSFunction<#=genCode(i,"T{1}",true)#>);
         }
 
 

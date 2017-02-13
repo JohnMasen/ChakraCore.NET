@@ -19,7 +19,7 @@ namespace UWPTest
         {
             Chakra.NET.ChakraRuntime runtime = Chakra.NET.ChakraRuntime.Create();
             var context = runtime.CreateContext(true);
-            string s = context.RunScript<string>("echo('333');");
+            string s = context.RunScript("echo('333');");
         }
     }
 }
