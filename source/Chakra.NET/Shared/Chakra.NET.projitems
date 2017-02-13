@@ -41,6 +41,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)API\JavaScriptValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)API\JavaScriptValueType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)API\Native.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSValueBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JSValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContextObjectBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueConvertContext.cs" />

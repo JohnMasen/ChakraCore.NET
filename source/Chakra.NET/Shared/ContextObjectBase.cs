@@ -6,10 +6,10 @@ namespace Chakra.NET
 {
     public abstract class ContextObjectBase
     {
-        public ChakraContext Context { get; private set; }
+        public ChakraContext RuntimeContext { get; private set; }
         public ContextObjectBase(ChakraContext context)
         {
-            Context = context;
+            RuntimeContext = context;
         }
 
 

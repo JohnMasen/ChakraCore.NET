@@ -2,6 +2,9 @@
 using Chakra.NET.API;
 using System.Collections.Generic;
 using System.Threading;
+using System.Runtime.InteropServices;
+using System.Linq;
+using Chakra.NET.GC;
 
 namespace Chakra.NET
 {
@@ -12,12 +15,15 @@ namespace Chakra.NET
         //private Dictionary<object, List<object>> holder = new Dictionary<object, List<object>>();
         private static Queue<JavaScriptValue> taskQueue = new Queue<JavaScriptValue>();
 
+        private Dictionary<Type, object> proxyList = new Dictionary<Type, object>();
+
         internal JavaScriptContext jsContext;
         public JSValueConverter ValueConverter { get; set; }
 
         private AutoResetEvent waitHanlder;
 
         public JavaScriptValue JSValue_Undefined;
+        public JavaScriptValue JSValue_Null;
 
         //public GC.StackTraceNode GCStackTrace { get; private set; }
 
@@ -65,12 +71,61 @@ namespace Chakra.NET
 
             ValueConverter = new JSValueConverter();
             JSValue_Undefined = JavaScriptValue.Undefined;
+            JSValue_Null = JavaScriptValue.Null;
             JavaScriptContext.Current = JavaScriptContext.Invalid;
 
         }
 
 
-        
+        internal JavaScriptValue CreateProxy<T>(T source,JavaScriptValue proxy,out bool isExisting,out DelegateHandler proxyDelegateHandler)
+        {
+            
+            Dictionary<T, Tuple<JavaScriptValue, DelegateHandler>> currentList;
+            #region get or create a proxy map item
+            if (proxyList.ContainsKey(typeof(T)))
+            {
+                currentList = (proxyList[typeof(T)] as Dictionary<T, Tuple<JavaScriptValue, DelegateHandler>>);
+                if (currentList == null)
+                {
+                    throw new InvalidOperationException("internal error, delegate handler corrupted");
+                }
+            }
+            else
+            {
+                currentList = new Dictionary<T, Tuple<JavaScriptValue, DelegateHandler>>();
+                proxyList.Add(typeof(T), currentList);
+            }
+            DelegateHandler handler;
+            if (currentList.ContainsKey(source))
+            {
+                isExisting = true;
+                proxyDelegateHandler = null;
+                return currentList[source].Item1;//
+            }
+            else
+            {
+                handler = new DelegateHandler();
+            }
+            #endregion
+
+            var objHandle = GCHandle.Alloc(source);
+
+            JavaScriptObjectFinalizeCallback callback = (p) =>
+              {
+                  T key= (T)GCHandle.FromIntPtr(p).Target;
+                  var list = proxyList[typeof(T)] as Dictionary<T, DelegateHandler>;
+                  list.Remove(key);
+              };
+            JavaScriptValue result;
+            using (With())
+            {
+                result = JavaScriptValue.CreateExternalObject((IntPtr)objHandle, callback);
+            }
+            currentList.Add(source, new Tuple<JavaScriptValue, DelegateHandler>(result, handler));
+            isExisting = false;
+            proxyDelegateHandler = handler;
+            return result;
+        }
 
 
 
@@ -180,7 +235,7 @@ namespace Chakra.NET
 
             public void Dispose()
             {
-                Context?.Leave();
+                RuntimeContext?.Leave();
 
             }
             #endregion

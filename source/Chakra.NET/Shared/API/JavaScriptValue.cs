@@ -15,7 +15,7 @@
         /// <summary>
         /// The reference.
         /// </summary>
-        private readonly IntPtr reference;
+        public readonly IntPtr reference;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="JavaScriptValue"/> struct.

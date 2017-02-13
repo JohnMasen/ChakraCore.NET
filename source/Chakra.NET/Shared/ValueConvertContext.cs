@@ -14,15 +14,19 @@ namespace Chakra.NET
         {
             Handler = handler;
         }
+        public ValueConvertContext(ChakraContext context) : base(context)
+        {
+            Handler = new DelegateHandler();
+        }
 
         public JavaScriptNativeFunction WrapFunctionCall(JavaScriptNativeFunction callback)
         {
             JavaScriptNativeFunction result =
                 (callee, isConstructCall, arguments, argumentCount, callbackData) =>
                 {
-                    Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+                    RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
                     var r= callback(callee, isConstructCall, arguments, argumentCount, callbackData);
-                    Context.Enter();//restore context
+                    RuntimeContext.Enter();//restore context
                     return r;
                 };
             Handler.Hold(result);

@@ -31,7 +31,7 @@ namespace Chakra.NET
         }
 
 
-        public void RegisterValueConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue) where T : struct
+        public void RegisterStructConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue) where T : struct
         {
             RegisterConverter<T>(toJSValue, fromJSValue);
         }
@@ -78,6 +78,10 @@ namespace Chakra.NET
             }
         }
 
+        public T ToJSProxy<T>(ValueConvertContext context, T value)
+        {
+
+        }
 
 
         #region Method Template
