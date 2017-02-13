@@ -144,20 +144,20 @@ namespace Chakra.NET
         //    return result;
         //}
 
-        private Func<T1,TResult> fromJSFunction<T1,TResult>(ValueConvertContext context, JavaScriptValue value)
-        {
-            Func<T1, TResult> result = (T1 para1) =>
-            {
-                JavaScriptValue p1 = ToJSValue<T1>(context, para1);
-                JavaScriptValue r;
-                using (context.Context.With())
-                {
-                    r=value.CallFunction(context.JSClass, p1);
-                }
-                return FromJSValue<TResult>(context,r);
-            };
-            return result;
-        }
+        //private Func<T1,TResult> fromJSFunction<T1,TResult>(ValueConvertContext context, JavaScriptValue value)
+        //{
+        //    Func<T1, TResult> result = (T1 para1) =>
+        //    {
+        //        JavaScriptValue p1 = ToJSValue<T1>(context, para1);
+        //        JavaScriptValue r;
+        //        using (context.Context.With())
+        //        {
+        //            r=value.CallFunction(context.JSClass, p1);
+        //        }
+        //        return FromJSValue<TResult>(context,r);
+        //    };
+        //    return result;
+        //}
         #endregion
 
 
