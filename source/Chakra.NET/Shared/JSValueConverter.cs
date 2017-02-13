@@ -8,167 +8,13 @@ namespace Chakra.NET
 {
     public partial class JSValueConverter
     {
-        ChakraContext context;
-        //public delegate TResult toJSValueDelegate<out TResult>(ChakraContext context,JavaScriptValue value,JavaScriptValue owner);
-        //public delegate TResult fromJSValueDelegate<out TResult>(ChakraContext context, JavaScriptValue value, JavaScriptValue owner);
-        public JSValueConverter(ChakraContext context)
-        {
-            this.context = context;
-            createDefaultConveters();
-        }
+        public delegate JavaScriptValue toJSValueDelegate<T>(ValueConvertContext convertContext, T value);
+        public delegate TResult fromJSValueDelegate<out TResult>(ValueConvertContext convertContext, JavaScriptValue value);
 
-        private void createDefaultConveters()
-        {
-
-            RegisterConverter<float>(
-                    (value, helper) =>
-                    {
-                        using (helper.With())
-                        {
-                            return JavaScriptValue.FromDouble(Convert.ToDouble(value));
-                        }
-
-                    }
-                    ,
-                    (value, helper) =>
-                    {
-                        using (helper.With())
-                        {
-                            return Convert.ToSingle(value.ConvertToNumber().ToDouble());
-                        }
-
-                    }
-                    );
-            RegisterConverter<double>(
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return JavaScriptValue.FromDouble(value);
-                    }
-
-                }
-                ,
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return value.ConvertToNumber().ToDouble();
-                    }
-
-                }
-                );
-            RegisterConverter<int>(
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return JavaScriptValue.FromInt32(value);
-                    }
-
-                }
-                ,
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return value.ConvertToNumber().ToInt32();
-                    }
-
-                }
-                );
-            RegisterConverter<byte>(
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return JavaScriptValue.FromDouble(Convert.ToInt32(value));
-                    }
-
-                }
-                ,
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return BitConverter.GetBytes(value.ConvertToNumber().ToInt32())[0];
-                    }
-
-                }
-                );
-            RegisterConverter<string>(
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return JavaScriptValue.FromString(value);
-                    }
-
-                }
-                ,
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return value.ConvertToString().ToString();
-                    }
-
-                }
-                );
-            RegisterConverter<bool>(
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return JavaScriptValue.FromBoolean(value);
-                    }
-
-                }
-                ,
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return value.ConvertToBoolean().ToBoolean();
-                    }
-
-                }
-                );
-            RegisterConverter<Action>(
-                (value, helper) =>
-                {
-
-                    return context.CallContext.StackInfo.Holder.CreateCallback(helper, (JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
-       ushort argumentCount, IntPtr callbackData) =>
-                     {
-                         value();
-                         return JavaScriptValue.Undefined;
-                     });
-                }
-                ,
-                (value, helper) =>
-                {
-                    return new Action(() =>
-                    {
-                        using (context.With())
-                        {
-                            value.CallFunction(JavaScriptValue.Undefined);//first parameer should always be undefined, why???
-                        }
-                    }
-                    );
-                }
-                );
-            //a useful trick
-            RegisterConverter<JavaScriptValue>(
-                (value, helper) => { return value; },
-                (value, helper) => { return value; }
-                );
-
-        }
 
         private Dictionary<Type, Tuple<object, object>> converters = new Dictionary<Type, Tuple<object, object>>();
 
-        internal void RegisterConverter<T>(Func<T, ChakraContext, JavaScriptValue> toJSValue, Func<JavaScriptValue, ChakraContext, T> fromJSValue, bool throewIfExists = true)
+        internal void RegisterConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue, bool throewIfExists = true)
         {
             if (converters.ContainsKey(typeof(T)))
             {
@@ -184,47 +30,24 @@ namespace Chakra.NET
             converters.Add(typeof(T), new Tuple<object, object>(toJSValue, fromJSValue));
         }
 
-        public void RegisterProxyConverter<T>(Action<JSValueWithContext,T> initializer) where T : class
-        {
-            RegisterConverter<T>((value, helper) =>
-            {
-                JavaScriptValue result;
-                using (var h = helper.With(CallContextOption.NewJSRelease, null, "CreateProxyObject"))
-                {
-                    IntPtr p = (IntPtr)GCHandle.Alloc(value);
-                    result = JavaScriptValue.CreateExternalObject(p, helper.CallContext.StackInfo.Holder.GetExternalReleaseDelegate());
-                }
-                initializer(result.WithContext(helper),value);
-                return result;
-            },
-            (value, helper) =>
-            {
-                if (!value.HasExternalData)
-                {
-                    throw new InvalidOperationException("cannot convert proxy type from none proxy JS object");
-                }
-                //TODO:should check the handler before use, need more research
-                return (T)GCHandle.FromIntPtr(value.ExternalData).Target;
-            });
-        }
 
-        public void RegisterValueConverter<T>(Func<T, ChakraContext, JavaScriptValue> toJSValue, Func<JavaScriptValue, ChakraContext, T> fromJSValue) where T : struct
+        public void RegisterValueConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue) where T : struct
         {
             RegisterConverter<T>(toJSValue, fromJSValue);
         }
 
-        public JavaScriptValue ToJSValue<T>(T value)
+        public JavaScriptValue ToJSValue<T>(ValueConvertContext context, T value)
         {
             if (converters.ContainsKey(typeof(T)))
             {
-                var f = (converters[typeof(T)].Item1 as Func<T, ChakraContext, JavaScriptValue>);
+                var f = (converters[typeof(T)].Item1 as toJSValueDelegate<T>);
                 if (f == null)
                 {
                     throw new NotImplementedException($"type {typeof(T).FullName} does not support convert to JSValue");
                 }
                 else
                 {
-                    return f(value, context);
+                    return f(context, value);
 
                 }
 
@@ -235,18 +58,18 @@ namespace Chakra.NET
             }
         }
 
-        public T FromJSValue<T>(JavaScriptValue value)
+        public T FromJSValue<T>(ValueConvertContext context, JavaScriptValue value)
         {
             if (converters.ContainsKey(typeof(T)))
             {
-                var f = (converters[typeof(T)].Item2 as Func<JavaScriptValue, ChakraContext, T>);
+                var f = (converters[typeof(T)].Item2 as fromJSValueDelegate<T>);
                 if (f == null)
                 {
                     throw new NotImplementedException($"type {typeof(T).FullName} does not support convert from JSValue");
                 }
                 else
                 {
-                    return f(value, context);
+                    return f(context, value);
                 }
             }
             else
@@ -255,49 +78,88 @@ namespace Chakra.NET
             }
         }
 
-        public JavaScriptValue ToJSArray<T>(IEnumerable<T> source)
-        {
+        #region Method Template
+        //private JavaScriptValue toJSMethod<T1>(ValueConvertContext context, Action<T1> a)
+        //{
+        //    JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
+        //    {
+        //        if (argumentCount != 2)
+        //        {
+        //            throw new InvalidOperationException("call from javascript did not pass enough parameters");
+        //        }
+        //        context.JSClass = arguments[0];//put the caller object to context
+        //        T1 para1 = FromJSValue<T1>(context, arguments[1]);
 
-            var result = JavaScriptValue.CreateArray(Convert.ToUInt32(source.Count()));
-            int index = 0;
-            foreach (var item in source)
+        //        context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+
+        //        a(para1);
+
+        //        context.Context.Enter();//restore context
+        //        return context.Context.JSValue_Undefined;
+        //    };
+        //    context.Handler.Hold(f);
+
+        //    using (context.Context.With())
+        //    {
+        //        return JavaScriptValue.CreateFunction(f);
+        //    }
+        //}
+
+        //private JavaScriptValue toJSFunction<T1,TResult>(ValueConvertContext context, Func<T1,TResult> function)
+        //{
+        //    JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
+        //    {
+        //        if (argumentCount != 2)
+        //        {
+        //            throw new InvalidOperationException("call from javascript did not pass enough parameters");
+        //        }
+        //        context.JSClass = arguments[0];//put the caller object to context
+        //        T1 para1 = FromJSValue<T1>(context, arguments[1]);
+
+        //        context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+
+        //        TResult result= function(para1);
+
+        //        context.Context.Enter();//restore context
+        //        return ToJSValue<TResult>(context,result);
+        //    };
+        //    context.Handler.Hold(f);
+
+        //    using (context.Context.With())
+        //    {
+        //        return JavaScriptValue.CreateFunction(f);
+        //    }
+        //}
+        //private Action<T> fromJSMethod<T>(ValueConvertContext context,JavaScriptValue value)
+        //{
+        //    Action<T> result = (T para1) =>
+        //      {
+        //          JavaScriptValue p1 = ToJSValue<T>(context,para1);
+
+        //          using (context.Context.With())
+        //          {
+        //              value.CallFunction(context.JSClass, p1);
+        //          }
+        //      };
+        //    return result;
+        //}
+
+        private Func<T1,TResult> fromJSFunction<T1,TResult>(ValueConvertContext context, JavaScriptValue value)
+        {
+            Func<T1, TResult> result = (T1 para1) =>
             {
-                result.SetIndexedProperty(ToJSValue<int>(index++), ToJSValue<T>(item));
-            }
+                JavaScriptValue p1 = ToJSValue<T1>(context, para1);
+                JavaScriptValue r;
+                using (context.Context.With())
+                {
+                    r=value.CallFunction(context.JSClass, p1);
+                }
+                return FromJSValue<TResult>(context,r);
+            };
             return result;
         }
+        #endregion
 
-        public IEnumerable<T> FromJSArray<T>(JavaScriptValue value)
-        {
-            int length = context.ReadProperty<int>(value, "length");
-            for (int i = 0; i < length; i++)
-            {
-                yield return FromJSValue<T>(value.GetIndexedProperty(ToJSValue<int>(i)));
-            }
-        }
-
-        public JSValueConverter ReigsterArrayConverter<T>()
-        {
-            RegisterConverter<IEnumerable<T>>(
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return helper.ValueConverter.ToJSArray<T>(value);
-                    }
-
-                },
-                (value, helper) =>
-                {
-                    using (helper.With())
-                    {
-                        return helper.ValueConverter.FromJSArray<T>(value);
-                    }
-
-                }
-                , false);
-            return this;
-        }
 
 
     }

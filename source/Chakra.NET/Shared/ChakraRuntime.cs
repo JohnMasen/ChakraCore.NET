@@ -17,12 +17,12 @@ namespace Chakra.NET
         {
             var c = runtime.CreateContext();
             var result = new ChakraContext(c,syncHandler);
-            result.init(enableDebug);
+            result.Init(enableDebug);
 
-            if (enableDebug)
-            {
-                DebugHelper.Inject(result);
-            }
+            //if (enableDebug)
+            //{
+            //    DebugHelper.Inject(result);
+            //}
             return result;
         }
         public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes)

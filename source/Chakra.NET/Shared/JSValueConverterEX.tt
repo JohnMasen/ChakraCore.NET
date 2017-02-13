@@ -6,8 +6,7 @@
 <#@ output extension=".cs" #>
 
 <# int totalItems=7;
-int startFrom=1;
-
+int startFrom=0;
 #>
 using Chakra.NET.API;
 using System;
@@ -21,95 +20,97 @@ public partial class JSValueConverter
     for (int i = startFrom; i <= totalItems; i++)
     {
       #>
-
-        public Action<<#= getGenericName(i,"T{0}") #>> FromJSMethod<<#=getGenericName(i,"T{0}")  #>>(JavaScriptValue value)
+        private JavaScriptValue toJSMethod<#=genCode(i,"T{1}")#> (ValueConvertContext context, Action<#=genCode(i,"T{1}")#> a)
         {
-            return new Action<<#= getGenericName(i,"T{0}")  #>>((<#= getGenericName(i,"para{0}")#>) =>
+            JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
-                <#= getGenericName(i,"JavaScriptValue p{0} = ToJSValue<T{0}>(para{0});",false,Environment.NewLine) #>
-                using (context.With())
+                if (argumentCount != <#=i+1#>)
                 {
-                    value.CallFunction(context.CallContext.StackInfo.CurrentObject,<#= getGenericName(i,"p{0}")#>);
+                    throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-            });
+                context.JSClass = arguments[0];//put the caller object to context
+                <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
 
+                context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+
+                a(<#=genCode(i,"para{1}",false,",","{0}")#>);
+
+                context.Context.Enter();//restore context
+                return context.Context.JSValue_Undefined;
+            };
+            context.Handler.Hold(f);
+
+            using (context.Context.With())
+            {
+                return JavaScriptValue.CreateFunction(f);
+            }
         }
         
-        public Func<<#= getGenericName(i,"T{0}",true)#>> FromJSFunction<<#= getGenericName(i,"T{0}",true)#>>(JavaScriptValue value)
+        private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (ValueConvertContext context, Func<#=genCode(i,"T{1}",true)#> a)
         {
-            return new Func<<#= getGenericName(i,"T{0}",true)#>>((<#= getGenericName(i-1,"para{0}")#>) =>
+            JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
-                <#= getGenericName(i-1,"JavaScriptValue p{0} = ToJSValue<T{0}>(para{0});",false,Environment.NewLine) #>
-                JavaScriptValue result;
-                using (context.With())
+                if (argumentCount != <#=i+1#>)
                 {
-                    if (typeof(TResult)==typeof(JavaScriptValue))
-                    {
-                        result= value.ConstructObject(JavaScriptValue.Undefined<#= getGenericName(i-1,",p{0}",false,"")#>);
-                    }
-                    else
-                    {
-                        result= value.CallFunction(context.CallContext.StackInfo.CurrentObject<#= getGenericName(i-1,",p{0}",false,"")#>);
-                    }
-                    return FromJSValue<TResult>(result);
+                    throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-            });
+                context.JSClass = arguments[0];//put the caller object to context
+                <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
 
-        }
+                context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
-        public JavaScriptValue ToJSMethod<<#= getGenericName(i,"T{0}") #>>(Action<<#= getGenericName(i,"T{0}") #>> a)
-        {
-            return context.CallContext.StackInfo.Holder.CreateCallback(context,(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
-          ushort argumentCount, IntPtr callbackData) =>
+                TResult result=a(<#=genCode(i,"para{1}",false,",","{0}")#>);
+
+                context.Context.Enter();//restore context
+                return ToJSValue<TResult>(context,result);;
+            };
+            context.Handler.Hold(f);
+
+            using (context.Context.With())
             {
-                <#= getGenericName(i,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
-				using (context.With())
-                {
-					
-
-					a(<#= getGenericName(i,"para{0}")#>);
-				}
-                return JavaScriptValue.Undefined;
-            });
+                return JavaScriptValue.CreateFunction(f);
+            }
         }
 
-        public JavaScriptValue ToJSFunction<<#= getGenericName(i,"T{0}",true) #>>(Func<<#= getGenericName(i,"T{0}",true) #>> a)
+        private Action<#=genCode(i,"T{1}")#> fromJSMethod<#=genCode(i,"T{1}")#>(ValueConvertContext context,JavaScriptValue value)
         {
-            return context.CallContext.StackInfo.Holder.CreateCallback(context,(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments,
-          ushort argumentCount, IntPtr callbackData) =>
+            Action<#=genCode(i,"T{1}")#> result = (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
+              {
+
+                  <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
+                  
+
+                  using (context.Context.With())
+                  {
+                      value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                  }
+              };
+            return result;
+        }
+
+        private Func<#=genCode(i,"T{1}",true)#> fromJSFunction<#=genCode(i,"T{1}",true)#>(ValueConvertContext context, JavaScriptValue value)
+        {
+            Func<#=genCode(i,"T{1}",true)#> result = (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
             {
-                <#= getGenericName(i-1,"T{0} para{0} = FromJSValue<T{0}>(arguments[{0}]);",false,Environment.NewLine) #>
-                return ToJSValue<TResult>(a(<#= getGenericName(i-1,"para{0}")#>));
-            });
+                <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
+
+                JavaScriptValue r;
+                using (context.Context.With())
+                {
+                    r=value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                }
+                return FromJSValue<TResult>(context,r);
+            };
+            return result;
         }
 
-        public void RegisterFunctionConverter<<#= getGenericName(i,"T{0}",true) #>>()
-        {
-            RegisterConverter<Func<<#= getGenericName(i,"T{0}",true) #>>>(
-                (func, helper) =>
-                {
-                    return ToJSFunction(func);
-                },
-                (value, helper) =>
-                {
-                    return FromJSFunction<<#= getGenericName(i,"T{0}",true) #>>(value);
-                },
-                false);
-        }
 
-        public void RegisterMethodConverter<<#= getGenericName(i,"T{0}") #>>()
-        {
-            RegisterConverter<Action<<#= getGenericName(i,"T{0}") #>>>(
-                (func, helper) =>
-                {
-                    return ToJSMethod(func);
-                },
-                (value, helper) =>
-                {
-                    return FromJSMethod<<#= getGenericName(i,"T{0}") #>>(value);
-                },
-                false);
-        }
+
+
+
+
+
+
         
       <#  
     }
@@ -118,26 +119,30 @@ public partial class JSValueConverter
 }
 }
 <#+
-private string getGenericName(int currentIndex,string pattern,bool isFunction=false,string joinWith=",")
+private string genCode(int currentIndex,string pattern,bool genTResult=false,string joinWith=",",string outputPattern="<{0}>")
 {
     StringBuilder sb=new StringBuilder();
-    for (int i = 1; i <= currentIndex; i++)
+    if (currentIndex==0 && !genTResult)
     {
-        if (isFunction && i==currentIndex)
-        {
-            sb.Append("TResult");
-        }
-        else
-        {
-           sb.AppendFormat(pattern,i); 
-        }
+        return "";
+    }
+    for (int i = 0; i < currentIndex; i++)
+    {
+
+        sb.AppendFormat(pattern,i,i+1); 
+
+        sb.Append(joinWith);
+    }
+    if (genTResult)
+    {
+        sb.AppendFormat("TResult");
         sb.Append(joinWith);
     }
     if (sb.Length>1)
     {
         sb.Length-=joinWith.Length;
     }
-    return sb.ToString();
+    return string.Format(outputPattern,sb.ToString()) ;
 }
 
 #>

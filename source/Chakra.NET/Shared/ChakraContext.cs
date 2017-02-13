@@ -1,7 +1,6 @@
 ﻿using System;
 using Chakra.NET.API;
 using System.Collections.Generic;
-using Chakra.NET.GC;
 using System.Threading;
 
 namespace Chakra.NET
@@ -18,6 +17,8 @@ namespace Chakra.NET
 
         private AutoResetEvent waitHanlder;
 
+        public JavaScriptValue JSValue_Undefined;
+
         //public GC.StackTraceNode GCStackTrace { get; private set; }
 
         public JavaScriptValue GlobalObject
@@ -33,13 +34,7 @@ namespace Chakra.NET
             }
         }
 
-        public JSValueWithContext GlobalObjectWithContext
-        {
-            get
-            {
-                return GlobalObject.WithContext(this);
-            }
-        }
+        
         private bool isDebug;
         internal ChakraContext(JavaScriptContext jsContext, AutoResetEvent syncHandler)
         {
@@ -47,10 +42,10 @@ namespace Chakra.NET
             this.waitHanlder = syncHandler;
         }
 
-        internal void init(bool enableDebug)
+        internal void Init(bool enableDebug,params string[] winRTNamespace)
         {
             isDebug = enableDebug;
-            JavaScriptContext.Current = jsContext;
+            JavaScriptContext.Current = jsContext;//TODO: use With()
             JavaScriptPromiseContinuationCallback promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
             {
                 taskQueue.Enqueue(task);
@@ -58,100 +53,44 @@ namespace Chakra.NET
 
             if (Native.JsSetPromiseContinuationCallback(promiseContinuationCallback, IntPtr.Zero) != JavaScriptErrorCode.NoError)
                 throw new InvalidOperationException("failed to setup callback for ES6 Promise");
-
-            if (Native.JsProjectWinRTNamespace("Windows") != JavaScriptErrorCode.NoError)
-                throw new InvalidOperationException("failed to project windows namespace.");
+            foreach (var item in winRTNamespace)
+            {
+                if (Native.JsProjectWinRTNamespace(item) != JavaScriptErrorCode.NoError)
+                    throw new InvalidOperationException($"failed to project {item} namespace.");
+            }
+            
             if (isDebug && Native.JsStartDebugging() != JavaScriptErrorCode.NoError)
                 throw new InvalidOperationException("failed to start debugging.");
 
 
-            this.CallContext = JSCallContext.CreateRoot(JavaScriptValue.GlobalObject);
-            ValueConverter = new JSValueConverter(this);
+            ValueConverter = new JSValueConverter();
+            JSValue_Undefined = JavaScriptValue.Undefined;
             JavaScriptContext.Current = JavaScriptContext.Invalid;
-            JSValueConverterExtend.Inject(this);
-            //GCStackTrace = StackTraceNode.CreateRoot();//stack trace root
-            //PushCaller(GlobalObject);
-
-
 
         }
 
-        public JSCallContext CallContext { get; private set; }
 
-        //internal JavaScriptValue CurrentCaller;
-        //private Stack<JavaScriptValue> callerStack = new Stack<JavaScriptValue>();
-        ///// <summary>
-        ///// set current caller, for call method and call function use
-        ///// </summary>
-        ///// <param name="value"></param>
-        //internal void PushCaller(JavaScriptValue value)
-        //{
-        //    if (value.ValueType!=JavaScriptValueType.Object)
-        //    {
-        //        throw new InvalidOperationException("PushCaller only accept [Object] Javascript value");
-        //    }
-        //    CurrentCaller = value;
-        //    callerStack.Push(value);
-        //}
-
-        //internal void PopCaller()
-        //{
-        //    CurrentCaller = callerStack.Pop();
-        //}
+        
 
 
 
 
-        //private void pushStackTrace(object owner)
-        //{
-        //    GCStackTrace = GCStackTrace.CreateChild(owner);
-        //}
-
-        //private void popStackTrace()
-        //{
-        //    if (GCStackTrace.Parent==null)
-        //    {
-        //        throw new InvalidOperationException("cannot pop StackTrace at top level");
-        //    }
-        //    GCStackTrace = GCStackTrace.Parent;
-        //}
-
-        public JavaScriptValue CreateObject()
+        /// <summary>
+        /// try switch context to current thread
+        /// </summary>
+        /// <returns>true if release is required, false if context already running at current thread(no release call required)</returns>
+        public bool Enter()
         {
-            using (With())
+            lock (waitHanlder)//thread safe for status check
             {
-                return JavaScriptValue.CreateObject();
+                if (IsCurrentContext)
+                {
+                    return false;//no operation required
+                }
             }
-        }
-
-        public JavaScriptValue CreateProxyObject<T>(T owner, Action<JSValueWithContext> injector)
-        {
-            //if (GCStackTrace.IsRoot)
-            //{
-            //    throw new InvalidOperationException("CreateProxyObject can only be called inside a Using(With(timespan,object)){} block. possible incorrect valueconverter registered");
-            //}
-            JavaScriptValue result;
-            using (var h = With(CallContextOption.NewJSRelease, null, "CreateProxyObject"))
-            {
-                result = JavaScriptValue.CreateExternalObject(IntPtr.Zero, CallContext.StackInfo.Holder.GetExternalReleaseDelegate());
-            }
-            injector(result.WithContext(this));
-            return result;
-        }
-
-        //public ContextSwitcher With(TimeSpan timeout)
-        //{
-        //    return With(timeout, null);
-        //}
-
-        public ContextSwitcher With(CallContextOption stackOperate, JavaScriptValue? newJSObject, string text)
-        {
-            return ContextSwitcher.waitAndSwitch(this, stackOperate, newJSObject, text, waitHanlder);
-        }
-        public void Enter()
-        {
+            waitHanlder.WaitOne();//wait other call complete
             JavaScriptContext.Current = jsContext;
-            var x = IsCurrentContext;
+            return true;
         }
 
         public bool IsCurrentContext
@@ -169,12 +108,12 @@ namespace Chakra.NET
 
         public ContextSwitcher With()
         {
-            return With(CallContextOption.NoChange, null, string.Empty);
+            return ContextSwitcher.TrySwitch(this);
         }
 
 
 
-        public T RunScript<T>(string script)
+        public string RunScript(string script)
         {
             JavaScriptValue result;
             using (With())
@@ -188,22 +127,12 @@ namespace Chakra.NET
                     result = JavaScriptContext.RunScript(script);
                 }
             }
-            return ValueConverter.FromJSValue<T>(result);
+            using (With())
+            {
+                return result.ConvertToString().ToString();
+            }
         }
 
-        //public void HoldObject(object obj)
-        //{
-        //    GCStackTrace.Hold(obj);
-        //}
-
-        //public JavaScriptValue CreateCallBackFunction(JavaScriptNativeFunction callback)
-        //{
-        //    using (With())
-        //    {
-        //        HoldObject(callback);
-        //        return JavaScriptValue.CreateFunction(callback);
-        //    }
-        //}
 
         public JavaScriptValue ParseScript(string script)
         {
@@ -221,132 +150,38 @@ namespace Chakra.NET
                 return result;
             }
         }
+        
 
-        //public static ChakraContext CreateNew( bool enableDebug = true)
-        //{
-        //    if (!isReady)
-        //    {
-        //        initPrivate();
-        //        isReady = true;
-        //    }
-        //    return CreateNew(runtime);
-        //}
 
-        //public static ChakraContext CreateNew(JavaScriptRuntime jsRuntime, bool enableDebug=true)
-        //{
-        //    var c = jsRuntime.CreateContext();
-        //    var result = new ChakraContext(c);
-        //    result.init(enableDebug);
 
-        //    if (enableDebug)
-        //    {
-        //        DebugHelper.Inject(result);
-        //    }
-        //    return result;
-        //}
 
-        public void WriteProperty<T>(JavaScriptValue target, string name, T value)
+
+        public class ContextSwitcher :ContextObjectBase, IDisposable
         {
-            var tmp = ValueConverter.ToJSValue<T>(value);
-            using (With())
+
+            public static ContextSwitcher EmptySwitcher = new ContextSwitcher(null);
+
+            public ContextSwitcher(ChakraContext context) : base(context)
             {
-                target.SetProperty(JavaScriptPropertyId.FromString(name), tmp,true);
             }
-        }
 
-        public T ReadProperty<T>(JavaScriptValue target, string name)
-        {
-            JavaScriptValue tmp;
-            using (With())
+            public static ContextSwitcher TrySwitch(ChakraContext context)
             {
-                var id = JavaScriptPropertyId.FromString(name);
-                
-                if (target.HasProperty(id))
+                if(context.Enter())
                 {
-                    tmp=target.GetProperty(JavaScriptPropertyId.FromString(name));
+                    return new ContextSwitcher(context);
                 }
                 else
                 {
-                    return default(T);
+                    return EmptySwitcher;
                 }
             }
-            return ValueConverter.FromJSValue<T>(tmp);
-        }
 
-        public T ReadValue<T>(JavaScriptValue target)
-        {
-            //using (With())
-            //{
-            return ValueConverter.FromJSValue<T>(target);
-            //}
-        }
-
-        public JavaScriptValue CreateValue<T>(T source)
-        {
-            //using (With())
-            //{
-            return ValueConverter.ToJSValue<T>(source);
-            //}
-        }
-
-
-
-
-
-        public class ContextSwitcher : IDisposable
-        {
-            static bool alreadyCalled = false;
-            ChakraContext context;
-            AutoResetEvent syncHandler;
-            bool isNested;
-            /// <summary>
-            /// hold this handler if you want handle the delegate release in your code
-            /// </summary>
-            public DelegateHolder.InternalHanlder Handler { get; private set; }
-
-            private ContextSwitcher(bool isNested, ChakraContext context, CallContextOption stackOperate, JavaScriptValue? newJSObject, string text, AutoResetEvent syncHandler)
-            {
-                this.isNested = isNested;
-                this.context = context;
-                context.CallContext.Push(text, stackOperate, newJSObject, null);
-                if (stackOperate.HasFlag(CallContextOption.NewDotnetRelease))
-                {
-                    this.Handler = context.CallContext.StackInfo.Holder.GetInternalHandler();
-                }
-                this.syncHandler = syncHandler;
-            }
-
-
-            internal static ContextSwitcher waitAndSwitch(ChakraContext context, CallContextOption stackOperate, JavaScriptValue? newJSObject, string text, AutoResetEvent syncHandler)
-            {
-                if (context.IsCurrentContext)//nested call from callback, do not block 
-                {
-                    return new ContextSwitcher(true,context, stackOperate, newJSObject, text, syncHandler);
-                }
-                if (alreadyCalled)
-                {
-                    throw new InvalidOperationException("With method cannot be nested");
-                }
-                else
-                {
-                    alreadyCalled = true;
-                }
-                syncHandler.WaitOne();
-                context.Enter();
-                return new ContextSwitcher(false,context, stackOperate, newJSObject, text, syncHandler);
-
-            }
             #region IDisposable Support
 
             public void Dispose()
             {
-                context.CallContext.Pop();
-                if (!isNested)//do not leave in a nested call
-                {
-                    context.Leave();
-                    syncHandler.Set();
-                }
-                alreadyCalled = false;
+                Context?.Leave();
 
             }
             #endregion
