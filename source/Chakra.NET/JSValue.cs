@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Chakra.NET
 {
-    public class JSValue : ContextObjectBase
+    public partial class JSValue : ContextObjectBase
     {
         public JSValue Parent { get; private set; }
         public JavaScriptValue Reference { get; private set; }
@@ -53,19 +53,19 @@ namespace Chakra.NET
 
 
 
-        public void CallMethod<T>(string name, T para1)
-        {
-            RuntimeContext.ValueConverter.RegisterMethodConverter<T>();
-            var a = ReadProperty<Action<T>>(name);
-            a(para1);
-        }
+        //public void CallMethod<T>(string name, T para1)
+        //{
+        //    RuntimeContext.ValueConverter.RegisterMethodConverter<T>();
+        //    var a = ReadProperty<Action<T>>(name);
+        //    a(para1);
+        //}
 
-        public TResult CallFunction<T1,TResult>(string name, T1 para1, bool isConstructCall=false)
-        {
-            RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,TResult>();
-            var a = ReadProperty<Func<bool,T1,TResult>>(name);
-            return a(isConstructCall,para1);
-        }
+        //public TResult CallFunction<T1,TResult>(string name, T1 para1, bool isConstructCall=false)
+        //{
+        //    RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,TResult>();
+        //    var a = ReadProperty<Func<bool,T1,TResult>>(name);
+        //    return a(isConstructCall,para1);
+        //}
 
     }
 }
