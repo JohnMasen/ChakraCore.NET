@@ -15,7 +15,7 @@ public partial class JSValueConverter
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 
 
                 context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
@@ -41,7 +41,7 @@ public partial class JSValueConverter
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 
 
                 context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
@@ -123,7 +123,7 @@ public partial class JSValueConverter
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 
                 context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
@@ -149,7 +149,7 @@ public partial class JSValueConverter
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 
                 context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
@@ -231,7 +231,7 @@ public partial class JSValueConverter
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 
@@ -258,7 +258,7 @@ T2 para2 = FromJSValue<T2>(context, arguments[2]);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 
@@ -343,7 +343,7 @@ JavaScriptValue p2 = ToJSValue<T2>(context,para2);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -371,7 +371,7 @@ T3 para3 = FromJSValue<T3>(context, arguments[3]);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -459,7 +459,7 @@ JavaScriptValue p3 = ToJSValue<T3>(context,para3);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -488,7 +488,7 @@ T4 para4 = FromJSValue<T4>(context, arguments[4]);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -579,7 +579,7 @@ JavaScriptValue p4 = ToJSValue<T4>(context,para4);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -609,7 +609,7 @@ T5 para5 = FromJSValue<T5>(context, arguments[5]);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -703,7 +703,7 @@ JavaScriptValue p5 = ToJSValue<T5>(context,para5);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -734,7 +734,7 @@ T6 para6 = FromJSValue<T6>(context, arguments[6]);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -831,7 +831,7 @@ JavaScriptValue p6 = ToJSValue<T6>(context,para6);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -863,7 +863,7 @@ T7 para7 = FromJSValue<T7>(context, arguments[7]);
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);

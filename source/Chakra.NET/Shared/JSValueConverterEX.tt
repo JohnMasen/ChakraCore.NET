@@ -28,7 +28,7 @@ public partial class JSValueConverter
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
 
                 context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
@@ -54,7 +54,7 @@ public partial class JSValueConverter
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                context.JSClass = arguments[0];//put the caller object to context
+                //context.JSClass = arguments[0];//put the caller object to context
                 <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
 
                 context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
