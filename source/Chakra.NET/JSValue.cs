@@ -20,7 +20,7 @@ namespace Chakra.NET
             Parent = parent;
             Reference = reference;
             convertContext = new ValueConvertContext(context);
-            binding = new JSValueBinding(context, reference, convertContext);
+            binding = new JSValueBinding(context,reference, convertContext);
             IsProxy = reference.HasExternalData;
             IsRoot = isRoot;
         }
@@ -49,6 +49,12 @@ namespace Chakra.NET
         {
             var tmp = RuntimeContext.ValueConverter.ToJSValue<T>(convertContext, value);
             RuntimeContext.With(() => { Reference.SetProperty(id, tmp, true); });
+        }
+
+        public void WriteProperty<T>(string name, T value)
+        {
+            JavaScriptPropertyId id = RuntimeContext.With<JavaScriptPropertyId>(() => { return JavaScriptPropertyId.FromString(name); });
+            WriteProperty<T>(id, value);
         }
 
 

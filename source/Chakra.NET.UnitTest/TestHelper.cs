@@ -17,5 +17,10 @@ namespace Chakra.NET.UnitTest
             string filename = System.IO.Directory.GetCurrentDirectory() + string.Format(@"\Scripts\{0}", name);
             return System.IO.File.OpenText(filename).ReadToEnd();
         }
+
+
+        public static string JSRunScript = 
+            "var a = 'test';" +
+            "                       a;";
     }
 }
