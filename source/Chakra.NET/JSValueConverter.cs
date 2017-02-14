@@ -108,6 +108,43 @@ namespace Chakra.NET
             RegisterConverter<T>(tojs, fromjs);
         }
 
+        public void RegisterArrayConverter<T>()
+        {
+            toJSValueDelegate<IEnumerable<T>> tojs = (context, value) =>
+              {
+                  return context.RuntimeContext.With<JavaScriptValue>(()=>
+                  {
+                      var result =JavaScriptValue.CreateArray(Convert.ToUInt32(value.Count()));
+                      int index = 0;
+                      foreach (T item in value)
+                      {
+                          result.SetIndexedProperty(ToJSValue<int>(context,index++), ToJSValue<T>(context,item));
+                      }
+                      return result;
+                  }
+                  );
+              };
+            fromJSValueDelegate<IEnumerable<T>> fromjs = (context, value) =>
+              {
+                  return context.RuntimeContext.With<IEnumerable<T>>(() =>
+                  {
+                      var length = FromJSValue<int>(context, value.GetProperty(JavaScriptPropertyId.FromString("length")));
+                      List<T> result = new List<T>(length);//copy the data to avoid context switch in user code
+                      for (int i = 0; i < length; i++)
+                        {
+                              result.Add(
+                                  FromJSValue<T>(context, 
+                                      value.GetIndexedProperty(
+                                              ToJSValue<int>(context,i))
+                                              )
+                                       );
+                        }
+                      return result;
+                  }
+                  );
+              };
+            RegisterConverter<IEnumerable<T>>(tojs, fromjs,false);
+        }
 
         #region Method Template
         //private JavaScriptValue toJSMethod<T1>(ValueConvertContext context, Action<T1> a)
