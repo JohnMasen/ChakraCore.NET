@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{AC0AC7E1-5DE9-4633-8982-8D1B3D96FB50}</ProjectGuid>
+    <ProjectGuid>{A48E634A-CE60-481A-ACD4-D43E7F2CF424}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UWPTest</RootNamespace>
@@ -16,6 +16,7 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <PackageCertificateKeyFile>UWPTest_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -127,8 +128,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UWP\Chakra.NET\Chakra.NET.csproj">
-      <Project>{dc0f934a-83b1-4b77-9450-9c17d17dca90}</Project>
+    <ProjectReference Include="..\Chakra.NET\Chakra.NET.csproj">
+      <Project>{005e0e6f-275f-4862-b21c-cfdcea969381}</Project>
       <Name>Chakra.NET</Name>
     </ProjectReference>
   </ItemGroup>
