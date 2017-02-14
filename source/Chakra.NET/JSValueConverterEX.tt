@@ -40,10 +40,11 @@ public partial class JSValueConverter
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (ValueConvertContext context, Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult> callback)
@@ -66,10 +67,11 @@ public partial class JSValueConverter
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<#=genCode(i,"T{1}")#> fromJSMethod<#=genCode(i,"T{1}")#>(ValueConvertContext context,JavaScriptValue value)
@@ -80,10 +82,10 @@ public partial class JSValueConverter
                   <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
-                  }
+                  });
               };
             return result;
         }
@@ -94,18 +96,17 @@ public partial class JSValueConverter
             {
                 <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                        return value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;

@@ -27,10 +27,11 @@ public partial class JSValueConverter
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<TResult> (ValueConvertContext context, Func<bool,TResult> callback)
@@ -53,10 +54,11 @@ public partial class JSValueConverter
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action fromJSMethod(ValueConvertContext context,JavaScriptValue value)
@@ -67,10 +69,10 @@ public partial class JSValueConverter
                   
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass);
-                  }
+                  });
               };
             return result;
         }
@@ -81,18 +83,17 @@ public partial class JSValueConverter
             {
                 
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass);
+                        return value.CallFunction(context.JSClass);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;
@@ -135,10 +136,11 @@ public partial class JSValueConverter
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<T1,TResult> (ValueConvertContext context, Func<bool,T1,TResult> callback)
@@ -161,10 +163,11 @@ public partial class JSValueConverter
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<T1> fromJSMethod<T1>(ValueConvertContext context,JavaScriptValue value)
@@ -175,10 +178,10 @@ public partial class JSValueConverter
                   JavaScriptValue p1 = ToJSValue<T1>(context,para1);
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass,p1);
-                  }
+                  });
               };
             return result;
         }
@@ -189,18 +192,17 @@ public partial class JSValueConverter
             {
                 JavaScriptValue p1 = ToJSValue<T1>(context,para1);
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass,p1);
+                        return value.CallFunction(context.JSClass,p1);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;
@@ -244,10 +246,11 @@ T2 para2 = FromJSValue<T2>(context, arguments[2]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<T1,T2,TResult> (ValueConvertContext context, Func<bool,T1,T2,TResult> callback)
@@ -271,10 +274,11 @@ T2 para2 = FromJSValue<T2>(context, arguments[2]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<T1,T2> fromJSMethod<T1,T2>(ValueConvertContext context,JavaScriptValue value)
@@ -286,10 +290,10 @@ T2 para2 = FromJSValue<T2>(context, arguments[2]);
 JavaScriptValue p2 = ToJSValue<T2>(context,para2);
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass,p1,p2);
-                  }
+                  });
               };
             return result;
         }
@@ -301,18 +305,17 @@ JavaScriptValue p2 = ToJSValue<T2>(context,para2);
                 JavaScriptValue p1 = ToJSValue<T1>(context,para1);
 JavaScriptValue p2 = ToJSValue<T2>(context,para2);
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass,p1,p2);
+                        return value.CallFunction(context.JSClass,p1,p2);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;
@@ -357,10 +360,11 @@ T3 para3 = FromJSValue<T3>(context, arguments[3]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<T1,T2,T3,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,TResult> callback)
@@ -385,10 +389,11 @@ T3 para3 = FromJSValue<T3>(context, arguments[3]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<T1,T2,T3> fromJSMethod<T1,T2,T3>(ValueConvertContext context,JavaScriptValue value)
@@ -401,10 +406,10 @@ JavaScriptValue p2 = ToJSValue<T2>(context,para2);
 JavaScriptValue p3 = ToJSValue<T3>(context,para3);
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass,p1,p2,p3);
-                  }
+                  });
               };
             return result;
         }
@@ -417,18 +422,17 @@ JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 JavaScriptValue p2 = ToJSValue<T2>(context,para2);
 JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass,p1,p2,p3);
+                        return value.CallFunction(context.JSClass,p1,p2,p3);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;
@@ -474,10 +478,11 @@ T4 para4 = FromJSValue<T4>(context, arguments[4]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<T1,T2,T3,T4,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,TResult> callback)
@@ -503,10 +508,11 @@ T4 para4 = FromJSValue<T4>(context, arguments[4]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<T1,T2,T3,T4> fromJSMethod<T1,T2,T3,T4>(ValueConvertContext context,JavaScriptValue value)
@@ -520,10 +526,10 @@ JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 JavaScriptValue p4 = ToJSValue<T4>(context,para4);
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass,p1,p2,p3,p4);
-                  }
+                  });
               };
             return result;
         }
@@ -537,18 +543,17 @@ JavaScriptValue p2 = ToJSValue<T2>(context,para2);
 JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 JavaScriptValue p4 = ToJSValue<T4>(context,para4);
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass,p1,p2,p3,p4);
+                        return value.CallFunction(context.JSClass,p1,p2,p3,p4);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;
@@ -595,10 +600,11 @@ T5 para5 = FromJSValue<T5>(context, arguments[5]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,TResult> callback)
@@ -625,10 +631,11 @@ T5 para5 = FromJSValue<T5>(context, arguments[5]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<T1,T2,T3,T4,T5> fromJSMethod<T1,T2,T3,T4,T5>(ValueConvertContext context,JavaScriptValue value)
@@ -643,10 +650,10 @@ JavaScriptValue p4 = ToJSValue<T4>(context,para4);
 JavaScriptValue p5 = ToJSValue<T5>(context,para5);
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass,p1,p2,p3,p4,p5);
-                  }
+                  });
               };
             return result;
         }
@@ -661,18 +668,17 @@ JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 JavaScriptValue p4 = ToJSValue<T4>(context,para4);
 JavaScriptValue p5 = ToJSValue<T5>(context,para5);
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass,p1,p2,p3,p4,p5);
+                        return value.CallFunction(context.JSClass,p1,p2,p3,p4,p5);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;
@@ -720,10 +726,11 @@ T6 para6 = FromJSValue<T6>(context, arguments[6]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,T6,TResult> callback)
@@ -751,10 +758,11 @@ T6 para6 = FromJSValue<T6>(context, arguments[6]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<T1,T2,T3,T4,T5,T6> fromJSMethod<T1,T2,T3,T4,T5,T6>(ValueConvertContext context,JavaScriptValue value)
@@ -770,10 +778,10 @@ JavaScriptValue p5 = ToJSValue<T5>(context,para5);
 JavaScriptValue p6 = ToJSValue<T6>(context,para6);
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass,p1,p2,p3,p4,p5,p6);
-                  }
+                  });
               };
             return result;
         }
@@ -789,18 +797,17 @@ JavaScriptValue p4 = ToJSValue<T4>(context,para4);
 JavaScriptValue p5 = ToJSValue<T5>(context,para5);
 JavaScriptValue p6 = ToJSValue<T6>(context,para6);
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass,p1,p2,p3,p4,p5,p6);
+                        return value.CallFunction(context.JSClass,p1,p2,p3,p4,p5,p6);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;
@@ -849,10 +856,11 @@ T7 para7 = FromJSValue<T7>(context, arguments[7]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
-            {
-                return JavaScriptValue.CreateFunction(f);
-            }
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    return JavaScriptValue.CreateFunction(f);
+                }
+            );
         }
         
         private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> callback)
@@ -881,10 +889,11 @@ T7 para7 = FromJSValue<T7>(context, arguments[7]);
             };
             context.Handler.Hold(f);
 
-            using (context.RuntimeContext.With())
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
             {
                 return JavaScriptValue.CreateFunction(f);
             }
+            );
         }
 
         private Action<T1,T2,T3,T4,T5,T6,T7> fromJSMethod<T1,T2,T3,T4,T5,T6,T7>(ValueConvertContext context,JavaScriptValue value)
@@ -901,10 +910,10 @@ JavaScriptValue p6 = ToJSValue<T6>(context,para6);
 JavaScriptValue p7 = ToJSValue<T7>(context,para7);
                   
 
-                  using (context.RuntimeContext.With())
+                  context.RuntimeContext.With(()=>
                   {
                       value.CallFunction(context.JSClass,p1,p2,p3,p4,p5,p6,p7);
-                  }
+                  });
               };
             return result;
         }
@@ -921,18 +930,17 @@ JavaScriptValue p5 = ToJSValue<T5>(context,para5);
 JavaScriptValue p6 = ToJSValue<T6>(context,para6);
 JavaScriptValue p7 = ToJSValue<T7>(context,para7);
 
-                JavaScriptValue r;
-                using (context.RuntimeContext.With())
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
                     if (isConstruct)
                     {
-                        r = value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        r=value.CallFunction(context.JSClass,p1,p2,p3,p4,p5,p6,p7);
+                        return value.CallFunction(context.JSClass,p1,p2,p3,p4,p5,p6,p7);
                     }
-                }
+                });
                 return FromJSValue<TResult>(context,r);
             };
             return result;

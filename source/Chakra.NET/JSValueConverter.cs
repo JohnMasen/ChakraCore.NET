@@ -10,7 +10,11 @@ namespace Chakra.NET
     {
         public delegate JavaScriptValue toJSValueDelegate<T>(ValueConvertContext convertContext, T value);
         public delegate TResult fromJSValueDelegate<out TResult>(ValueConvertContext convertContext, JavaScriptValue value);
-
+        partial void initDefault();
+        public JSValueConverter()
+        {
+            initDefault();
+        }
 
         private Dictionary<Type, Tuple<object, object>> converters = new Dictionary<Type, Tuple<object, object>>();
 
@@ -106,105 +110,108 @@ namespace Chakra.NET
 
 
         #region Method Template
-        //private JavaScriptValue toJSMethod(ValueConvertContext context, Action a)
+        //private JavaScriptValue toJSMethod<T1>(ValueConvertContext context, Action<T1> a)
         //{
         //    JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
         //    {
-        //        if (argumentCount != 1)
+        //        if (argumentCount != 2)
         //        {
         //            throw new InvalidOperationException("call from javascript did not pass enough parameters");
         //        }
-        //        context.JSClass = arguments[0];//put the caller object to context
+        //        //context.JSClass = arguments[0];//put the caller object to context
+        //        T1 para1 = FromJSValue<T1>(context, arguments[1]);
 
+        //        context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
-        //        context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+        //        a(para1);
 
-        //        a();
-
-        //        context.Context.Enter();//restore context
-        //        return context.Context.JSValue_Undefined;
+        //        context.RuntimeContext.Enter();//restore context
+        //        return context.RuntimeContext.JSValue_Undefined;
         //    };
         //    context.Handler.Hold(f);
 
-        //    using (context.Context.With())
+        //    return context.RuntimeContext.With<JavaScriptValue>(() =>
         //    {
         //        return JavaScriptValue.CreateFunction(f);
         //    }
+        //    );
         //}
 
-        //private JavaScriptValue toJSFunction<TResult>(ValueConvertContext context, Func<bool, TResult> callback)
+        //private JavaScriptValue toJSFunction<T1, TResult>(ValueConvertContext context, Func<bool, T1, TResult> callback)
         //{
         //    JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
         //    {
-        //        if (argumentCount != 1)
+        //        if (argumentCount != 2)
         //        {
         //            throw new InvalidOperationException("call from javascript did not pass enough parameters");
         //        }
-        //        context.JSClass = arguments[0];//put the caller object to context
+        //        //context.JSClass = arguments[0];//put the caller object to context
+        //        T1 para1 = FromJSValue<T1>(context, arguments[1]);
 
+        //        context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
-        //        context.Context.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+        //        TResult result = callback(isConstructCall, para1);
 
-        //        TResult result = callback(isConstructCall);
-
-        //        context.Context.Enter();//restore context
+        //        context.RuntimeContext.Enter();//restore context
         //        return ToJSValue<TResult>(context, result); ;
         //    };
         //    context.Handler.Hold(f);
 
-        //    using (context.Context.With())
+        //    return context.RuntimeContext.With<JavaScriptValue>(() =>
         //    {
         //        return JavaScriptValue.CreateFunction(f);
         //    }
+        //    );
         //}
 
-        //private Action fromJSMethod(ValueConvertContext context, JavaScriptValue value)
+        //private Action<T1> fromJSMethod<T1>(ValueConvertContext context, JavaScriptValue value)
         //{
-        //    Action result = () =>
+        //    Action<T1> result = (T1 para1) =>
         //    {
 
+        //        JavaScriptValue p1 = ToJSValue<T1>(context, para1);
 
 
-
-        //        using (context.Context.With())
+        //        context.RuntimeContext.With(() =>
         //        {
-        //            value.CallFunction(context.JSClass);
-        //        }
+        //            value.CallFunction(context.JSClass, p1);
+        //        });
         //    };
         //    return result;
         //}
 
-        //private Func<bool, TResult> fromJSFunction<TResult>(ValueConvertContext context, JavaScriptValue value)
+        //private Func<bool, T1, TResult> fromJSFunction<T1, TResult>(ValueConvertContext context, JavaScriptValue value)
         //{
-        //    Func<bool, TResult> result = (bool isConstruct) =>
+        //    Func<bool, T1, TResult> result = (bool isConstruct, T1 para1) =>
         //    {
+        //        JavaScriptValue p1 = ToJSValue<T1>(context, para1);
 
-
-        //        JavaScriptValue r;
-        //        using (context.Context.With())
+        //        JavaScriptValue r = context.RuntimeContext.With<JavaScriptValue>(() =>
         //        {
         //            if (isConstruct)
         //            {
-        //                r = value.ConstructObject(context.Context.JSValue_Undefined);
+        //                return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
         //            }
         //            else
         //            {
-        //                r = value.CallFunction(context.JSClass);
+        //                return value.CallFunction(context.JSClass, p1);
         //            }
-        //        }
+        //        });
         //        return FromJSValue<TResult>(context, r);
         //    };
         //    return result;
         //}
 
-        //public void RegisterMethodConverter<T>()
+
+
+        //public void RegisterMethodConverter<T1>()
         //{
-        //    RegisterConverter<Action<T>>(toJSMethod<T>, fromJSMethod<T>, false);
+        //    RegisterConverter<Action<T1>>(toJSMethod<T1>, fromJSMethod<T1>, false);
         //}
 
-        //public void RegisterFunctionConverter<T>()
+        //public void RegisterFunctionConverter<T1, TResult>()
         //{
-        //    RegisterConverter<Func<bool, T>>(toJSFunction<T>, fromJSFunction<T>);
+        //    RegisterConverter<Func<bool, T1, TResult>>(toJSFunction<T1, TResult>, fromJSFunction<T1, TResult>, false);
         //}
         #endregion
 

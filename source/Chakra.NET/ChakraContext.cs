@@ -31,16 +31,17 @@ namespace Chakra.NET
         {
             get
             {
-                JavaScriptValue result ;
-                using (With())
+                return With<JavaScriptValue>(() =>
                 {
+                    JavaScriptValue result;
                     result = JavaScriptValue.GlobalObject;
+                    return result;
                 }
-                return result;
+                );
             }
         }
 
-        
+
         private bool isDebug;
         internal ChakraContext(JavaScriptContext jsContext, AutoResetEvent syncHandler)
         {
@@ -48,7 +49,7 @@ namespace Chakra.NET
             this.waitHanlder = syncHandler;
         }
 
-        internal void Init(bool enableDebug,params string[] winRTNamespace)
+        internal void Init(bool enableDebug, params string[] winRTNamespace)
         {
             isDebug = enableDebug;
             JavaScriptContext.Current = jsContext;//TODO: use With()
@@ -64,7 +65,7 @@ namespace Chakra.NET
                 if (Native.JsProjectWinRTNamespace(item) != JavaScriptErrorCode.NoError)
                     throw new InvalidOperationException($"failed to project {item} namespace.");
             }
-            
+
             if (isDebug && Native.JsStartDebugging() != JavaScriptErrorCode.NoError)
                 throw new InvalidOperationException("failed to start debugging.");
 
@@ -77,10 +78,10 @@ namespace Chakra.NET
         }
 
 
-        internal JavaScriptValue CreateProxy<T>(T source,out DelegateHandler proxyDelegateHandler)
+        internal JavaScriptValue CreateProxy<T>(T source, out DelegateHandler proxyDelegateHandler)
         {
-            
-            Dictionary<T, Tuple<JavaScriptValue, DelegateHandler,JavaScriptObjectFinalizeCallback>> currentList;
+
+            Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>> currentList;
             #region get or create a proxy map item
             if (proxyList.ContainsKey(typeof(T)))
             {
@@ -111,15 +112,15 @@ namespace Chakra.NET
 
             JavaScriptObjectFinalizeCallback callback = (p) =>
               {
-                  T key= (T)GCHandle.FromIntPtr(p).Target;
+                  T key = (T)GCHandle.FromIntPtr(p).Target;
                   var list = proxyList[typeof(T)] as Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>>;
                   list.Remove(key);
               };
-            JavaScriptValue result;
-            using (With())
-            {
-                result = JavaScriptValue.CreateExternalObject((IntPtr)objHandle, callback);
-            }
+            JavaScriptValue result = With<JavaScriptValue>(() =>
+              {
+                  return JavaScriptValue.CreateExternalObject((IntPtr)objHandle, callback);
+              }
+            );
             currentList.Add(source, new Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>(result, handler, callback));
             proxyDelegateHandler = handler;
             return result;
@@ -159,16 +160,38 @@ namespace Chakra.NET
             JavaScriptContext.Current = JavaScriptContext.Invalid;
         }
 
-        public ContextSwitcher With()
+        public void With(Action a)
         {
-            return ContextSwitcher.TrySwitch(this);
+            if (Enter())
+            {
+                a();
+                Leave();
+            }
+            else
+            {
+                a();
+            }
+        }
+
+        public T With<T>(Func<T> f)
+        {
+            if (Enter())
+            {
+                T tmp = f();
+                Leave();
+                return tmp;
+            }
+            else
+            {
+                return f();
+            }
         }
 
 
         public string RunScript(string script)
         {
             JavaScriptValue result;
-            using (With())
+            return With<string>(() =>
             {
                 if (isDebug)
                 {
@@ -178,17 +201,14 @@ namespace Chakra.NET
                 {
                     result = JavaScriptContext.RunScript(script);
                 }
-            }
-            using (With())
-            {
                 return result.ConvertToString().ToString();
-            }
+            });
         }
 
 
         public JavaScriptValue ParseScript(string script)
         {
-            using (With())
+            return With<JavaScriptValue>(() =>
             {
                 JavaScriptValue result;
                 if (isDebug)
@@ -201,44 +221,15 @@ namespace Chakra.NET
                 }
                 return result;
             }
+            );
         }
+
+
+
+
+
+
         
-
-
-
-
-
-        public class ContextSwitcher :ContextObjectBase, IDisposable
-        {
-
-            public static ContextSwitcher EmptySwitcher = new ContextSwitcher(null);
-
-            public ContextSwitcher(ChakraContext context) : base(context)
-            {
-            }
-
-            public static ContextSwitcher TrySwitch(ChakraContext context)
-            {
-                if(context.Enter())
-                {
-                    return new ContextSwitcher(context);
-                }
-                else
-                {
-                    return EmptySwitcher;
-                }
-            }
-
-            #region IDisposable Support
-
-            public void Dispose()
-            {
-                RuntimeContext?.Leave();
-
-            }
-            #endregion
-
-        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
