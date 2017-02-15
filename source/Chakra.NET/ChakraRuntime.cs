@@ -1,9 +1,10 @@
 ﻿using Chakra.NET.API;
+using Microsoft.Extensions.Logging;
 using System.Threading;
 
 namespace Chakra.NET
 {
-    public class ChakraRuntime
+    public class ChakraRuntime:LoggableObjectBase<ChakraRuntime>
     {
         JavaScriptRuntime runtime;
         AutoResetEvent syncHandler;
@@ -15,18 +16,31 @@ namespace Chakra.NET
 
         public ChakraContext CreateContext(bool enableDebug)
         {
-            var c = runtime.CreateContext();
-            var result = new ChakraContext(c,syncHandler);
-            result.Init(enableDebug);
-
+            try
+            {
+                var c = runtime.CreateContext();
+                var result = new ChakraContext(c, syncHandler);
+                result.Init(enableDebug);
+                return result;
+            }
+            catch (System.Exception ex)
+            {
+                log.LogCritical(ChakraLogging.EventIds.CoreEvent, ex, "failed creating context");
+                throw ex;
+            }
+            
             //if (enableDebug)
             //{
             //    DebugHelper.Inject(result);
             //}
-            return result;
+            
         }
-        public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes)
+        public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes,ILoggerFactory loggerFactory=null)
         {
+            if (loggerFactory==null)
+            {
+                loggerFactory = new LoggerFactory();
+            }
             JavaScriptRuntime result = JavaScriptRuntime.Create(attributes,JavaScriptRuntimeVersion.VersionEdge);
             return new ChakraRuntime(result);
         }

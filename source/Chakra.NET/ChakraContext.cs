@@ -5,10 +5,11 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Linq;
 using Chakra.NET.GC;
+using Microsoft.Extensions.Logging;
 
 namespace Chakra.NET
 {
-    public class ChakraContext : IDisposable
+    public class ChakraContext : LoggableObjectBase<ChakraContext>,IDisposable
     {
         private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
@@ -68,7 +69,6 @@ namespace Chakra.NET
 
             if (isDebug && Native.JsStartDebugging() != JavaScriptErrorCode.NoError)
                 throw new InvalidOperationException("failed to start debugging.");
-
 
             ValueConverter = new JSValueConverter();
             JSValue_Undefined = JavaScriptValue.Undefined;
@@ -151,7 +151,7 @@ namespace Chakra.NET
         {
             get
             {
-                return JavaScriptContext.Current.reference == jsContext.reference;
+                return JavaScriptContext.Current == jsContext;
             }
         }
 

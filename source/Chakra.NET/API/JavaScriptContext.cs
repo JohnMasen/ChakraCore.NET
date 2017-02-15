@@ -21,7 +21,28 @@
         /// <summary>
         ///     The reference.
         /// </summary>
-        public readonly IntPtr reference;
+        private readonly IntPtr reference;
+
+        public static bool operator==(JavaScriptContext lhs, JavaScriptContext rhs)
+        {
+            return lhs.reference == rhs.reference;
+        }
+
+        public static bool operator !=(JavaScriptContext lhs, JavaScriptContext rhs)
+        {
+            return lhs.reference != rhs.reference;
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is JavaScriptContext)
+            {
+                return (this == (JavaScriptContext)obj);
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="JavaScriptContext"/> struct. 

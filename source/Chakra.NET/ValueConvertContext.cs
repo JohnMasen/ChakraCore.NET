@@ -6,7 +6,7 @@ using Chakra.NET.API;
 
 namespace Chakra.NET
 {
-    public class ValueConvertContext : ContextObjectBase
+    public class ValueConvertContext : ContextObjectBase<ValueConvertContext>
     {
         public DelegateHandler Handler { get; private set; }
         public JavaScriptValue JSClass;
