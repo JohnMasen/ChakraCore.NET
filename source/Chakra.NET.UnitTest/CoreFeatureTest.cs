@@ -102,6 +102,16 @@ namespace Chakra.NET.UnitTest
             T result=context.RootObject.CallFunction<T,T>("add", value);
             Assert.AreEqual<T>(result, expect);
         }
+        [TestMethod]
+        public void ProxyCallback()
+        {
+            TestStub.RegisterValueConverter(context);
+            TestStub stub = new TestStub();
+            context.RootObject.WriteProperty("myStub", stub);
+            var result=context.RunScript(TestHelper.JSProxy);
+            string s = context.RootObject.ReadProperty<string>("callProxyResult");
+            Assert.AreEqual("hihi", s);
+        }
 
         private void ReadWrite<T>(T value)
         {

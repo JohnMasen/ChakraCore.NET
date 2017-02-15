@@ -82,7 +82,7 @@ namespace Chakra.NET
             }
         }
 
-        public void RegisterProxyConverter<T>(Action<JSValueBinding> callback)where T:class
+        public void RegisterProxyConverter<T>(Action<JSValueBinding,T> callback)where T:class
         {
             toJSValueDelegate<T> tojs = (ValueConvertContext convertContext, T value) =>
               {
@@ -90,7 +90,7 @@ namespace Chakra.NET
                   JSValueBinding binding = new JSValueBinding(
                       convertContext.RuntimeContext, 
                       result, new ValueConvertContext(convertContext.RuntimeContext, handler, result));//create value binding object for user setup binding
-                  callback(binding);
+                  callback(binding,value);
                   return result;
               };
             fromJSValueDelegate<T> fromjs = (ValueConvertContext convertContext, JavaScriptValue value) =>

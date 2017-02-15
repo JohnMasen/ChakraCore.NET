@@ -1,0 +1,1 @@
+﻿var callProxyResult = myStub.echo('hi');

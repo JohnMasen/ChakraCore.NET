@@ -13,7 +13,7 @@ public partial class JSValueBinding
             WriteProperty<Action>(name, a);
         }
 
-        public void SetFunction<TResult>(string name,Func<TResult> callback, Func<TResult> constructCallback)
+        public void SetFunction<TResult>(string name,Func<TResult> callback, Func<TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<TResult>();
             if (callback==null &&constructCallback==null)
@@ -59,7 +59,7 @@ public partial class JSValueBinding
             WriteProperty<Action<T1>>(name, a);
         }
 
-        public void SetFunction<T1,TResult>(string name,Func<T1,TResult> callback, Func<T1,TResult> constructCallback)
+        public void SetFunction<T1,TResult>(string name,Func<T1,TResult> callback, Func<T1,TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,TResult>();
             if (callback==null &&constructCallback==null)
@@ -105,7 +105,7 @@ public partial class JSValueBinding
             WriteProperty<Action<T1,T2>>(name, a);
         }
 
-        public void SetFunction<T1,T2,TResult>(string name,Func<T1,T2,TResult> callback, Func<T1,T2,TResult> constructCallback)
+        public void SetFunction<T1,T2,TResult>(string name,Func<T1,T2,TResult> callback, Func<T1,T2,TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,T2,TResult>();
             if (callback==null &&constructCallback==null)
@@ -151,7 +151,7 @@ public partial class JSValueBinding
             WriteProperty<Action<T1,T2,T3>>(name, a);
         }
 
-        public void SetFunction<T1,T2,T3,TResult>(string name,Func<T1,T2,T3,TResult> callback, Func<T1,T2,T3,TResult> constructCallback)
+        public void SetFunction<T1,T2,T3,TResult>(string name,Func<T1,T2,T3,TResult> callback, Func<T1,T2,T3,TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,T2,T3,TResult>();
             if (callback==null &&constructCallback==null)
@@ -197,7 +197,7 @@ public partial class JSValueBinding
             WriteProperty<Action<T1,T2,T3,T4>>(name, a);
         }
 
-        public void SetFunction<T1,T2,T3,T4,TResult>(string name,Func<T1,T2,T3,T4,TResult> callback, Func<T1,T2,T3,T4,TResult> constructCallback)
+        public void SetFunction<T1,T2,T3,T4,TResult>(string name,Func<T1,T2,T3,T4,TResult> callback, Func<T1,T2,T3,T4,TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,T2,T3,T4,TResult>();
             if (callback==null &&constructCallback==null)
@@ -243,7 +243,7 @@ public partial class JSValueBinding
             WriteProperty<Action<T1,T2,T3,T4,T5>>(name, a);
         }
 
-        public void SetFunction<T1,T2,T3,T4,T5,TResult>(string name,Func<T1,T2,T3,T4,T5,TResult> callback, Func<T1,T2,T3,T4,T5,TResult> constructCallback)
+        public void SetFunction<T1,T2,T3,T4,T5,TResult>(string name,Func<T1,T2,T3,T4,T5,TResult> callback, Func<T1,T2,T3,T4,T5,TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,T2,T3,T4,T5,TResult>();
             if (callback==null &&constructCallback==null)
@@ -289,7 +289,7 @@ public partial class JSValueBinding
             WriteProperty<Action<T1,T2,T3,T4,T5,T6>>(name, a);
         }
 
-        public void SetFunction<T1,T2,T3,T4,T5,T6,TResult>(string name,Func<T1,T2,T3,T4,T5,T6,TResult> callback, Func<T1,T2,T3,T4,T5,T6,TResult> constructCallback)
+        public void SetFunction<T1,T2,T3,T4,T5,T6,TResult>(string name,Func<T1,T2,T3,T4,T5,T6,TResult> callback, Func<T1,T2,T3,T4,T5,T6,TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,TResult>();
             if (callback==null &&constructCallback==null)
@@ -335,7 +335,7 @@ public partial class JSValueBinding
             WriteProperty<Action<T1,T2,T3,T4,T5,T6,T7>>(name, a);
         }
 
-        public void SetFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(string name,Func<T1,T2,T3,T4,T5,T6,T7,TResult> callback, Func<T1,T2,T3,T4,T5,T6,T7,TResult> constructCallback)
+        public void SetFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(string name,Func<T1,T2,T3,T4,T5,T6,T7,TResult> callback, Func<T1,T2,T3,T4,T5,T6,T7,TResult> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,T7,TResult>();
             if (callback==null &&constructCallback==null)

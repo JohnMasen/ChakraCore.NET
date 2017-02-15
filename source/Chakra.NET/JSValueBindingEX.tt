@@ -26,7 +26,7 @@ public partial class JSValueBinding
             WriteProperty<Action<#=genCode(i,"T{1}")#>>(name, a);
         }
 
-        public void SetFunction<#=genCode(i,"T{1}",true)#>(string name,Func<#=genCode(i,"T{1}",true)#> callback, Func<#=genCode(i,"T{1}",true)#> constructCallback)
+        public void SetFunction<#=genCode(i,"T{1}",true)#>(string name,Func<#=genCode(i,"T{1}",true)#> callback, Func<#=genCode(i,"T{1}",true)#> constructCallback=null)
         {
             RuntimeContext.ValueConverter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
             if (callback==null &&constructCallback==null)

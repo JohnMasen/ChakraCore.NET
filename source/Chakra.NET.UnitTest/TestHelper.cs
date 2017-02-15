@@ -16,7 +16,8 @@ namespace Chakra.NET.UnitTest
 
         public static string JSRunScript = "var a='test'; a;";
         public static string JSValueTest = "var b=a;";
-        public static string JSCall = @"function add(s){return s+s}function addcallback(s,callback){return s+callback(s)}";
+        public static string JSCall = "function add(s){return s+s}function addcallback(s,callback){return s+callback(s)}";
+        public static string JSProxy= "var callProxyResult = myStub.echo('hi');";
 
     }
 }
