@@ -82,7 +82,7 @@ namespace ChakraCore.NET.UnitTest
         public void CallBackTest()
         {
             context.RunScript(TestHelper.JSCall);
-            context.ValueConverter.RegisterCallbackFunctionConverter<int, int>();
+            context.ValueConverter.RegisterFunctionConverter<int, int>();
             int result=context.RootObject.CallFunction<int, Func<int, int>,int>("addcallback",1,
                 (value) => {
                     return value + value;

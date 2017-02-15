@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using static ChakraCore.NET.API.JavaScriptContext;
 namespace ChakraCore.NET
 {
-public partial class JSValueConverter
+public partial class JSValue
 {
         public void CallMethod(string name )
         {
