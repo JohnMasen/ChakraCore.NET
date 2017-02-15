@@ -44,6 +44,11 @@
             }
         }
 
+        public override int GetHashCode()
+        {
+            return reference.GetHashCode();
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="JavaScriptContext"/> struct. 
         /// </summary>

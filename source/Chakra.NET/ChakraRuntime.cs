@@ -21,7 +21,9 @@ namespace Chakra.NET
                 var c = runtime.CreateContext();
                 var result = new ChakraContext(c, syncHandler);
                 result.Init(enableDebug);
+                log.LogInformation("context created");
                 return result;
+                
             }
             catch (System.Exception ex)
             {
