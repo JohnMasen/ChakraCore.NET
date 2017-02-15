@@ -28,7 +28,7 @@ namespace Chakra.NET
 
         //public GC.StackTraceNode GCStackTrace { get; private set; }
 
-        public JavaScriptValue GlobalObject
+        internal JavaScriptValue GlobalObject
         {
             get
             {
@@ -42,6 +42,7 @@ namespace Chakra.NET
             }
         }
 
+        public JSValue RootObject { get; private set; }
 
         private bool isDebug;
         internal ChakraContext(JavaScriptContext jsContext, AutoResetEvent syncHandler)
@@ -73,6 +74,8 @@ namespace Chakra.NET
             ValueConverter = new JSValueConverter();
             JSValue_Undefined = JavaScriptValue.Undefined;
             JSValue_Null = JavaScriptValue.Null;
+
+            RootObject = JSValue.CreateRoot(this);
             JavaScriptContext.Current = JavaScriptContext.Invalid;
 
         }
@@ -139,11 +142,14 @@ namespace Chakra.NET
             {
                 if (IsCurrentContext)
                 {
+                    log.LogDebug("nested enter, do nothing");
                     return false;//no operation required
                 }
             }
+            log.LogDebug("wait otheres release context");
             waitHanlder.WaitOne();//wait other call complete
             JavaScriptContext.Current = jsContext;
+            log.LogDebug("context switch complete");
             return true;
         }
 
@@ -158,6 +164,7 @@ namespace Chakra.NET
         public void Leave()
         {
             JavaScriptContext.Current = JavaScriptContext.Invalid;
+            waitHanlder.Set();
         }
 
         public void With(Action a)

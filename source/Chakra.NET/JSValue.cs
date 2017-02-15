@@ -19,7 +19,7 @@ namespace Chakra.NET
         {
             Parent = parent;
             Reference = reference;
-            convertContext = new ValueConvertContext(context);
+            convertContext = new ValueConvertContext(context,reference);
             binding = new JSValueBinding(context,reference, convertContext);
             IsProxy = reference.HasExternalData;
             IsRoot = isRoot;

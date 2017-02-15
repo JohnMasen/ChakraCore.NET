@@ -8,7 +8,7 @@ namespace Chakra.NET
     
     public static class ChakraLogging
     {
-        public static ILoggerFactory LoggerFactory { get; } = new LoggerFactory();
+        public static ILoggerFactory LoggerFactory { get; set; } = new LoggerFactory();
         public static ILogger CreateLogger<T>() =>
         LoggerFactory.CreateLogger<T>();
 

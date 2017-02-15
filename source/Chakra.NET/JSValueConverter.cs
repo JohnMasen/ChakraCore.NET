@@ -89,7 +89,7 @@ namespace Chakra.NET
                   JavaScriptValue result = convertContext.RuntimeContext.CreateProxy<T>(value, out GC.DelegateHandler handler);
                   JSValueBinding binding = new JSValueBinding(
                       convertContext.RuntimeContext, 
-                      result, new ValueConvertContext(convertContext.RuntimeContext, handler));//create value binding object for user setup binding
+                      result, new ValueConvertContext(convertContext.RuntimeContext, handler, result));//create value binding object for user setup binding
                   callback(binding);
                   return result;
               };

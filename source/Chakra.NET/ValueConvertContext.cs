@@ -9,14 +9,16 @@ namespace Chakra.NET
     public class ValueConvertContext : ContextObjectBase<ValueConvertContext>
     {
         public DelegateHandler Handler { get; private set; }
-        public JavaScriptValue JSClass;
-        public ValueConvertContext(ChakraContext context,DelegateHandler handler) : base(context)
+        public readonly JavaScriptValue JSClass;
+        public ValueConvertContext(ChakraContext context,DelegateHandler handler,JavaScriptValue caller) : base(context)
         {
             Handler = handler;
+            JSClass = caller;
         }
-        public ValueConvertContext(ChakraContext context) : base(context)
+        public ValueConvertContext(ChakraContext context, JavaScriptValue caller) : base(context)
         {
             Handler = new DelegateHandler();
+            JSClass = caller;
         }
 
         public JavaScriptNativeFunction WrapFunctionCall(JavaScriptNativeFunction callback)
