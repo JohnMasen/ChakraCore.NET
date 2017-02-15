@@ -1,0 +1,26 @@
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("JSValueConverter") #>
+<#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+
+        public void RegisterMethodConverter<#=genCode(i,"T{1}")#>()
+        {
+            RegisterConverter<Action<#=genCode(i,"T{1}")#>>(toJSMethod<#=genCode(i,"T{1}")#>, fromJSMethod<#=genCode(i,"T{1}")#>, false);
+        }
+
+        public void RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>()
+        {
+            RegisterConverter<Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult>>(toJSFunction<#=genCode(i,"T{1}",true)#>, fromJSFunction<#=genCode(i,"T{1}",true)#>,false);
+        }
+
+        public void RegisterCallbackFunctionConverter<#=genCode(i,"T{1}",true)#>()
+        {
+            RegisterConverter<Func<<#=genCode(i,"T{1}",true,",","{0}")#>>>(toJSCallbackFunction<#=genCode(i,"T{1}",true)#>, fromJSCallbackFunction<#=genCode(i,"T{1}",true)#>,false);
+        }
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>

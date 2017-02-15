@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using static ChakraCore.NET.API.JavaScriptContext;
 namespace ChakraCore.NET
 {
-public partial class JSValue
+public partial class JSValueConverter
 {
-            public void CallMethod(string name )
+        public void CallMethod(string name )
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter();
             var a = ReadProperty<Action>(name);
@@ -23,8 +23,7 @@ public partial class JSValue
 
 
 
-        
-              public void CallMethod<T1>(string name ,T1 para1)
+        public void CallMethod<T1>(string name ,T1 para1)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1>();
             var a = ReadProperty<Action<T1>>(name);
@@ -40,8 +39,7 @@ public partial class JSValue
 
 
 
-        
-              public void CallMethod<T1,T2>(string name ,T1 para1,T2 para2)
+        public void CallMethod<T1,T2>(string name ,T1 para1,T2 para2)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2>();
             var a = ReadProperty<Action<T1,T2>>(name);
@@ -57,8 +55,7 @@ public partial class JSValue
 
 
 
-        
-              public void CallMethod<T1,T2,T3>(string name ,T1 para1,T2 para2,T3 para3)
+        public void CallMethod<T1,T2,T3>(string name ,T1 para1,T2 para2,T3 para3)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3>();
             var a = ReadProperty<Action<T1,T2,T3>>(name);
@@ -74,8 +71,7 @@ public partial class JSValue
 
 
 
-        
-              public void CallMethod<T1,T2,T3,T4>(string name ,T1 para1,T2 para2,T3 para3,T4 para4)
+        public void CallMethod<T1,T2,T3,T4>(string name ,T1 para1,T2 para2,T3 para3,T4 para4)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4>();
             var a = ReadProperty<Action<T1,T2,T3,T4>>(name);
@@ -91,8 +87,7 @@ public partial class JSValue
 
 
 
-        
-              public void CallMethod<T1,T2,T3,T4,T5>(string name ,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5)
+        public void CallMethod<T1,T2,T3,T4,T5>(string name ,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4,T5>();
             var a = ReadProperty<Action<T1,T2,T3,T4,T5>>(name);
@@ -108,8 +103,7 @@ public partial class JSValue
 
 
 
-        
-              public void CallMethod<T1,T2,T3,T4,T5,T6>(string name ,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6)
+        public void CallMethod<T1,T2,T3,T4,T5,T6>(string name ,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6>();
             var a = ReadProperty<Action<T1,T2,T3,T4,T5,T6>>(name);
@@ -125,8 +119,7 @@ public partial class JSValue
 
 
 
-        
-              public void CallMethod<T1,T2,T3,T4,T5,T6,T7>(string name ,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7)
+        public void CallMethod<T1,T2,T3,T4,T5,T6,T7>(string name ,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6,T7>();
             var a = ReadProperty<Action<T1,T2,T3,T4,T5,T6,T7>>(name);
@@ -142,7 +135,6 @@ public partial class JSValue
 
 
 
-        
-          
-}
+
+    }
 }

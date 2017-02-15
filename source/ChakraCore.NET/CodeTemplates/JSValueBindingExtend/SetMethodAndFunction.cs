@@ -7,7 +7,7 @@ namespace ChakraCore.NET
 {
 public partial class JSValueBinding
 {
-            public void SetMethod(string name,Action a)
+        public void SetMethod(string name,Action a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter();
             WriteProperty<Action>(name, a);
@@ -52,8 +52,7 @@ public partial class JSValueBinding
 
 
 
-        
-              public void SetMethod<T1>(string name,Action<T1> a)
+        public void SetMethod<T1>(string name,Action<T1> a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1>();
             WriteProperty<Action<T1>>(name, a);
@@ -98,8 +97,7 @@ public partial class JSValueBinding
 
 
 
-        
-              public void SetMethod<T1,T2>(string name,Action<T1,T2> a)
+        public void SetMethod<T1,T2>(string name,Action<T1,T2> a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2>();
             WriteProperty<Action<T1,T2>>(name, a);
@@ -144,8 +142,7 @@ public partial class JSValueBinding
 
 
 
-        
-              public void SetMethod<T1,T2,T3>(string name,Action<T1,T2,T3> a)
+        public void SetMethod<T1,T2,T3>(string name,Action<T1,T2,T3> a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3>();
             WriteProperty<Action<T1,T2,T3>>(name, a);
@@ -190,8 +187,7 @@ public partial class JSValueBinding
 
 
 
-        
-              public void SetMethod<T1,T2,T3,T4>(string name,Action<T1,T2,T3,T4> a)
+        public void SetMethod<T1,T2,T3,T4>(string name,Action<T1,T2,T3,T4> a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4>();
             WriteProperty<Action<T1,T2,T3,T4>>(name, a);
@@ -236,8 +232,7 @@ public partial class JSValueBinding
 
 
 
-        
-              public void SetMethod<T1,T2,T3,T4,T5>(string name,Action<T1,T2,T3,T4,T5> a)
+        public void SetMethod<T1,T2,T3,T4,T5>(string name,Action<T1,T2,T3,T4,T5> a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4,T5>();
             WriteProperty<Action<T1,T2,T3,T4,T5>>(name, a);
@@ -282,8 +277,7 @@ public partial class JSValueBinding
 
 
 
-        
-              public void SetMethod<T1,T2,T3,T4,T5,T6>(string name,Action<T1,T2,T3,T4,T5,T6> a)
+        public void SetMethod<T1,T2,T3,T4,T5,T6>(string name,Action<T1,T2,T3,T4,T5,T6> a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6>();
             WriteProperty<Action<T1,T2,T3,T4,T5,T6>>(name, a);
@@ -328,8 +322,7 @@ public partial class JSValueBinding
 
 
 
-        
-              public void SetMethod<T1,T2,T3,T4,T5,T6,T7>(string name,Action<T1,T2,T3,T4,T5,T6,T7> a)
+        public void SetMethod<T1,T2,T3,T4,T5,T6,T7>(string name,Action<T1,T2,T3,T4,T5,T6,T7> a)
         {
             RuntimeContext.ValueConverter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6,T7>();
             WriteProperty<Action<T1,T2,T3,T4,T5,T6,T7>>(name, a);
@@ -374,7 +367,6 @@ public partial class JSValueBinding
 
 
 
-        
-          
-}
+
+    }
 }

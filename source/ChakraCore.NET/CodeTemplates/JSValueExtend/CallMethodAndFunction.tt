@@ -1,0 +1,25 @@
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("JSValueConverter") #>
+<#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+        public void CallMethod<#=genCode(i,"T{1}")#>(string name <#=genCode(i,",T{1} para{1}",false,"","{0}")#>)
+        {
+            RuntimeContext.ValueConverter.RegisterMethodConverter<#=genCode(i,"T{1}")#>();
+            var a = ReadProperty<Action<#=genCode(i,"T{1}")#>>(name);
+            a(<#=genCode(i,"para{1}",false,",","{0}")#>);
+        }
+
+        public TResult CallFunction<#=genCode(i,"T{1}",true)#>(string name <#=genCode(i,",T{1} para{1}",false,"","{0}")#>, bool isConstructCall=false)
+        {
+            RuntimeContext.ValueConverter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
+            var a = ReadProperty<Func<bool <#=genCode(i,",T{1}",false,"","{0}")#>,TResult>>(name);
+            return a(isConstructCall<#=genCode(i,",para{1}",false,"","{0}")#>);
+        }
+
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>

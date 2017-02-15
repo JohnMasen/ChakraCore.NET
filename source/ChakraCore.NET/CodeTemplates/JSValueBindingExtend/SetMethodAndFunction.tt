@@ -1,22 +1,6 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ output extension=".cs" #>
-
-<# int totalItems=7;
-int startFrom=0;
-#>
-using ChakraCore.NET.API;
-using System;
-using System.Collections.Generic;
-using static ChakraCore.NET.API.JavaScriptContext;
-namespace ChakraCore.NET
-{
-public partial class JSValueBinding
-{
-    <#
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("JSValueBinding") #>
+<#
     for (int i = startFrom; i <= totalItems; i++)
     {
       #>
@@ -65,38 +49,6 @@ public partial class JSValueBinding
 
 
 
-        
-      <#  
-    }
-    #>
-    
-}
-}
-<#+
-private string genCode(int currentIndex,string pattern,bool genTResult=false,string joinWith=",",string outputPattern="<{0}>")
-{
-    StringBuilder sb=new StringBuilder();
-    if (currentIndex==0 && !genTResult)
-    {
-        return "";
-    }
-    for (int i = 0; i < currentIndex; i++)
-    {
+<#    }#>
 
-        sb.AppendFormat(pattern,i,i+1); 
-
-        sb.Append(joinWith);
-    }
-    if (genTResult)
-    {
-        sb.Append("TResult");
-        sb.Append(joinWith);
-    }
-    if (sb.Length>1)
-    {
-        sb.Length-=joinWith.Length;
-    }
-    return string.Format(outputPattern,sb.ToString()) ;
-}
-
-#>
+<#@ include file="..\Template_Footer.t4"#>

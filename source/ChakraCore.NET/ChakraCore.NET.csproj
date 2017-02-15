@@ -10,17 +10,41 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="JSValueBindingEX.tt">
+    <None Update="CodeTemplates\JSValueBindingExtend\SetMethodAndFunction.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>JSValueBindingEX.cs</LastGenOutput>
+      <LastGenOutput>SetMethodAndFunction.cs</LastGenOutput>
     </None>
-    <None Update="JSValueConverterEX.tt">
+    <None Update="CodeTemplates\JSValueConverterExtend\FromToCallbackFunction.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>JSValueConverterEX.cs</LastGenOutput>
+      <LastGenOutput>FromToCallbackFunction.cs</LastGenOutput>
     </None>
-    <None Update="JSValueEX.tt">
+    <None Update="CodeTemplates\JSValueConverterExtend\FromToFunction.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>JSValueEX.cs</LastGenOutput>
+      <LastGenOutput>FromToFunction.cs</LastGenOutput>
+    </None>
+    <None Update="CodeTemplates\JSValueConverterExtend\FromToMethod - Copy.tt">
+      <LastGenOutput>FromToMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="CodeTemplates\JSValueConverterExtend\FromToMethod.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FromToMethod.cs</LastGenOutput>
+    </None>
+    <None Update="CodeTemplates\JSValueConverterExtend\RegisterHelper.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>RegisterHelper.cs</LastGenOutput>
+    </None>
+    <None Update="CodeTemplates\JSValueConverterExtend\Template.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Template.cs</LastGenOutput>
+    </None>
+    <None Update="CodeTemplates\JSValueExtend\CallMethodAndFunction.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CallMethodAndFunction.cs</LastGenOutput>
+    </None>
+    <None Update="CodeTemplates\Template_Footer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Template_Footer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -29,20 +53,40 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="JSValueBindingEX.cs">
+    <Compile Update="CodeTemplates\JSValueBindingExtend\SetMethodAndFunction.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>JSValueBindingEX.tt</DependentUpon>
+      <DependentUpon>SetMethodAndFunction.tt</DependentUpon>
     </Compile>
-    <Compile Update="JSValueConverterEX.cs">
+    <Compile Update="CodeTemplates\JSValueConverterExtend\FromToCallbackFunction.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>JSValueConverterEX.tt</DependentUpon>
+      <DependentUpon>FromToCallbackFunction.tt</DependentUpon>
     </Compile>
-    <Compile Update="JSValueEX.cs">
+    <Compile Update="CodeTemplates\JSValueConverterExtend\FromToFunction.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>JSValueEX.tt</DependentUpon>
+      <DependentUpon>FromToFunction.tt</DependentUpon>
+    </Compile>
+    <Compile Update="CodeTemplates\JSValueConverterExtend\FromToMethod - Copy.cs">
+      <DependentUpon>FromToMethod - Copy.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="CodeTemplates\JSValueConverterExtend\FromToMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FromToMethod.tt</DependentUpon>
+    </Compile>
+    <Compile Update="CodeTemplates\JSValueConverterExtend\RegisterHelper.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegisterHelper.tt</DependentUpon>
+    </Compile>
+    <Compile Update="CodeTemplates\JSValueExtend\CallMethodAndFunction.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CallMethodAndFunction.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

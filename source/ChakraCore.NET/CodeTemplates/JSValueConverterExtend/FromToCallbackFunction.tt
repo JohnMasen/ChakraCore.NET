@@ -1,0 +1,54 @@
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("JSValueConverter") #>
+<#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+private Func<<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSCallbackFunction<#=genCode(i,"T{1}",true)#>(ValueConvertContext context, JavaScriptValue value)
+        {
+            Func<<#=genCode(i,"T{1}",true,",","{0}")#>> result = (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
+            {
+                <#=genCode(i,"JavaScriptValue p{1} = ToJSValue<T{1}>(context,para{1});",false,Environment.NewLine,"{0}")#>
+
+                JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
+                {
+                    
+                   return value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                });
+                return FromJSValue<TResult>(context,r);
+            };
+            return result;
+        }
+
+        private JavaScriptValue toJSCallbackFunction<#=genCode(i,"T{1}",true)#> (ValueConvertContext context, Func<<#=genCode(i,"T{1}",true,",","{0}")#>> callback)
+        {
+            JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
+            {
+                if (argumentCount != <#=i+1#>)
+                {
+                    throw new InvalidOperationException("call from javascript did not pass enough parameters");
+                }
+                //context.JSClass = arguments[0];//put the caller object to context
+                <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
+
+                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
+
+                TResult result=callback(<#=genCode(i,"para{1}",false,",","{0}")#>);
+
+                context.RuntimeContext.Enter();//restore context
+                return ToJSValue<TResult>(context,result);;
+            };
+            context.Handler.Hold(f);
+
+            return context.RuntimeContext.With<JavaScriptValue>(()=>
+            {
+                return JavaScriptValue.CreateFunction(f);
+            }
+            );
+        }
+
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>
