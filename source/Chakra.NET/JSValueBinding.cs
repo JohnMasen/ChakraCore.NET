@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Chakra.NET
 {
-    public class JSValueBinding :ContextObjectBase<JSValueBinding>
+    public partial class JSValueBinding :ContextObjectBase<JSValueBinding>
     {
         private readonly JavaScriptValue source;
         ValueConvertContext convertContext;
@@ -14,49 +14,7 @@ namespace Chakra.NET
             this.source = source;
             this.convertContext = convertContext;
         }
-
-        public void SetMethod<T>(string name,Action<T> a)
-        {
-            RuntimeContext.ValueConverter.RegisterMethodConverter<T>();
-            WriteProperty<Action<T>>(name, a);
-        }
-
-        public void SetFunction<T,TResult>(string name,Func<T,TResult> callback, Func<T, TResult> constructCallback)
-        {
-            RuntimeContext.ValueConverter.RegisterFunctionConverter<T,TResult>();
-            if (callback==null &&constructCallback==null)
-            {
-                throw new ArgumentException("callback and constructCallback cannot both be null");
-            }
-            Func<bool, T, TResult> tmp = (isConstruct, para1) =>
-               {
-                   TResult result;
-                   if (isConstruct)
-                   {
-                       if (constructCallback==null)
-                       {
-                           throw new NotImplementedException(@"function {name} does not support construct call");
-                       }
-                       else
-                       {
-                           result = constructCallback(para1);
-                       }
-                   }
-                   else
-                   {
-                       if (callback==null)
-                       {
-                           throw new NotImplementedException(@"function {name} does not support direct call");
-                       }
-                       else
-                       {
-                           result = callback(para1);
-                       }
-                   }
-                   return result;
-               };
-            WriteProperty<Func<bool, T, TResult>>(name, tmp);
-        }
+        
 
 
         public T ReadProperty<T>(JavaScriptPropertyId id)
@@ -85,5 +43,51 @@ namespace Chakra.NET
             JavaScriptPropertyId id = RuntimeContext.With<JavaScriptPropertyId>(() => { return JavaScriptPropertyId.FromString(name); });
             WriteProperty<T>(id, value);
         }
+
+        #region method template
+        //public void SetMethod<T>(string name, Action<T> a)
+        //{
+        //    RuntimeContext.ValueConverter.RegisterMethodConverter<T>();
+        //    WriteProperty<Action<T>>(name, a);
+        //}
+
+        //public void SetFunction<T, TResult>(string name, Func<T, TResult> callback, Func<T, TResult> constructCallback)
+        //{
+        //    RuntimeContext.ValueConverter.RegisterFunctionConverter<T, TResult>();
+        //    if (callback == null && constructCallback == null)
+        //    {
+        //        throw new ArgumentException("callback and constructCallback cannot both be null");
+        //    }
+        //    Func<bool, T, TResult> tmp = (isConstruct, para1) =>
+        //    {
+        //        TResult result;
+        //        if (isConstruct)
+        //        {
+        //            if (constructCallback == null)
+        //            {
+        //                throw new NotImplementedException(@"function {name} does not support construct call");
+        //            }
+        //            else
+        //            {
+        //                result = constructCallback(para1);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (callback == null)
+        //            {
+        //                throw new NotImplementedException(@"function {name} does not support direct call");
+        //            }
+        //            else
+        //            {
+        //                result = callback(para1);
+        //            }
+        //        }
+        //        return result;
+        //    };
+        //    WriteProperty<Func<bool, T, TResult>>(name, tmp);
+        //}
+
+        #endregion
     }
 }

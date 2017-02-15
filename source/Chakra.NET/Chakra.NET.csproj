@@ -9,6 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="JSValueBindingEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JSValueBindingEX.cs</LastGenOutput>
+    </None>
     <None Update="JSValueConverterEX.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>JSValueConverterEX.cs</LastGenOutput>
@@ -24,6 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="JSValueBindingEX.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JSValueBindingEX.tt</DependentUpon>
+    </Compile>
     <Compile Update="JSValueConverterEX.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

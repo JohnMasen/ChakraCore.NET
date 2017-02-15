@@ -30,8 +30,6 @@ namespace Chakra.NET.UnitTest
         }
 
 
-        public static string JSRunScript = 
-            "var a = 'test';" +
-            "                       a;";
+        public static string JSRunScript = "var a='test'; a;";
     }
 }
