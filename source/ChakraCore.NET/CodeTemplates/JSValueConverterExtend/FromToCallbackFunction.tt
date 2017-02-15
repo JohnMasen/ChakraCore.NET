@@ -4,7 +4,7 @@
     for (int i = startFrom; i <= totalItems; i++)
     {
       #>
-private Func<<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSCallbackFunction<#=genCode(i,"T{1}",true)#>(ValueConvertContext context, JavaScriptValue value)
+        private Func<<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSCallbackFunction<#=genCode(i,"T{1}",true)#>(ValueConvertContext context, JavaScriptValue value)
         {
             return (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
             {

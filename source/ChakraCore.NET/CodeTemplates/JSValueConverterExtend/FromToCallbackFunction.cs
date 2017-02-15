@@ -7,7 +7,7 @@ namespace ChakraCore.NET
 {
 public partial class JSValueConverter
 {
-private Func<TResult> fromJSCallbackFunction<TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<TResult> fromJSCallbackFunction<TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return () =>
             {
@@ -26,7 +26,7 @@ private Func<TResult> fromJSCallbackFunction<TResult>(ValueConvertContext contex
 
 
 
-private Func<T1,TResult> fromJSCallbackFunction<T1,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<T1,TResult> fromJSCallbackFunction<T1,TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return (T1 para1) =>
             {
@@ -45,7 +45,7 @@ private Func<T1,TResult> fromJSCallbackFunction<T1,TResult>(ValueConvertContext 
 
 
 
-private Func<T1,T2,TResult> fromJSCallbackFunction<T1,T2,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<T1,T2,TResult> fromJSCallbackFunction<T1,T2,TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return (T1 para1,T2 para2) =>
             {
@@ -64,7 +64,7 @@ private Func<T1,T2,TResult> fromJSCallbackFunction<T1,T2,TResult>(ValueConvertCo
 
 
 
-private Func<T1,T2,T3,TResult> fromJSCallbackFunction<T1,T2,T3,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<T1,T2,T3,TResult> fromJSCallbackFunction<T1,T2,T3,TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return (T1 para1,T2 para2,T3 para3) =>
             {
@@ -83,7 +83,7 @@ private Func<T1,T2,T3,TResult> fromJSCallbackFunction<T1,T2,T3,TResult>(ValueCon
 
 
 
-private Func<T1,T2,T3,T4,TResult> fromJSCallbackFunction<T1,T2,T3,T4,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<T1,T2,T3,T4,TResult> fromJSCallbackFunction<T1,T2,T3,T4,TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return (T1 para1,T2 para2,T3 para3,T4 para4) =>
             {
@@ -102,7 +102,7 @@ private Func<T1,T2,T3,T4,TResult> fromJSCallbackFunction<T1,T2,T3,T4,TResult>(Va
 
 
 
-private Func<T1,T2,T3,T4,T5,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<T1,T2,T3,T4,T5,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5) =>
             {
@@ -121,7 +121,7 @@ private Func<T1,T2,T3,T4,T5,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,TResu
 
 
 
-private Func<T1,T2,T3,T4,T5,T6,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,T6,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<T1,T2,T3,T4,T5,T6,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,T6,TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6) =>
             {
@@ -140,7 +140,7 @@ private Func<T1,T2,T3,T4,T5,T6,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,T6
 
 
 
-private Func<T1,T2,T3,T4,T5,T6,T7,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<T1,T2,T3,T4,T5,T6,T7,TResult> fromJSCallbackFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(ValueConvertContext context, JavaScriptValue value)
         {
             return (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7) =>
             {

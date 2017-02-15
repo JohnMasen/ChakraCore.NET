@@ -25,6 +25,8 @@ namespace ChakraCore.NET
                     });
                 }
                 );
+            RegisterArrayConverter<string>();
+
             RegisterStructConverter<int>(
                 (context, value) =>
                 {
@@ -41,6 +43,8 @@ namespace ChakraCore.NET
                     });
                 }
                 );
+            RegisterArrayConverter<int>();
+
             RegisterStructConverter<double>(
                 (context, value) =>
                 {
@@ -57,6 +61,7 @@ namespace ChakraCore.NET
                     });
                 }
                 );
+            RegisterArrayConverter<double>();
 
             RegisterStructConverter<bool>(
                 (context, value) =>
@@ -74,7 +79,7 @@ namespace ChakraCore.NET
                     });
                 }
                 );
-
+            RegisterArrayConverter<bool>();
 
             RegisterStructConverter<Single>(
                 (context, value) =>
@@ -92,6 +97,8 @@ namespace ChakraCore.NET
                     });
                 }
                 );
+            RegisterArrayConverter<Single>();
+
             RegisterStructConverter<byte>(
                 (context, value) =>
                 {
@@ -108,6 +115,8 @@ namespace ChakraCore.NET
                     });
                 }
                 );
+            RegisterArrayConverter<byte>();
+
             RegisterStructConverter<decimal>(
                 (context, value) =>
                 {
@@ -124,6 +133,8 @@ namespace ChakraCore.NET
                     });
                 }
                 );
+            RegisterArrayConverter<decimal>();
+
             RegisterStructConverter<JavaScriptValue>(
                 (context, value) =>
                 {
