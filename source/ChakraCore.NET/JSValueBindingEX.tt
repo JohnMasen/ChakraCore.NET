@@ -1,0 +1,102 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+<# int totalItems=7;
+int startFrom=0;
+#>
+using ChakraCore.NET.API;
+using System;
+using System.Collections.Generic;
+using static ChakraCore.NET.API.JavaScriptContext;
+namespace ChakraCore.NET
+{
+public partial class JSValueBinding
+{
+    <#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+        public void SetMethod<#=genCode(i,"T{1}")#>(string name,Action<#=genCode(i,"T{1}")#> a)
+        {
+            RuntimeContext.ValueConverter.RegisterMethodConverter<#=genCode(i,"T{1}")#>();
+            WriteProperty<Action<#=genCode(i,"T{1}")#>>(name, a);
+        }
+
+        public void SetFunction<#=genCode(i,"T{1}",true)#>(string name,Func<#=genCode(i,"T{1}",true)#> callback, Func<#=genCode(i,"T{1}",true)#> constructCallback=null)
+        {
+            RuntimeContext.ValueConverter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
+            if (callback==null &&constructCallback==null)
+            {
+                throw new ArgumentException("callback and constructCallback cannot both be null");
+            }
+            Func<bool, <#=genCode(i,"T{1}",true,",","{0}")#>> tmp = (isConstruct<#=genCode(i,",para{1}",false,"","{0}")#>) =>
+               {
+                   TResult result;
+                   if (isConstruct)
+                   {
+                       if (constructCallback==null)
+                       {
+                           throw new NotImplementedException(@"function {name} does not support construct call");
+                       }
+                       else
+                       {
+                           result = constructCallback(<#=genCode(i,"para{1}",false,",","{0}")#>);
+                       }
+                   }
+                   else
+                   {
+                       if (callback==null)
+                       {
+                           throw new NotImplementedException(@"function {name} does not support direct call");
+                       }
+                       else
+                       {
+                           result = callback(<#=genCode(i,"para{1}",false,",","{0}")#>);
+                       }
+                   }
+                   return result;
+               };
+            WriteProperty<Func<bool, <#=genCode(i,"T{1}",true,",","{0}")#>>>(name, tmp);
+        }
+
+
+
+        
+      <#  
+    }
+    #>
+    
+}
+}
+<#+
+private string genCode(int currentIndex,string pattern,bool genTResult=false,string joinWith=",",string outputPattern="<{0}>")
+{
+    StringBuilder sb=new StringBuilder();
+    if (currentIndex==0 && !genTResult)
+    {
+        return "";
+    }
+    for (int i = 0; i < currentIndex; i++)
+    {
+
+        sb.AppendFormat(pattern,i,i+1); 
+
+        sb.Append(joinWith);
+    }
+    if (genTResult)
+    {
+        sb.Append("TResult");
+        sb.Append(joinWith);
+    }
+    if (sb.Length>1)
+    {
+        sb.Length-=joinWith.Length;
+    }
+    return string.Format(outputPattern,sb.ToString()) ;
+}
+
+#>

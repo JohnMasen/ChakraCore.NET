@@ -127,12 +127,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Chakra.NET\Chakra.NET.csproj">
-      <Project>{005e0e6f-275f-4862-b21c-cfdcea969381}</Project>
-      <Name>Chakra.NET</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

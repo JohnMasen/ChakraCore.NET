@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ChakraCore" Version="1.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="JSValueBindingEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JSValueBindingEX.cs</LastGenOutput>
+    </None>
+    <None Update="JSValueConverterEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JSValueConverterEX.cs</LastGenOutput>
+    </None>
+    <None Update="JSValueEX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JSValueEX.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="JSValueBindingEX.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JSValueBindingEX.tt</DependentUpon>
+    </Compile>
+    <Compile Update="JSValueConverterEX.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JSValueConverterEX.tt</DependentUpon>
+    </Compile>
+    <Compile Update="JSValueEX.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JSValueEX.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
