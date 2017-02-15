@@ -11,7 +11,7 @@ namespace ChakraCore.NET
         public JavaScriptValue Reference { get; private set; }
         private JSValueBinding binding;
 
-        private ValueConvertContext convertContext;
+        private JSValueConvertContext convertContext;
 
         public readonly bool IsProxy;
         public readonly bool IsRoot;
@@ -19,7 +19,7 @@ namespace ChakraCore.NET
         {
             Parent = parent;
             Reference = reference;
-            convertContext = new ValueConvertContext(context,reference);
+            convertContext = new JSValueConvertContext(context,reference);
             binding = new JSValueBinding(context,reference, convertContext);
             IsProxy = reference.HasExternalData;
             IsRoot = isRoot;

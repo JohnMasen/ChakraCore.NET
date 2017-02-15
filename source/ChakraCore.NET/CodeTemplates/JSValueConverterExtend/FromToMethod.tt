@@ -5,7 +5,7 @@
     {
       #>
 
-    private JavaScriptValue toJSMethod<#=genCode(i,"T{1}")#> (ValueConvertContext context, Action<#=genCode(i,"T{1}")#> a)
+    private JavaScriptValue toJSMethod<#=genCode(i,"T{1}")#> (JSValueConvertContext context, Action<#=genCode(i,"T{1}")#> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -33,7 +33,7 @@
         }
 
 
-        private Action<#=genCode(i,"T{1}")#> fromJSMethod<#=genCode(i,"T{1}")#>(ValueConvertContext context,JavaScriptValue value)
+        private Action<#=genCode(i,"T{1}")#> fromJSMethod<#=genCode(i,"T{1}")#>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<#=genCode(i,"T{1}")#> result = (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
               {

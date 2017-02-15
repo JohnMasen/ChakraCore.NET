@@ -6,16 +6,16 @@ using ChakraCore.NET.API;
 
 namespace ChakraCore.NET
 {
-    public class ValueConvertContext : ContextObjectBase<ValueConvertContext>
+    public class JSValueConvertContext : ContextObjectBase<JSValueConvertContext>
     {
         public DelegateHandler Handler { get; private set; }
         public readonly JavaScriptValue JSClass;
-        public ValueConvertContext(ChakraContext context,DelegateHandler handler,JavaScriptValue caller) : base(context)
+        public JSValueConvertContext(ChakraContext context,DelegateHandler handler,JavaScriptValue caller) : base(context)
         {
             Handler = handler;
             JSClass = caller;
         }
-        public ValueConvertContext(ChakraContext context, JavaScriptValue caller) : base(context)
+        public JSValueConvertContext(ChakraContext context, JavaScriptValue caller) : base(context)
         {
             Handler = new DelegateHandler();
             JSClass = caller;

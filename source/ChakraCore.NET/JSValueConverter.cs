@@ -8,8 +8,8 @@ namespace ChakraCore.NET
 {
     public partial class JSValueConverter
     {
-        public delegate JavaScriptValue toJSValueDelegate<T>(ValueConvertContext convertContext, T value);
-        public delegate TResult fromJSValueDelegate<out TResult>(ValueConvertContext convertContext, JavaScriptValue value);
+        public delegate JavaScriptValue toJSValueDelegate<T>(JSValueConvertContext convertContext, T value);
+        public delegate TResult fromJSValueDelegate<out TResult>(JSValueConvertContext convertContext, JavaScriptValue value);
         partial void initDefault();
         public JSValueConverter()
         {
@@ -40,7 +40,7 @@ namespace ChakraCore.NET
             RegisterConverter<T>(toJSValue, fromJSValue);
         }
 
-        public JavaScriptValue ToJSValue<T>(ValueConvertContext context, T value)
+        public JavaScriptValue ToJSValue<T>(JSValueConvertContext context, T value)
         {
             if (converters.ContainsKey(typeof(T)))
             {
@@ -62,7 +62,7 @@ namespace ChakraCore.NET
             }
         }
 
-        public T FromJSValue<T>(ValueConvertContext context, JavaScriptValue value)
+        public T FromJSValue<T>(JSValueConvertContext context, JavaScriptValue value)
         {
             if (converters.ContainsKey(typeof(T)))
             {
@@ -84,16 +84,16 @@ namespace ChakraCore.NET
 
         public void RegisterProxyConverter<T>(Action<JSValueBinding,T> callback)where T:class
         {
-            toJSValueDelegate<T> tojs = (ValueConvertContext convertContext, T value) =>
+            toJSValueDelegate<T> tojs = (JSValueConvertContext convertContext, T value) =>
               {
                   JavaScriptValue result = convertContext.RuntimeContext.CreateProxy<T>(value, out GC.DelegateHandler handler);
                   JSValueBinding binding = new JSValueBinding(
                       convertContext.RuntimeContext, 
-                      result, new ValueConvertContext(convertContext.RuntimeContext, handler, result));//create value binding object for user setup binding
+                      result, new JSValueConvertContext(convertContext.RuntimeContext, handler, result));//create value binding object for user setup binding
                   callback(binding,value);
                   return result;
               };
-            fromJSValueDelegate<T> fromjs = (ValueConvertContext convertContext, JavaScriptValue value) =>
+            fromJSValueDelegate<T> fromjs = (JSValueConvertContext convertContext, JavaScriptValue value) =>
               {
                   if (!value.HasExternalData)
                   {

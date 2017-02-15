@@ -8,7 +8,7 @@ namespace ChakraCore.NET
 public partial class JSValueConverter
 {
 
-private JavaScriptValue toJSFunction<TResult> (ValueConvertContext context, Func<bool,TResult> callback)
+private JavaScriptValue toJSFunction<TResult> (JSValueConvertContext context, Func<bool,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -37,7 +37,7 @@ private JavaScriptValue toJSFunction<TResult> (ValueConvertContext context, Func
 
         
 
-        private Func<bool,TResult> fromJSFunction<TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,TResult> fromJSFunction<TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,TResult> result = (bool isConstruct) =>
             {
@@ -61,7 +61,7 @@ private JavaScriptValue toJSFunction<TResult> (ValueConvertContext context, Func
 
 
 
-private JavaScriptValue toJSFunction<T1,TResult> (ValueConvertContext context, Func<bool,T1,TResult> callback)
+private JavaScriptValue toJSFunction<T1,TResult> (JSValueConvertContext context, Func<bool,T1,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -90,7 +90,7 @@ private JavaScriptValue toJSFunction<T1,TResult> (ValueConvertContext context, F
 
         
 
-        private Func<bool,T1,TResult> fromJSFunction<T1,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,T1,TResult> fromJSFunction<T1,TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,T1,TResult> result = (bool isConstruct,T1 para1) =>
             {
@@ -114,7 +114,7 @@ private JavaScriptValue toJSFunction<T1,TResult> (ValueConvertContext context, F
 
 
 
-private JavaScriptValue toJSFunction<T1,T2,TResult> (ValueConvertContext context, Func<bool,T1,T2,TResult> callback)
+private JavaScriptValue toJSFunction<T1,T2,TResult> (JSValueConvertContext context, Func<bool,T1,T2,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -144,7 +144,7 @@ T2 para2 = FromJSValue<T2>(context, arguments[2]);
 
         
 
-        private Func<bool,T1,T2,TResult> fromJSFunction<T1,T2,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,T1,T2,TResult> fromJSFunction<T1,T2,TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,T1,T2,TResult> result = (bool isConstruct,T1 para1,T2 para2) =>
             {
@@ -169,7 +169,7 @@ JavaScriptValue p2 = ToJSValue<T2>(context,para2);
 
 
 
-private JavaScriptValue toJSFunction<T1,T2,T3,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,TResult> callback)
+private JavaScriptValue toJSFunction<T1,T2,T3,TResult> (JSValueConvertContext context, Func<bool,T1,T2,T3,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -200,7 +200,7 @@ T3 para3 = FromJSValue<T3>(context, arguments[3]);
 
         
 
-        private Func<bool,T1,T2,T3,TResult> fromJSFunction<T1,T2,T3,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,T1,T2,T3,TResult> fromJSFunction<T1,T2,T3,TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,T1,T2,T3,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3) =>
             {
@@ -226,7 +226,7 @@ JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 
 
 
-private JavaScriptValue toJSFunction<T1,T2,T3,T4,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,TResult> callback)
+private JavaScriptValue toJSFunction<T1,T2,T3,T4,TResult> (JSValueConvertContext context, Func<bool,T1,T2,T3,T4,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -258,7 +258,7 @@ T4 para4 = FromJSValue<T4>(context, arguments[4]);
 
         
 
-        private Func<bool,T1,T2,T3,T4,TResult> fromJSFunction<T1,T2,T3,T4,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,T1,T2,T3,T4,TResult> fromJSFunction<T1,T2,T3,T4,TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,T1,T2,T3,T4,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4) =>
             {
@@ -285,7 +285,7 @@ JavaScriptValue p4 = ToJSValue<T4>(context,para4);
 
 
 
-private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,TResult> callback)
+private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,TResult> (JSValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -318,7 +318,7 @@ T5 para5 = FromJSValue<T5>(context, arguments[5]);
 
         
 
-        private Func<bool,T1,T2,T3,T4,T5,TResult> fromJSFunction<T1,T2,T3,T4,T5,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,T1,T2,T3,T4,T5,TResult> fromJSFunction<T1,T2,T3,T4,T5,TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,T1,T2,T3,T4,T5,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5) =>
             {
@@ -346,7 +346,7 @@ JavaScriptValue p5 = ToJSValue<T5>(context,para5);
 
 
 
-private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,T6,TResult> callback)
+private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,TResult> (JSValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,T6,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -380,7 +380,7 @@ T6 para6 = FromJSValue<T6>(context, arguments[6]);
 
         
 
-        private Func<bool,T1,T2,T3,T4,T5,T6,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,T1,T2,T3,T4,T5,T6,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,T1,T2,T3,T4,T5,T6,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6) =>
             {
@@ -409,7 +409,7 @@ JavaScriptValue p6 = ToJSValue<T6>(context,para6);
 
 
 
-private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult> (ValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> callback)
+private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult> (JSValueConvertContext context, Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -444,7 +444,7 @@ T7 para7 = FromJSValue<T7>(context, arguments[7]);
 
         
 
-        private Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7) =>
             {

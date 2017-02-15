@@ -8,7 +8,7 @@ namespace ChakraCore.NET
 public partial class JSValueConverter
 {
 
-    private JavaScriptValue toJSMethod (ValueConvertContext context, Action a)
+    private JavaScriptValue toJSMethod (JSValueConvertContext context, Action a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -36,7 +36,7 @@ public partial class JSValueConverter
         }
 
 
-        private Action fromJSMethod(ValueConvertContext context,JavaScriptValue value)
+        private Action fromJSMethod(JSValueConvertContext context,JavaScriptValue value)
         {
             Action result = () =>
               {
@@ -54,7 +54,7 @@ public partial class JSValueConverter
 
 
 
-    private JavaScriptValue toJSMethod<T1> (ValueConvertContext context, Action<T1> a)
+    private JavaScriptValue toJSMethod<T1> (JSValueConvertContext context, Action<T1> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -82,7 +82,7 @@ public partial class JSValueConverter
         }
 
 
-        private Action<T1> fromJSMethod<T1>(ValueConvertContext context,JavaScriptValue value)
+        private Action<T1> fromJSMethod<T1>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<T1> result = (T1 para1) =>
               {
@@ -100,7 +100,7 @@ public partial class JSValueConverter
 
 
 
-    private JavaScriptValue toJSMethod<T1,T2> (ValueConvertContext context, Action<T1,T2> a)
+    private JavaScriptValue toJSMethod<T1,T2> (JSValueConvertContext context, Action<T1,T2> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -129,7 +129,7 @@ T2 para2 = FromJSValue<T2>(context, arguments[2]);
         }
 
 
-        private Action<T1,T2> fromJSMethod<T1,T2>(ValueConvertContext context,JavaScriptValue value)
+        private Action<T1,T2> fromJSMethod<T1,T2>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<T1,T2> result = (T1 para1,T2 para2) =>
               {
@@ -148,7 +148,7 @@ JavaScriptValue p2 = ToJSValue<T2>(context,para2);
 
 
 
-    private JavaScriptValue toJSMethod<T1,T2,T3> (ValueConvertContext context, Action<T1,T2,T3> a)
+    private JavaScriptValue toJSMethod<T1,T2,T3> (JSValueConvertContext context, Action<T1,T2,T3> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -178,7 +178,7 @@ T3 para3 = FromJSValue<T3>(context, arguments[3]);
         }
 
 
-        private Action<T1,T2,T3> fromJSMethod<T1,T2,T3>(ValueConvertContext context,JavaScriptValue value)
+        private Action<T1,T2,T3> fromJSMethod<T1,T2,T3>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<T1,T2,T3> result = (T1 para1,T2 para2,T3 para3) =>
               {
@@ -198,7 +198,7 @@ JavaScriptValue p3 = ToJSValue<T3>(context,para3);
 
 
 
-    private JavaScriptValue toJSMethod<T1,T2,T3,T4> (ValueConvertContext context, Action<T1,T2,T3,T4> a)
+    private JavaScriptValue toJSMethod<T1,T2,T3,T4> (JSValueConvertContext context, Action<T1,T2,T3,T4> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -229,7 +229,7 @@ T4 para4 = FromJSValue<T4>(context, arguments[4]);
         }
 
 
-        private Action<T1,T2,T3,T4> fromJSMethod<T1,T2,T3,T4>(ValueConvertContext context,JavaScriptValue value)
+        private Action<T1,T2,T3,T4> fromJSMethod<T1,T2,T3,T4>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<T1,T2,T3,T4> result = (T1 para1,T2 para2,T3 para3,T4 para4) =>
               {
@@ -250,7 +250,7 @@ JavaScriptValue p4 = ToJSValue<T4>(context,para4);
 
 
 
-    private JavaScriptValue toJSMethod<T1,T2,T3,T4,T5> (ValueConvertContext context, Action<T1,T2,T3,T4,T5> a)
+    private JavaScriptValue toJSMethod<T1,T2,T3,T4,T5> (JSValueConvertContext context, Action<T1,T2,T3,T4,T5> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -282,7 +282,7 @@ T5 para5 = FromJSValue<T5>(context, arguments[5]);
         }
 
 
-        private Action<T1,T2,T3,T4,T5> fromJSMethod<T1,T2,T3,T4,T5>(ValueConvertContext context,JavaScriptValue value)
+        private Action<T1,T2,T3,T4,T5> fromJSMethod<T1,T2,T3,T4,T5>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<T1,T2,T3,T4,T5> result = (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5) =>
               {
@@ -304,7 +304,7 @@ JavaScriptValue p5 = ToJSValue<T5>(context,para5);
 
 
 
-    private JavaScriptValue toJSMethod<T1,T2,T3,T4,T5,T6> (ValueConvertContext context, Action<T1,T2,T3,T4,T5,T6> a)
+    private JavaScriptValue toJSMethod<T1,T2,T3,T4,T5,T6> (JSValueConvertContext context, Action<T1,T2,T3,T4,T5,T6> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -337,7 +337,7 @@ T6 para6 = FromJSValue<T6>(context, arguments[6]);
         }
 
 
-        private Action<T1,T2,T3,T4,T5,T6> fromJSMethod<T1,T2,T3,T4,T5,T6>(ValueConvertContext context,JavaScriptValue value)
+        private Action<T1,T2,T3,T4,T5,T6> fromJSMethod<T1,T2,T3,T4,T5,T6>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<T1,T2,T3,T4,T5,T6> result = (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6) =>
               {
@@ -360,7 +360,7 @@ JavaScriptValue p6 = ToJSValue<T6>(context,para6);
 
 
 
-    private JavaScriptValue toJSMethod<T1,T2,T3,T4,T5,T6,T7> (ValueConvertContext context, Action<T1,T2,T3,T4,T5,T6,T7> a)
+    private JavaScriptValue toJSMethod<T1,T2,T3,T4,T5,T6,T7> (JSValueConvertContext context, Action<T1,T2,T3,T4,T5,T6,T7> a)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -394,7 +394,7 @@ T7 para7 = FromJSValue<T7>(context, arguments[7]);
         }
 
 
-        private Action<T1,T2,T3,T4,T5,T6,T7> fromJSMethod<T1,T2,T3,T4,T5,T6,T7>(ValueConvertContext context,JavaScriptValue value)
+        private Action<T1,T2,T3,T4,T5,T6,T7> fromJSMethod<T1,T2,T3,T4,T5,T6,T7>(JSValueConvertContext context,JavaScriptValue value)
         {
             Action<T1,T2,T3,T4,T5,T6,T7> result = (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7) =>
               {

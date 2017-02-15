@@ -5,7 +5,7 @@
     {
       #>
 
-private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (ValueConvertContext context, Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult> callback)
+private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (JSValueConvertContext context, Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult> callback)
         {
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
@@ -34,7 +34,7 @@ private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (ValueConvertCon
 
         
 
-        private Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSFunction<#=genCode(i,"T{1}",true)#>(ValueConvertContext context, JavaScriptValue value)
+        private Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSFunction<#=genCode(i,"T{1}",true)#>(JSValueConvertContext context, JavaScriptValue value)
         {
             Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> result = (bool isConstruct<#=genCode(i,",T{1} para{1}",false,"","{0}")#>) =>
             {

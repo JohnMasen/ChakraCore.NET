@@ -8,8 +8,8 @@ namespace ChakraCore.NET
     public partial class JSValueBinding :ContextObjectBase<JSValueBinding>
     {
         private readonly JavaScriptValue source;
-        ValueConvertContext convertContext;
-        public JSValueBinding(ChakraContext context, JavaScriptValue source, ValueConvertContext convertContext) :base(context)
+        JSValueConvertContext convertContext;
+        public JSValueBinding(ChakraContext context, JavaScriptValue source, JSValueConvertContext convertContext) :base(context)
         {
             this.source = source;
             this.convertContext = convertContext;
