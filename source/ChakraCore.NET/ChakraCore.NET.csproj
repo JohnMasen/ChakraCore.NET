@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <Authors>QianFan Jiang (John Masen)</Authors>
+    <Company />
+    <Product />
+    <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.</Description>
+    <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
+    <PackageTags>chakracore</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
