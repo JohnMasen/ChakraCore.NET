@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="CodeTemplates\JSArrayBuffer\ReadWrite.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ReadWrite.cs</LastGenOutput>
+    </None>
     <None Update="CodeTemplates\JSValueBindingExtend\SetMethodAndFunction.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SetMethodAndFunction.cs</LastGenOutput>
@@ -59,6 +63,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="CodeTemplates\JSArrayBuffer\ReadWrite.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadWrite.tt</DependentUpon>
+    </Compile>
     <Compile Update="CodeTemplates\JSValueBindingExtend\SetMethodAndFunction.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

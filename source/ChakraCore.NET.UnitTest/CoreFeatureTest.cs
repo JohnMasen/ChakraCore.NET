@@ -2,6 +2,8 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+
 namespace ChakraCore.NET.UnitTest
 {
     [TestClass,TestCategory("Core Features")]
@@ -124,6 +126,32 @@ namespace ChakraCore.NET.UnitTest
             Assert.IsTrue(object.ReferenceEquals(stub, b));
         }
 
+        [TestMethod]
+        public void ArrayBufferReadWrite()
+        {
+            int buffersize = 1024^3*100;
+            JSArrayBuffer buffer = new JSArrayBuffer(buffersize);
+            context.RootObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
+            byte[] tmp = new byte[buffersize];
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                tmp[i] = 0x10;
+            }
+            byte[] target = new byte[buffersize];
+            for (int i = 0; i < target.Length; i++)
+            {
+                target[i] = 0x0f;
+            }
+
+            buffer.WriteByte(tmp);
+            context.RunScript(TestHelper.JSArrayBuffer);
+            Assert.IsFalse(tmp.SequenceEqual(target));
+            buffer.ReadByte(tmp);
+            Assert.IsTrue(tmp.SequenceEqual(target));
+        }
+
+
+
         private void ReadWrite<T>(T value)
         {
             context.RootObject.WriteProperty<T>("a", value);
@@ -131,6 +159,8 @@ namespace ChakraCore.NET.UnitTest
             T b = context.RootObject.ReadProperty<T>("b");
             Assert.AreEqual<T>(b, value);
         }
+
+
 
     }
 }

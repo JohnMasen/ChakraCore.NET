@@ -1,0 +1,31 @@
+﻿using System.Runtime.InteropServices;
+<#@ include file="..\Template_Header.t4" #>
+<#= Header("JSArrayBuffer") #>
+<#
+    string[] items=new string[]{"Int32","Int16","Int64","Double","Char"};
+    foreach(string item in items)
+        {
+      #>
+        public void Read<#=item #>(<#=item #>[] buffer)
+        {
+            if (!checkSize(buffer, out int arraySize))
+            {
+                throw new ArgumentException($"buffer size is {arraySize} does not match defined size, expect {Size}");
+            }
+            Marshal.Copy(data, buffer, 0, memorySize);
+        }
+
+        public void Write<#=item #>(<#=item #>[] buffer)
+        {
+            if (!checkSize(buffer, out int arraySize))
+            {
+                throw new ArgumentException($"buffer size is {arraySize} does not match defined size, expect {Size}");
+            }
+            Marshal.Copy(buffer, 0, data, memorySize);
+        }
+
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>

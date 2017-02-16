@@ -106,7 +106,22 @@ namespace ChakraCore.NET
             return result;
         }
 
+        internal JavaScriptValue CreateArrayBuffer(JSArrayBuffer source) 
+        {
 
+            var result = ProxyMapManager.ReigsterMap<JSArrayBuffer>(source, (p, callback) =>
+
+            {
+                return With<JavaScriptValue>(() =>
+                {
+                    return JavaScriptValue.CreateExternalArrayBuffer(source.data, Convert.ToUInt32(source.memorySize), callback, IntPtr.Zero);
+                }
+            );
+            }
+               , out DelegateHandler tmp //do not pass back, arraybuffer should not have any callback
+            );
+            return result;
+        }
 
         /// <summary>
         /// try switch context to current thread

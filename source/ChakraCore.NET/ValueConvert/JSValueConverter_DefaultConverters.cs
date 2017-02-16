@@ -135,6 +135,9 @@ namespace ChakraCore.NET
                 );
             RegisterArrayConverter<decimal>();
 
+
+
+            #region Special Convert
             RegisterStructConverter<JavaScriptValue>(
                 (context, value) =>
                 {
@@ -145,6 +148,19 @@ namespace ChakraCore.NET
                     return value;
                 }
                 );
+            RegisterConverter<JSArrayBuffer>(
+                (context, value) =>
+                {
+                    return context.RuntimeContext.CreateArrayBuffer(value);
+                },
+                (context, value) =>
+                {
+                    throw new InvalidOperationException("ArrayBuffer can not transferred from chakra, please hold it in your code");
+                }
+                );
+
+            #endregion
+            
         }
     }
 }
