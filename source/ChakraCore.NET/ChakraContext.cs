@@ -63,15 +63,11 @@ namespace ChakraCore.NET
             };
 
             if (Native.JsSetPromiseContinuationCallback(promiseContinuationCallback, IntPtr.Zero) != JavaScriptErrorCode.NoError)
+            {
+                log.LogCritical("failed to setup callback for ES6 Promise");
                 throw new InvalidOperationException("failed to setup callback for ES6 Promise");
-            //foreach (var item in winRTNamespace)
-            //{
-            //    if (Native.JsProjectWinRTNamespace(item) != JavaScriptErrorCode.NoError)
-            //        throw new InvalidOperationException($"failed to project {item} namespace.");
-            //}
-
-            //if (isDebug && Native.JsStartDebugging() != JavaScriptErrorCode.NoError)
-            //    throw new InvalidOperationException("failed to start debugging.");
+            }
+                
 
             ValueConverter = new JSValueConverter();
             JSValue_Undefined = JavaScriptValue.Undefined;
@@ -84,7 +80,13 @@ namespace ChakraCore.NET
 
         }
 
-
+        /// <summary>
+        /// Create a proxy for dotnet object for dotnet object instance, makes it accessible in javascript
+        /// </summary>
+        /// <typeparam name="T">dotnet object type</typeparam>
+        /// <param name="source">dotnet object instance</param>
+        /// <param name="proxyDelegateHandler">delegate handler,handles all function callback delegate to the dotnet object instance</param>
+        /// <returns></returns>
         internal JavaScriptValue CreateProxy<T>(T source, out DelegateHandler proxyDelegateHandler)
         {
 
@@ -123,7 +125,6 @@ namespace ChakraCore.NET
                   T key = (T)handle.Target;
                   var list = proxyList[typeof(T)] as Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>>;
                   list.Remove(key);
-                  handle.Free();
               };
             JavaScriptValue result = With<JavaScriptValue>(() =>
               {

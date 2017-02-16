@@ -21,18 +21,5 @@ namespace ChakraCore.NET
             JSClass = caller;
         }
 
-        public JavaScriptNativeFunction WrapFunctionCall(JavaScriptNativeFunction callback)
-        {
-            JavaScriptNativeFunction result =
-                (callee, isConstructCall, arguments, argumentCount, callbackData) =>
-                {
-                    RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
-                    var r= callback(callee, isConstructCall, arguments, argumentCount, callbackData);
-                    RuntimeContext.Enter();//restore context
-                    return r;
-                };
-            Handler.Hold(result);
-            return result;
-        }
     }
 }
