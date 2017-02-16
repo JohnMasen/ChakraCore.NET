@@ -51,5 +51,22 @@ namespace ChakraCore.NET
         {
             return Create(JavaScriptRuntimeAttributes.None);
         }
+
+        public void CollectGarbage()
+        {
+            runtime.CollectGarbage();
+        }
+
+        /// <summary>
+        /// Force terminate running scripts without clean up varibles .
+        /// this function cannot stop a infinite loop like (function hang() {while (true) { } })(); 
+        /// unless runtime is created with AllowScriptInterrupt attribute
+        /// </summary>
+        public void TerminateRuningScript()
+        {
+            runtime.Disabled = true;
+            runtime.Disabled = false;
+        }
+
     }
 }
