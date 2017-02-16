@@ -16,7 +16,8 @@ namespace ChakraCore.NET
         //private Dictionary<object, List<object>> holder = new Dictionary<object, List<object>>();
         private static Queue<JavaScriptValue> taskQueue = new Queue<JavaScriptValue>();
 
-        private Dictionary<Type, object> proxyList = new Dictionary<Type, object>();
+        //private Dictionary<Type, object> proxyList = new Dictionary<Type, object>();
+        private ProxyMapManager proxyManager = new ProxyMapManager();
 
         internal JavaScriptContext jsContext;
         public JSValueConverter ValueConverter { get; set; }
@@ -87,52 +88,20 @@ namespace ChakraCore.NET
         /// <param name="source">dotnet object instance</param>
         /// <param name="proxyDelegateHandler">delegate handler,handles all function callback delegate to the dotnet object instance</param>
         /// <returns></returns>
-        internal JavaScriptValue CreateProxy<T>(T source, out DelegateHandler proxyDelegateHandler)
+        internal JavaScriptValue CreateProxy<T>(T source, out DelegateHandler proxyDelegateHandler) where T:class
         {
+            proxyDelegateHandler = proxyManager.ReigsterMap<T>(source, (p, callback) =>
 
-            Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>> currentList;
-            #region get or create a proxy map item
-            if (proxyList.ContainsKey(typeof(T)))
-            {
-                currentList = (proxyList[typeof(T)] as Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>>);
-                if (currentList == null)
-                {
-                    throw new InvalidOperationException("internal error, delegate handler corrupted");
-                }
-            }
-            else
-            {
-                currentList = new Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>>();
-                proxyList.Add(typeof(T), currentList);
-            }
-            DelegateHandler handler;
-            if (currentList.ContainsKey(source))
-            {
-                proxyDelegateHandler = null;
-                return currentList[source].Item1;//proxy already created, directly return
-            }
-            else
-            {
-                handler = new DelegateHandler();
-            }
-            #endregion
+               {
+                   return With<JavaScriptValue>(() =>
+                   {
+                       return JavaScriptValue.CreateExternalObject(p, callback);
+                   }
+               );
+               }
+               ,out JavaScriptValue result
 
-            var objHandle = GCHandle.Alloc(source);
-
-            JavaScriptObjectFinalizeCallback callback = (p) =>
-              {
-                  GCHandle handle = GCHandle.FromIntPtr(p);
-                  T key = (T)handle.Target;
-                  var list = proxyList[typeof(T)] as Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>>;
-                  list.Remove(key);
-              };
-            JavaScriptValue result = With<JavaScriptValue>(() =>
-              {
-                  return JavaScriptValue.CreateExternalObject((IntPtr)objHandle, callback);
-              }
             );
-            currentList.Add(source, new Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>(result, handler, callback));
-            proxyDelegateHandler = handler;
             return result;
         }
 
