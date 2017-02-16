@@ -51,6 +51,20 @@
         }
 
         /// <summary>
+        /// map internal memory to chakracore engine
+        /// </summary>
+        /// <param name="data">data block</param>
+        /// <param name="byteLength">length of data</param>
+        /// <param name="finalizeCallback">callback for object disposed in js engine</param>
+        /// <param name="callbackState">reference, can be null</param>
+        /// <returns></returns>
+        public static JavaScriptValue CreateExternalArrayBuffer(IntPtr data, uint byteLength, JavaScriptObjectFinalizeCallback finalizeCallback, IntPtr callbackState)
+        {
+            Native.ThrowIfError(Native.JsCreateExternalArrayBuffer(data, byteLength, finalizeCallback, callbackState, out JavaScriptValue result));
+            return result;
+        }
+
+        /// <summary>
         ///     Gets the value of <c>null</c> in the current script context.
         /// </summary>
         /// <remarks>

@@ -119,9 +119,11 @@ namespace ChakraCore.NET
 
             JavaScriptObjectFinalizeCallback callback = (p) =>
               {
-                  T key = (T)GCHandle.FromIntPtr(p).Target;
+                  GCHandle handle = GCHandle.FromIntPtr(p);
+                  T key = (T)handle.Target;
                   var list = proxyList[typeof(T)] as Dictionary<T, Tuple<JavaScriptValue, DelegateHandler, JavaScriptObjectFinalizeCallback>>;
                   list.Remove(key);
+                  handle.Free();
               };
             JavaScriptValue result = With<JavaScriptValue>(() =>
               {
