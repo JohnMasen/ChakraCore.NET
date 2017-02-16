@@ -10,7 +10,7 @@ namespace ChakraCore.NET.GC
 {
     public class ProxyMapManager:LoggableObjectBase<ProxyMapManager>
     {
-        private Dictionary<Type, object> mapList = new Dictionary<Type, object>();
+        private SortedDictionary<Type, object> mapList = new SortedDictionary<Type, object>();
         public JavaScriptValue ReigsterMap<T>(T obj, Func<IntPtr, JavaScriptObjectFinalizeCallback,JavaScriptValue>callback, out DelegateHandler delegateHandler) where T : class
         {
             MapItemList<T> currentTypeList;
