@@ -17,7 +17,7 @@ namespace ChakraCore.NET
         private static Queue<JavaScriptValue> taskQueue = new Queue<JavaScriptValue>();
 
         //private Dictionary<Type, object> proxyList = new Dictionary<Type, object>();
-        private ProxyMapManager proxyManager = new ProxyMapManager();
+        public ProxyMapManager ProxyMapManager { get; private set; } = new ProxyMapManager();
 
         internal JavaScriptContext jsContext;
         public JSValueConverter ValueConverter { get; set; }
@@ -90,7 +90,8 @@ namespace ChakraCore.NET
         /// <returns></returns>
         internal JavaScriptValue CreateProxy<T>(T source, out DelegateHandler proxyDelegateHandler) where T:class
         {
-            proxyDelegateHandler = proxyManager.ReigsterMap<T>(source, (p, callback) =>
+            
+            var result = ProxyMapManager.ReigsterMap<T>(source, (p, callback) =>
 
                {
                    return With<JavaScriptValue>(() =>
@@ -99,12 +100,11 @@ namespace ChakraCore.NET
                    }
                );
                }
-               ,out JavaScriptValue result
-
+               ,out DelegateHandler handler
             );
+            proxyDelegateHandler = handler;
             return result;
         }
-
 
 
 

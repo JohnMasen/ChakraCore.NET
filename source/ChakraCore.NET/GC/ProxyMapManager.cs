@@ -11,7 +11,7 @@ namespace ChakraCore.NET.GC
     public class ProxyMapManager:LoggableObjectBase<ProxyMapManager>
     {
         private Dictionary<Type, object> mapList = new Dictionary<Type, object>();
-        public DelegateHandler ReigsterMap<T>(T obj, Func<IntPtr, JavaScriptObjectFinalizeCallback,JavaScriptValue>callback, out JavaScriptValue proxy) where T : class
+        public JavaScriptValue ReigsterMap<T>(T obj, Func<IntPtr, JavaScriptObjectFinalizeCallback,JavaScriptValue>callback, out DelegateHandler delegateHandler) where T : class
         {
             MapItemList<T> currentTypeList;
             if (mapList.ContainsKey(typeof(T)))
@@ -37,19 +37,35 @@ namespace ChakraCore.NET.GC
                 h.Free();
             };
 
-            DelegateHandler handler = new DelegateHandler();
+            delegateHandler = new DelegateHandler();
             Guid g = Guid.NewGuid();
             var handle = GCHandle.Alloc(g, GCHandleType.Pinned);
-            proxy = callback((IntPtr)handle, cb);
-            ProxyMap<T> map = new ProxyMap<T>(g, obj, proxy, handler);
+            JavaScriptValue proxy = callback((IntPtr)handle, cb);
+            ProxyMap<T> map = new ProxyMap<T>(g, obj, proxy, delegateHandler);
             currentTypeList.Add(map);
-            return handler;
+            return proxy;
+        }
+
+        public T GetSource<T>(IntPtr p) where T:class
+        {
+            Guid id = (Guid)GCHandle.FromIntPtr(p).Target;
+            return (mapList[typeof(T)] as MapItemList<T>).Get(id);
+        }
+
+        public JavaScriptValue? GetProxy<T>(T source) where T:class
+        {
+            if (!mapList.ContainsKey(typeof(T)))
+            {
+                return null;
+            }
+            var item = mapList[typeof(T)] as MapItemList<T>;
+            return item.Get(source);
         }
 
         private class MapItemList<T> :LoggableObjectBase<MapItemList<T>> where T : class
         {
-            public SortedDictionary<Guid, ProxyMap<T>> internalMap = new SortedDictionary<Guid, ProxyMap<T>>();
-            public SortedDictionary<T, ProxyMap<T>> externalMap =new SortedDictionary<T, ProxyMap<T>>();
+            private SortedDictionary<Guid, ProxyMap<T>> internalMap = new SortedDictionary<Guid, ProxyMap<T>>();
+            private SortedDictionary<T, ProxyMap<T>> externalMap =new SortedDictionary<T, ProxyMap<T>>();
 
             public void Release(Guid value)
             {

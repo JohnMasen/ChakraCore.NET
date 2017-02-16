@@ -113,6 +113,17 @@ namespace ChakraCore.NET.UnitTest
             Assert.AreEqual("hihi", s);
         }
 
+        [TestMethod]
+        public void ProxyTransferback()
+        {
+            TestStub.RegisterValueConverter(context);
+            TestStub stub = new TestStub();
+            context.RootObject.WriteProperty("a", stub);
+            var result = context.RunScript(TestHelper.JSValueTest);
+            TestStub b = context.RootObject.ReadProperty<TestStub>("b");
+            Assert.IsTrue(object.ReferenceEquals(stub, b));
+        }
+
         private void ReadWrite<T>(T value)
         {
             context.RootObject.WriteProperty<T>("a", value);

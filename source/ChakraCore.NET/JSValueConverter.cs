@@ -86,24 +86,25 @@ namespace ChakraCore.NET
         {
             toJSValueDelegate<T> tojs = (JSValueConvertContext convertContext, T value) =>
               {
-                  JavaScriptValue result = convertContext.RuntimeContext.CreateProxy<T>(value, out GC.DelegateHandler handler);
-                  JSValueBinding binding = new JSValueBinding(
-                      convertContext.RuntimeContext, 
-                      result, new JSValueConvertContext(convertContext.RuntimeContext, handler, result));//create value binding object for user setup binding
-                  callback(binding,value);
-                  return result;
+                  JavaScriptValue? result = convertContext.RuntimeContext.ProxyMapManager.GetProxy<T>(value);
+                  if (result.HasValue)
+                  {
+                      return result.Value;//proxy exists, no transfer required.
+                  }
+                  else
+                  {
+                      //create proxy item, CreateProxy<T> will auto cache the created proxy 
+                      JavaScriptValue tResult = convertContext.RuntimeContext.CreateProxy<T>(value, out GC.DelegateHandler handler);
+                      JSValueBinding binding = new JSValueBinding(
+                          convertContext.RuntimeContext,
+                          tResult, new JSValueConvertContext(convertContext.RuntimeContext, handler, tResult));//create value binding object for user setup binding
+                      callback(binding, value);
+                      return tResult;
+                  }
               };
             fromJSValueDelegate<T> fromjs = (JSValueConvertContext convertContext, JavaScriptValue value) =>
               {
-                  if (!value.HasExternalData)
-                  {
-                      throw new InvalidOperationException("try to convert a none proxy object as proxy object");
-                  }
-                  if (value.ExternalData == IntPtr.Zero)
-                  {
-                      throw new InvalidOperationException("failed to convert from proxy object, pointer is empty");
-                  }
-                  return (T)GCHandle.FromIntPtr(value.ExternalData).Target;
+                  return convertContext.RuntimeContext.ProxyMapManager.GetSource<T>(value.ExternalData);
               };
             RegisterConverter<T>(tojs, fromjs);
         }
