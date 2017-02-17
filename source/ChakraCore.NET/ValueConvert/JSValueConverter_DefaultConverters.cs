@@ -148,6 +148,16 @@ namespace ChakraCore.NET
                     return value;
                 }
                 );
+            RegisterConverter<JSExternalArrayBuffer>(
+                (context, value) =>
+                {
+                    return context.RuntimeContext.CreateExternalArrayBuffer(value);
+                },
+                (context, value) =>
+                {
+                    throw new NotSupportedException("cannot retrieve ExternalArrayBuffer from javascript runtime");
+                }
+                );
             RegisterConverter<JSArrayBuffer>(
                 (context, value) =>
                 {
@@ -155,12 +165,18 @@ namespace ChakraCore.NET
                 },
                 (context, value) =>
                 {
-                    throw new InvalidOperationException("ArrayBuffer can not transferred from chakra, please hold it in your code");
+                    return context.RuntimeContext.With<JSArrayBuffer>(() =>
+                    {
+                        var buffer=JavaScriptValue.GetArrayBufferStorage(value, out uint bufferSize);
+                        JSArrayBuffer result = new JSArrayBuffer(buffer, bufferSize);
+                        return result;
+                    });
+                    
                 }
                 );
 
             #endregion
-            
+
         }
     }
 }

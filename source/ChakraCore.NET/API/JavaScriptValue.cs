@@ -64,6 +64,20 @@
             return result;
         }
 
+
+        public static JavaScriptValue CreateArrayBuffer(uint byteLength)
+        {
+            Native.ThrowIfError(Native.JsCreateArrayBuffer( byteLength, out JavaScriptValue result));
+            return result;
+        }
+
+        public static byte[] GetArrayBufferStorage(JavaScriptValue value,out uint bufferSize)
+        {
+            Native.ThrowIfError(Native.JsGetArrayBufferStorage(value, out byte[] buffer, out uint bufferLength));
+            bufferSize = bufferLength;
+            return buffer;
+        }
+
         /// <summary>
         ///     Gets the value of <c>null</c> in the current script context.
         /// </summary>

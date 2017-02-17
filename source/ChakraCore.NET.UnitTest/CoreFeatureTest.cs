@@ -127,11 +127,11 @@ namespace ChakraCore.NET.UnitTest
         }
 
         [TestMethod]
-        public void ArrayBufferReadWrite()
+        public void ExternalArrayBufferReadWrite()
         {
-            int buffersize = 1024^3*100;
-            JSArrayBuffer buffer = new JSArrayBuffer(buffersize);
-            context.RootObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
+            int buffersize = 1024*1024*10;
+            JSExternalArrayBuffer buffer = new JSExternalArrayBuffer(buffersize);
+            context.RootObject.WriteProperty<JSExternalArrayBuffer>("buffer", buffer);
             byte[] tmp = new byte[buffersize];
             for (int i = 0; i < tmp.Length; i++)
             {
@@ -143,12 +143,30 @@ namespace ChakraCore.NET.UnitTest
                 target[i] = 0x0f;
             }
 
-            buffer.WriteByte(tmp);
+            buffer.WriteBuffer(tmp);
             context.RunScript(TestHelper.JSArrayBuffer);
             Assert.IsFalse(tmp.SequenceEqual(target));
-            buffer.ReadByte(tmp);
+            buffer.ReadBuffer(tmp);
             Assert.IsTrue(tmp.SequenceEqual(target));
         }
+
+        [TestMethod]
+        public void ArrayBufferReadWrite()
+        {
+            int buffersize = 1024 * 1024 * 10;
+            JSArrayBuffer buffer = new JSArrayBuffer((uint)buffersize, null);
+            context.RootObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
+            byte[] target = new byte[buffersize];
+            for (int i = 0; i < target.Length; i++)
+            {
+                target[i] = 0x0f;
+            }
+            JSArrayBuffer loaded = context.RootObject.ReadProperty<JSArrayBuffer>("buffer");
+            context.RunScript(TestHelper.JSArrayBuffer);
+            Assert.IsTrue(loaded.Buffer.SequenceEqual(target));
+        }
+
+
 
 
 

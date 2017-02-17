@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 <#@ include file="..\Template_Header.t4" #>
-<#= Header("JSArrayBuffer") #>
+<#= Header("JSExternalArrayBuffer") #>
 <#
-    string[] items=new string[]{"Int32","Int16","Int64","Double","Char"};
+    string[] items=new string[]{"Int32","Int16","Int64","Double","Char","Byte"};
     foreach(string item in items)
         {
       #>

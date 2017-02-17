@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using static ChakraCore.NET.API.JavaScriptContext;
 namespace ChakraCore.NET
 {
-public partial class JSArrayBuffer
+public partial class JSExternalArrayBuffer
 {
         public void ReadInt32(Int32[] buffer)
         {
@@ -98,6 +98,26 @@ public partial class JSArrayBuffer
         }
 
         public void WriteChar(Char[] buffer)
+        {
+            if (!checkSize(buffer, out int arraySize))
+            {
+                throw new ArgumentException($"buffer size is {arraySize} does not match defined size, expect {Size}");
+            }
+            Marshal.Copy(buffer, 0, data, memorySize);
+        }
+
+
+
+        public void ReadByte(Byte[] buffer)
+        {
+            if (!checkSize(buffer, out int arraySize))
+            {
+                throw new ArgumentException($"buffer size is {arraySize} does not match defined size, expect {Size}");
+            }
+            Marshal.Copy(data, buffer, 0, memorySize);
+        }
+
+        public void WriteByte(Byte[] buffer)
         {
             if (!checkSize(buffer, out int arraySize))
             {

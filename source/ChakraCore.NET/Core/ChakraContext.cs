@@ -106,10 +106,10 @@ namespace ChakraCore.NET
             return result;
         }
 
-        internal JavaScriptValue CreateArrayBuffer(JSArrayBuffer source) 
+        internal JavaScriptValue CreateExternalArrayBuffer(JSExternalArrayBuffer source) 
         {
 
-            var result = ProxyMapManager.ReigsterMap<JSArrayBuffer>(source, (p, callback) =>
+            var result = ProxyMapManager.ReigsterMap<JSExternalArrayBuffer>(source, (p, callback) =>
 
             {
                 return With<JavaScriptValue>(() =>
@@ -121,6 +121,22 @@ namespace ChakraCore.NET
                , out DelegateHandler tmp //do not pass back, arraybuffer should not have any callback
             );
             return result;
+        }
+
+        internal JavaScriptValue CreateArrayBuffer(JSArrayBuffer source)
+        {
+            return With<JavaScriptValue>(() =>
+            {
+                var result = JavaScriptValue.CreateArrayBuffer(source.Size);
+                byte[] buffer = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
+                if (bufferSize!=source.Size)
+                {
+                    throw new InvalidOperationException("buffer size inconsistent, possible engine fail");
+                }
+                source.initAction?.Invoke(buffer);
+                return result;
+            }
+                );
         }
 
         /// <summary>
