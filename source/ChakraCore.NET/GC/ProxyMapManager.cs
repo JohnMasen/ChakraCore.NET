@@ -3,14 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 
 namespace ChakraCore.NET.GC
 {
-    public class ProxyMapManager:LoggableObjectBase<ProxyMapManager>
+    public class ProxyMapManager
     {
         private SortedDictionary<Type, object> mapList = new SortedDictionary<Type, object>();
+
+        
+
         public JavaScriptValue ReigsterMap<T>(T obj, Func<IntPtr, JavaScriptObjectFinalizeCallback,JavaScriptValue>callback, out DelegateHandler delegateHandler) where T : class
         {
             MapItemList<T> currentTypeList;
@@ -19,7 +21,6 @@ namespace ChakraCore.NET.GC
                 currentTypeList = mapList[typeof(T)] as MapItemList<T>;
                 if (currentTypeList==null)
                 {
-                    log.LogCritical("Internal proxy map list corrupted");
                     throw new InvalidOperationException("Internal proxy map list corrupted");
                 }
             }
@@ -62,7 +63,7 @@ namespace ChakraCore.NET.GC
             return item.Get(source);
         }
 
-        private class MapItemList<T> :LoggableObjectBase<MapItemList<T>> where T : class
+        private class MapItemList<T>  where T : class
         {
             private SortedDictionary<Guid, ProxyMap<T>> internalMap = new SortedDictionary<Guid, ProxyMap<T>>();
             private SortedDictionary<T, ProxyMap<T>> externalMap =new SortedDictionary<T, ProxyMap<T>>();
@@ -100,7 +101,6 @@ namespace ChakraCore.NET.GC
                 }
                 else
                 {
-                    log.LogCritical("Internal proxy map list corrupted");
                     throw new InvalidOperationException("Internal proxy map list corrupted");
                 }
             }

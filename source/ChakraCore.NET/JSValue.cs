@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ChakraCore.NET
 {
-    public partial class JSValue : ContextObjectBase<JSValue>
+    public partial class JSValue : ContextObjectBase
     {
         public JSValue Parent { get; private set; }
         public JavaScriptValue Reference { get; private set; }

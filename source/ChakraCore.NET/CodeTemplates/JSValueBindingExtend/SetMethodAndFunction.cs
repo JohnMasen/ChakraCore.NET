@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using static ChakraCore.NET.API.JavaScriptContext;
 namespace ChakraCore.NET
 {
-public partial class JSValueBinding
+public partial class JSValueBinding:ContextObjectBase
 {
         public void SetMethod(string name,Action a)
         {

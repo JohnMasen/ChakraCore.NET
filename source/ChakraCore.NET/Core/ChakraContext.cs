@@ -5,11 +5,10 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Linq;
 using ChakraCore.NET.GC;
-using Microsoft.Extensions.Logging;
 
 namespace ChakraCore.NET
 {
-    public class ChakraContext : LoggableObjectBase<ChakraContext>,IDisposable
+    public class ChakraContext : IDisposable
     {
         private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
@@ -65,7 +64,6 @@ namespace ChakraCore.NET
 
             if (Native.JsSetPromiseContinuationCallback(promiseContinuationCallback, IntPtr.Zero) != JavaScriptErrorCode.NoError)
             {
-                log.LogCritical("failed to setup callback for ES6 Promise");
                 throw new InvalidOperationException("failed to setup callback for ES6 Promise");
             }
                 
@@ -149,14 +147,11 @@ namespace ChakraCore.NET
             {
                 if (IsCurrentContext)
                 {
-                    log.LogDebug("nested enter, do nothing");
                     return false;//no operation required
                 }
             }
-            log.LogDebug("wait otheres release context");
             waitHanlder.WaitOne();//wait other call complete
             JavaScriptContext.Current = jsContext;
-            log.LogDebug("context switch complete");
             return true;
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ChakraCore.NET
 {
-    public partial class JSValueBinding :ContextObjectBase<JSValueBinding>
+    public partial class JSValueBinding :ContextObjectBase
     {
         private readonly JavaScriptValue source;
         JSValueConvertContext convertContext;

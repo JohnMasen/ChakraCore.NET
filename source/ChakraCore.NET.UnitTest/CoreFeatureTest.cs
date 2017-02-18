@@ -17,7 +17,6 @@ namespace ChakraCore.NET.UnitTest
         {
             TestContext = testContext;
             runtime = ChakraRuntime.Create();
-            ChakraLogging.LoggerFactory.AddDebug(LogLevel.Debug);
         }
 
         [TestInitialize]
