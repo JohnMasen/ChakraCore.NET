@@ -104,35 +104,46 @@ namespace ChakraCore.NET
             return result;
         }
 
-        internal JavaScriptValue CreateExternalArrayBuffer(JSExternalArrayBuffer source) 
-        {
+        //internal JavaScriptValue CreateExternalArrayBuffer(JSExternalArrayBuffer source) 
+        //{
 
-            var result = ProxyMapManager.ReigsterMap<JSExternalArrayBuffer>(source, (p, callback) =>
+        //    var result = ProxyMapManager.ReigsterMap<JSExternalArrayBuffer>(source, (p, callback) =>
 
-            {
-                return With<JavaScriptValue>(() =>
-                {
-                    return JavaScriptValue.CreateExternalArrayBuffer(source.data, Convert.ToUInt32(source.memorySize), callback, IntPtr.Zero);
-                }
-            );
-            }
-               , out DelegateHandler tmp //do not pass back, arraybuffer should not have any callback
-            );
-            return result;
-        }
+        //    {
+        //        return With<JavaScriptValue>(() =>
+        //        {
+        //            return JavaScriptValue.CreateExternalArrayBuffer(source.data, Convert.ToUInt32(source.memorySize), callback, IntPtr.Zero);
+        //        }
+        //    );
+        //    }
+        //       , out DelegateHandler tmp //do not pass back, arraybuffer should not have any callback
+        //    );
+        //    return result;
+        //}
 
         internal JavaScriptValue CreateArrayBuffer(JSArrayBuffer source)
         {
             return With<JavaScriptValue>(() =>
             {
-                var result = JavaScriptValue.CreateArrayBuffer(source.Size);
-                byte[] buffer = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
-                if (bufferSize!=source.Size)
+                switch (source.Source)
                 {
-                    throw new InvalidOperationException("buffer size inconsistent, possible engine fail");
+                    case ArrayBufferSourceEnum.CreateByJavascript:
+                        if (!source.JSSource.IsValid)
+                        {
+                            throw new InvalidOperationException("source array buffer is unvalid");
+                        }
+                        return source.JSSource;
+                    case ArrayBufferSourceEnum.CreateInJavascript:
+                        JavaScriptValue result = JavaScriptValue.CreateArrayBuffer((uint)source.ByteLength);
+                        var buffer = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
+                        source?.Init(buffer);
+                        return result;
+                    case ArrayBufferSourceEnum.CreateByDotnet:
+                    case ArrayBufferSourceEnum.CreateByExternal:
+                        return JavaScriptValue.CreateExternalArrayBuffer(source.Handle, (uint)source.ByteLength, null, IntPtr.Zero);//do not handle GC callback, user should control the varient life cycle
+                    default:
+                        throw new ArgumentOutOfRangeException("Invalid Source property in JSArryBuffer object");
                 }
-                source.initAction?.Invoke(buffer);
-                return result;
             }
                 );
         }
