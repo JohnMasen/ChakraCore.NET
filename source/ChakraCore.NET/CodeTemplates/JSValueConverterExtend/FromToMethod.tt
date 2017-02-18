@@ -15,11 +15,11 @@
                 }
                 //context.JSClass = arguments[0];//put the caller object to context
                 <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
-
+                <#=            genCode(i,"arguments[{1}].AddRef();",false,Environment.NewLine,"{0}")#>
                 //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 a(<#=genCode(i,"para{1}",false,",","{0}")#>);
-
+                <#=genCode(i,"arguments[{1}].Release();",false,Environment.NewLine,"{0}")#>
                 context.RuntimeContext.Enter();//restore context
                 return context.RuntimeContext.JSValue_Undefined;
             };
@@ -43,7 +43,9 @@
 
                   context.RuntimeContext.With(()=>
                   {
+                      <#=genCode(i,"p{1}.AddRef();",false,Environment.NewLine,"{0}")#>
                       value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                      <#=genCode(i,"p{1}.Release();",false,Environment.NewLine,"{0}")#>
                   });
               };
             return result;

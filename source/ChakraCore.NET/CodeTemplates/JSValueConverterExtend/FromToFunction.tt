@@ -15,11 +15,11 @@ private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (JSValueConvertC
                 }
                 //context.JSClass = arguments[0];//put the caller object to context
                 <#=genCode(i,"T{1} para{1} = FromJSValue<T{1}>(context, arguments[{1}]);",false,Environment.NewLine,"{0}")#>
-
+                <#=            genCode(i,"arguments[{1}].AddRef();",false,Environment.NewLine,"{0}")#>
                 //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall<#=genCode(i,",para{1}",false,"","{0}")#>);
-
+                <#=            genCode(i,"arguments[{1}].Release();",false,Environment.NewLine,"{0}")#>
                 context.RuntimeContext.Enter();//restore context
                 return ToJSValue<TResult>(context,result);;
             };
@@ -42,14 +42,18 @@ private JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (JSValueConvertC
 
                 JavaScriptValue r=context.RuntimeContext.With<JavaScriptValue>(()=>
                 {
+                <#=genCode(i,"p{1}.AddRef();",false,Environment.NewLine,"{0}")#>
+                JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        return value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
                     }
                     else
                     {
-                        return value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
+                        resultValue= value.CallFunction(context.JSClass<#=genCode(i,",p{1}",false,"","{0}")#>);
                     }
+                <#=genCode(i,"p{1}.Release();",false,Environment.NewLine,"{0}")#>
+                    return resultValue;
                 });
                 return FromJSValue<TResult>(context,r);
             };
