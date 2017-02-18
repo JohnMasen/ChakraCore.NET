@@ -173,6 +173,7 @@ namespace ChakraCore.NET.UnitTest
             buffer1.ReadArray<byte>(0, tmp, 0, tmp.Length);
 
             Assert.IsTrue(tmp.SequenceEqual(target));
+            Assert.IsTrue(buffer == buffer1);
         }
 
 
