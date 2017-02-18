@@ -157,9 +157,12 @@ namespace ChakraCore.NET
                 {
                     return context.RuntimeContext.With<JSArrayBuffer>(() =>
                     {
-
-                        //TODO: implement when native API is fixed
-                        throw new NotImplementedException();
+                        if (value.ValueType!=JavaScriptValueType.ArrayBuffer)
+                        {
+                            throw new InvalidOperationException("source type should be ArrayBuffer");
+                        }
+                        IntPtr buffer=JavaScriptValue.GetArrayBufferStorage(value, out uint size);
+                        return JSArrayBuffer.CreateFromJavascript(buffer, (ulong)size, value);
                     });
                     
                 }

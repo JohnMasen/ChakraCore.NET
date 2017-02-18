@@ -149,7 +149,32 @@ namespace ChakraCore.NET.UnitTest
             Assert.IsTrue(tmp.SequenceEqual(target));
         }
 
-        
+        [TestMethod]
+        public void ArrayBufferSetGet()
+        {
+            int buffersize = 1024 * 1024 * 10;
+            JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
+            context.RootObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
+            byte[] tmp = new byte[buffersize];
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                tmp[i] = 0x10;
+            }
+            byte[] target = new byte[buffersize];
+            for (int i = 0; i < target.Length; i++)
+            {
+                target[i] = 0x0f;
+            }
+
+            buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
+            context.RunScript(TestHelper.JSArrayBuffer);
+
+            JSArrayBuffer buffer1 = context.RootObject.ReadProperty<JSArrayBuffer>("buffer");
+            buffer1.ReadArray<byte>(0, tmp, 0, tmp.Length);
+
+            Assert.IsTrue(tmp.SequenceEqual(target));
+        }
+
 
 
 

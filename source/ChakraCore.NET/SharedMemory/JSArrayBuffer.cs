@@ -11,7 +11,7 @@ namespace ChakraCore.NET
     {
         public JavaScriptValue JSSource { get; private set; }
         public IntPtr Handle => handle;
-        internal Action<byte[]> Init { get; private set; }
+        internal Action<SharedMemoryBuffer> Init { get; private set; }
         public ArrayBufferSourceEnum Source { get; private set; }
         private JSArrayBuffer(IntPtr handle, ulong size, ArrayBufferSourceEnum source) :base(handle,size)
         {
@@ -19,7 +19,7 @@ namespace ChakraCore.NET
 
         }
 
-        private JSArrayBuffer(int size,Action<byte[]> init, ArrayBufferSourceEnum source) : base(size)
+        private JSArrayBuffer(int size,Action<SharedMemoryBuffer> init, ArrayBufferSourceEnum source) : base(size)
         {
             Source = source;
             Init = init;
@@ -40,7 +40,7 @@ namespace ChakraCore.NET
         {
             return new JSArrayBuffer(size,null,ArrayBufferSourceEnum.CreateByDotnet);
         }
-        public static JSArrayBuffer CreateInJavascript(int size, Action<byte[]> init)
+        public static JSArrayBuffer CreateInJavascript(int size, Action<SharedMemoryBuffer> init)
         {
             return new JSArrayBuffer(size, init, ArrayBufferSourceEnum.CreateInJavascript);
         }

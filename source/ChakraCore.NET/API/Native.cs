@@ -750,19 +750,19 @@
 
         [DllImport(DllName)]
 
-        internal static extern JavaScriptErrorCode JsGetArrayBufferStorage(JavaScriptValue arrayBuffer, out byte[] buffer, out uint bufferLength);
+        internal static extern JavaScriptErrorCode JsGetArrayBufferStorage(JavaScriptValue arrayBuffer, out IntPtr data, out uint bufferLength);
 
 
 
         [DllImport(DllName)]
 
-        internal static extern JavaScriptErrorCode JsGetTypedArrayStorage(JavaScriptValue typedArray, out byte[] buffer, out uint bufferLength, out JavaScriptTypedArrayType arrayType, out int elementSize);
+        internal static extern JavaScriptErrorCode JsGetTypedArrayStorage(JavaScriptValue typedArray, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType arrayType, out int elementSize);
 
 
 
         [DllImport(DllName)]
 
-        internal static extern JavaScriptErrorCode JsGetDataViewStorage(JavaScriptValue dataView, out byte[] buffer, out uint bufferLength);
+        internal static extern JavaScriptErrorCode JsGetDataViewStorage(JavaScriptValue dataView, out IntPtr data, out uint bufferLength);
 
 
 

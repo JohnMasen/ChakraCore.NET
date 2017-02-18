@@ -71,11 +71,11 @@
             return result;
         }
 
-        public static byte[] GetArrayBufferStorage(JavaScriptValue value,out uint bufferSize)
+        public static IntPtr GetArrayBufferStorage(JavaScriptValue value,out uint bufferSize)
         {
-            Native.ThrowIfError(Native.JsGetArrayBufferStorage(value, out byte[] buffer, out uint bufferLength));
+            Native.ThrowIfError(Native.JsGetArrayBufferStorage(value, out IntPtr data, out uint bufferLength));
             bufferSize = bufferLength;
-            return buffer;
+            return data;
         }
 
         /// <summary>

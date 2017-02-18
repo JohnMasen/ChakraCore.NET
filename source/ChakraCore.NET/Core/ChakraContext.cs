@@ -135,8 +135,14 @@ namespace ChakraCore.NET
                         return source.JSSource;
                     case ArrayBufferSourceEnum.CreateInJavascript:
                         JavaScriptValue result = JavaScriptValue.CreateArrayBuffer((uint)source.ByteLength);
-                        var buffer = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
-                        source?.Init(buffer);
+                        var data = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
+                        if (source.Init!=null)
+                        {
+                            using (SharedMemoryBuffer buffer = new SharedMemoryBuffer(data, bufferSize))
+                            {
+                                source.Init(buffer);
+                            }
+                        }
                         return result;
                     case ArrayBufferSourceEnum.CreateByDotnet:
                     case ArrayBufferSourceEnum.CreateByExternal:
