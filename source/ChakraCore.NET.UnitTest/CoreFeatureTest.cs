@@ -16,20 +16,13 @@ namespace ChakraCore.NET.UnitTest
         public static void ClassInitialize(TestContext testContext)
         {
             TestContext = testContext;
-            //runtime = ChakraRuntime.Create();
+            runtime = ChakraRuntime.Create();
         }
 
         [TestInitialize]
         public void TestInitialize()
         {
-            runtime = ChakraRuntime.Create();
             context = runtime.CreateContext(true);
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            context.Dispose();
         }
 
 
@@ -133,13 +126,6 @@ namespace ChakraCore.NET.UnitTest
         }
 
         [TestMethod]
-        public void ArrayBufferAll()
-        {
-            ArrayBufferReadWrite();
-            ArrayBufferSetGet();
-        }
-
-        [TestMethod]
         public void ArrayBufferReadWrite()
         {
             int buffersize = 1024*1024*10;
@@ -161,7 +147,6 @@ namespace ChakraCore.NET.UnitTest
             Assert.IsFalse(tmp.SequenceEqual(target));
             buffer.ReadArray<byte>(0,tmp,0,tmp.Length);
             Assert.IsTrue(tmp.SequenceEqual(target));
-            buffer.Dispose();
         }
 
         [TestMethod]
@@ -169,7 +154,7 @@ namespace ChakraCore.NET.UnitTest
         {
             int buffersize = 1024 * 1024 * 10;
             JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
-            context.RootObject.WriteProperty<JSArrayBuffer>("buffer1", buffer);
+            context.RootObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
             byte[] tmp = new byte[buffersize];
             for (int i = 0; i < tmp.Length; i++)
             {
@@ -182,15 +167,13 @@ namespace ChakraCore.NET.UnitTest
             }
 
             buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
-            context.RunScript(TestHelper.JSArrayBufferSetGet);
+            context.RunScript(TestHelper.JSArrayBuffer);
 
-            JSArrayBuffer buffer1 = context.RootObject.ReadProperty<JSArrayBuffer>("buffer1");
+            JSArrayBuffer buffer1 = context.RootObject.ReadProperty<JSArrayBuffer>("buffer");
             buffer1.ReadArray<byte>(0, tmp, 0, tmp.Length);
 
             Assert.IsTrue(tmp.SequenceEqual(target));
             Assert.IsTrue(buffer == buffer1);
-            buffer.Dispose();
-            buffer1.Dispose();
         }
 
 
