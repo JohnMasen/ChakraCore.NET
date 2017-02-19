@@ -19,6 +19,7 @@ namespace ChakraCore.NET.UnitTest
         public static string JSCall = "function add(s){return s+s}function addcallback(s,callback){return s+callback(s)}";
         public static string JSProxy= "var callProxyResult = myStub.echo('hi');";
         public static string JSArrayBuffer = "var array=new Int8Array(buffer);array.fill(0x0f);";
+        public static string JSArrayBufferSetGet = "var array=new Int8Array(buffer1);array.fill(0x0f);";
 
     }
 }
