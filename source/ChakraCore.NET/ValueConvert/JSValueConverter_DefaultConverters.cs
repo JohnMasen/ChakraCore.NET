@@ -162,7 +162,9 @@ namespace ChakraCore.NET
                             throw new InvalidOperationException("source type should be ArrayBuffer");
                         }
                         IntPtr buffer=JavaScriptValue.GetArrayBufferStorage(value, out uint size);
-                        return JSArrayBuffer.CreateFromJavascript(buffer, (ulong)size, value);
+                        var result= JSArrayBuffer.CreateFromJavascript(buffer, (ulong)size);
+                        result.SetJSSource(value, context.RuntimeContext);
+                        return result;
                     });
                     
                 }
