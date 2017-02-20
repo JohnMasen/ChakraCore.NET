@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="ChakraCore.NET.UnitTest.CoreFeatureTest.ArrayBufferReadWrite" /><Add Test="ChakraCore.NET.UnitTest.CoreFeatureTest.ArrayBufferSetGet" /></Playlist>

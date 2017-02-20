@@ -1,7 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using Microsoft.Extensions.Logging;
 using System.Linq;
 
 namespace ChakraCore.NET.UnitTest
@@ -16,13 +15,13 @@ namespace ChakraCore.NET.UnitTest
         public static void ClassInitialize(TestContext testContext)
         {
             TestContext = testContext;
-            //runtime = ChakraRuntime.Create();
+            runtime = ChakraRuntime.Create();
         }
 
         [TestInitialize]
         public void TestInitialize()
         {
-            runtime = ChakraRuntime.Create();
+            //runtime = ChakraRuntime.Create();
             context = runtime.CreateContext(true);
         }
 
@@ -30,6 +29,12 @@ namespace ChakraCore.NET.UnitTest
         public void TestCleanup()
         {
             context.Dispose();
+        }
+
+        [ClassCleanup]
+        public static void ClassCleanup()
+        {
+            runtime.Dispose();
         }
 
 
@@ -56,12 +61,14 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void ReadWriteTest()
         {
+            System.Diagnostics.Debug.WriteLine("ReadWriteTest start");
             ReadWrite<string>("hello");
             ReadWrite<int>(1000);
             ReadWrite<float>(100.11f);
             ReadWrite<byte>(0x0f);
             ReadWrite<double>(-33.4455);
             ReadWrite<bool>(false);
+            System.Diagnostics.Debug.WriteLine("ReadWriteTest stop");
         }
 
         [TestMethod]
@@ -135,8 +142,11 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void ArrayBufferAll()
         {
-            ArrayBufferReadWrite();
+            System.Diagnostics.Debug.WriteLine("ArrayBufferAll start");
             ArrayBufferSetGet();
+            ArrayBufferReadWrite();
+            System.Diagnostics.Debug.WriteLine("ArrayBufferAll stop");
+
         }
 
         [TestMethod]
@@ -155,13 +165,13 @@ namespace ChakraCore.NET.UnitTest
             {
                 target[i] = 0x0f;
             }
-
-            buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
+            buffer.Buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
             context.RunScript(TestHelper.JSArrayBuffer);
             Assert.IsFalse(tmp.SequenceEqual(target));
-            buffer.ReadArray<byte>(0,tmp,0,tmp.Length);
+            buffer.Buffer.ReadArray<byte>(0,tmp,0,tmp.Length);
             Assert.IsTrue(tmp.SequenceEqual(target));
             buffer.Dispose();
+            runtime.CollectGarbage();
         }
 
         [TestMethod]
@@ -181,15 +191,16 @@ namespace ChakraCore.NET.UnitTest
                 target[i] = 0x0f;
             }
 
-            buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
+            buffer.Buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
             context.RunScript(TestHelper.JSArrayBufferSetGet);
 
             JSArrayBuffer buffer1 = context.RootObject.ReadProperty<JSArrayBuffer>("buffer1");
-            buffer1.ReadArray<byte>(0, tmp, 0, tmp.Length);
+            buffer1.Buffer.ReadArray<byte>(0, tmp, 0, tmp.Length);
 
             Assert.IsTrue(tmp.SequenceEqual(target));
             buffer.Dispose();
             buffer1.Dispose();
+            runtime.CollectGarbage();
         }
 
 

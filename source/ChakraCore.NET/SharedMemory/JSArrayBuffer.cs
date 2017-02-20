@@ -7,114 +7,115 @@ using System.IO;
 
 namespace ChakraCore.NET
 {
-    public class JSArrayBuffer: SharedMemoryBuffer
+    public class JSArrayBuffer:IDisposable
     {
+        public SharedMemoryBuffer Buffer { get; private set; }
+        public ArrayBufferSourceEnum BufferSource { get; private set; }
         public JavaScriptValue JSSource { get; private set; }
-        public IntPtr Handle => handle;
+        private Action releaseJSValue;
+        internal Action<SharedMemoryBuffer> initDefault;
 
-        private Action releaseValue;
-        private Action<SharedMemoryBuffer> init;
-        public ArrayBufferSourceEnum Source { get; private set; }
-        private JSArrayBuffer(IntPtr handle, ulong size, ArrayBufferSourceEnum source) :base(handle,size)
+        private JSArrayBuffer(ArrayBufferSourceEnum source)
         {
-            Source = source;
-
+            System.Diagnostics.Debug.WriteLine("JSArryBufferCreated");
+            BufferSource = source;
         }
 
         internal void SetJSSource(JavaScriptValue value,ChakraContext context)
         {
+            if (JSSource.IsValid)
+            {
+                throw new InvalidOperationException("cannot set jsvalue twice");
+            }
             if (!value.IsValid)
             {
-                throw new ArgumentException("not a valid JavaScriptValue", nameof(value));
-                    
+                throw new ArgumentException("not a valid javascriptvalue", nameof(value));
             }
-            if (JSSource.IsValid)
-            {
-                throw new ArgumentException("cannot set source more than once");
-            }
-            else
-            {
-                value.AddRef();
-                JSSource = value;
-                releaseValue = () =>
-                  {
-                      context.With(() => value.Release());
-
-                  };
-            }
+            value.AddRef();
+            JSSource = value;
+            releaseJSValue = new Action(() => { context.With(()=>value.Release()); });
         }
 
-        private JSArrayBuffer(int size,Action<SharedMemoryBuffer> init, ArrayBufferSourceEnum source) : base(size)
+        internal void InitBuffer(IntPtr handle,ulong size,bool ownsHandle)
         {
-            Source = source;
-            this.init = init;
+            Buffer = new SharedMemoryBuffer(handle, size, ownsHandle);
         }
 
-        internal void Init(SharedMemoryBuffer buffer)
+        internal void InitBuffer(int size)
         {
-            if (JSSource.IsValid)
-            {
-                return;
-            }
-            else
-            {
-                init(buffer);
-            }
-        }
-        protected override bool ReleaseHandle()
-        {
-            releaseValue?.Invoke();
-            return base.ReleaseHandle();
+            Buffer = new SharedMemoryBuffer(size);
         }
 
-        /// <summary>
-        /// create JSArryBuffer from pre-allocated memory address
-        /// </summary>
-        /// <param name="handle">address pointer</param>
-        /// <param name="size">data size in bytes</param>
-        /// <returns></returns>
-        public static JSArrayBuffer CreateFromExternal(IntPtr handle,ulong size)
+        internal void InitDefaultValueInJS()
         {
-            return new JSArrayBuffer(handle, size,ArrayBufferSourceEnum.CreateByExternal);
+            initDefault?.Invoke(Buffer);
         }
 
-
-        /// <summary>
-        /// Create JSArryBuffer from javascriptvalue, should be used as a parameter from javascript call only
-        /// Set source should be called immediately after this call
-        /// </summary>
-        /// <param name="handle">address pointer</param>
-        /// <param name="size">data size in bytes</param>
-        /// <param name="jsSource">original javascriptvalue</param>
-        /// <returns></returns>
-        internal static JSArrayBuffer CreateFromJavascript(IntPtr handle, ulong size)
+        public static JSArrayBuffer Create(int size)
         {
-            var result = new JSArrayBuffer(handle, size, ArrayBufferSourceEnum.CreateByJavascript);
+            var result = new JSArrayBuffer(ArrayBufferSourceEnum.CreateByDotnet);
+            result.InitBuffer(size);
             return result;
         }
 
-        /// <summary>
-        /// Create JSArryBuffer and allocate memory, memory will be released when the object is disposed
-        /// </summary>
-        /// <param name="size">size in bytes</param>
-        /// <returns></returns>
-        public static JSArrayBuffer Create(int size)
+        internal static JSArrayBuffer CreateFromJS(IntPtr handle,uint size,JavaScriptValue value,ChakraContext context)
         {
-            return new JSArrayBuffer(size,null,ArrayBufferSourceEnum.CreateByDotnet);
+            var result = new JSArrayBuffer(ArrayBufferSourceEnum.CreateByJavascript);
+            result.InitBuffer(handle, size, false);//memory owned by js, do not release when object is disposed
+            result.SetJSSource(value,context);
+            return result;
         }
 
-        /// <summary>
-        /// Create a new JSArryBuffer inside javascript and set it's initial value. 
-        /// useful for passing a ArryBuffer as parameter
-        /// </summary>
-        /// <param name="size">size in bytes</param>
-        /// <param name="init">delegate for setting up initial value</param>
-        /// <returns></returns>
-        public static JSArrayBuffer CreateInJavascript(int size, Action<SharedMemoryBuffer> init)
+        public static JSArrayBuffer CreateFromExternal(IntPtr handle,ulong size)
         {
-            return new JSArrayBuffer(size, init, ArrayBufferSourceEnum.CreateInJavascript);
+            var result = new JSArrayBuffer(ArrayBufferSourceEnum.CreateByExternal);
+            result.InitBuffer(handle, size, false);
+            return result;
         }
 
+        public static JSArrayBuffer CreateInJavascript(uint size,Action<SharedMemoryBuffer> init)
+        {
+            return new JSArrayBuffer(ArrayBufferSourceEnum.CreateInJavascript);
+            //do not init the buffer, buffer will be initialized when it's passed to javascript
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    releaseJSValue?.Invoke();
+                    Buffer.Dispose();
+                    disposedValue = true;
+                    System.Diagnostics.Debug.WriteLine("JSArryBufferReleased");
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+                
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~JSArrayBuffer() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
 
 
 

@@ -49,6 +49,7 @@ namespace ChakraCore.NET
         private bool isDebug;
         internal ChakraContext(JavaScriptContext jsContext, AutoResetEvent syncHandler)
         {
+            jsContext.AddRef();
             this.jsContext = jsContext;
             this.waitHanlder = syncHandler;
         }
@@ -129,25 +130,23 @@ namespace ChakraCore.NET
                 {
                     return source.JSSource;
                 }
-                switch (source.Source)
+                switch (source.BufferSource)
                 {
                     case ArrayBufferSourceEnum.CreateByJavascript:
                         throw new InvalidOperationException("source array buffer is unvalid");//create by javascript should already have JavaScriptValue
                     case ArrayBufferSourceEnum.CreateInJavascript:
                         {
-                            JavaScriptValue result = JavaScriptValue.CreateArrayBuffer((uint)source.ByteLength);
-                            source.SetJSSource(result,this);
+                            JavaScriptValue result = JavaScriptValue.CreateArrayBuffer((uint)source.Buffer.ByteLength);
                             var data = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
-                            using (SharedMemoryBuffer buffer = new SharedMemoryBuffer(data, bufferSize))
-                            {
-                                source.Init(buffer);
-                            }
+                            source.InitBuffer(data, bufferSize, false);
+                            source.InitDefaultValueInJS();
+                            source.SetJSSource(result, this);
                             return result;
                         }
                     case ArrayBufferSourceEnum.CreateByDotnet:
                     case ArrayBufferSourceEnum.CreateByExternal:
                         {
-                            var result = JavaScriptValue.CreateExternalArrayBuffer(source.Handle, (uint)source.ByteLength, null, IntPtr.Zero);//do not handle GC callback, user should control the varient life cycle
+                            var result = JavaScriptValue.CreateExternalArrayBuffer(source.Buffer.Handle, (uint)source.Buffer.ByteLength, null, IntPtr.Zero);//do not handle GC callback, user should control the varient life cycle
                             source.SetJSSource(result,this);
                             return result;
                         }
