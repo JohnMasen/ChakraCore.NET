@@ -203,7 +203,11 @@ namespace ChakraCore.NET.UnitTest
             runtime.CollectGarbage();
         }
 
-
+        [TestMethod]
+        public void ArrayBufferSetGet1()
+        {
+            ArrayBufferSetGet();
+        }
 
 
 
