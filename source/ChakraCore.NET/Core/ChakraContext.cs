@@ -172,7 +172,7 @@ namespace ChakraCore.NET
                     return With<JavaScriptValue>(
                         () =>
                         {
-                            var result= JavaScriptValue.CreateTypedArray(source.ArrayType, source.JSSource, source.Position, source.ElementLength);
+                            var result= JavaScriptValue.CreateTypedArray(source.ArrayType, source.JSSource, source.Position, source.UnitCount);
                             source.SetJSSource(result,this);
                             return result;
                         }
@@ -183,7 +183,7 @@ namespace ChakraCore.NET
                     return With<JavaScriptValue>(
                         () =>
                         {
-                            var result= JavaScriptValue.CreateTypedArray(source.ArrayType, JavaScriptValue.Invalid , source.Position, source.ElementLength);
+                            var result= JavaScriptValue.CreateTypedArray(source.ArrayType, JavaScriptValue.Invalid , source.Position, source.UnitCount);
                             source.SetJSSource(result, this);//hold the objec
                             //get the internal storage
                             JavaScriptValue.GetTypedArrayStorage(result, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType type, out int elementSize);

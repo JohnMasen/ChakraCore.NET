@@ -216,8 +216,9 @@ namespace ChakraCore.NET.UnitTest
             Action<SharedMemoryBuffer> init = (x) => { x.WriteArray(0,initdata,0,initdata.Length); };
             JSTypedArray array = JSTypedArray.CreateInJS(API.JavaScriptTypedArrayType.Int8, size, init);
             context.RootObject.WriteProperty<JSTypedArray>("array1", array);
-            context.RunScript(TestHelper.JSTypedArrayReadWrite);
+            string s=context.RunScript(TestHelper.JSTypedArrayReadWrite);
             array.Buffer.ReadArray(0, initdata, 0, initdata.Length);
+            array.Dispose();
             foreach (var item in initdata)
             {
                 Assert.AreEqual<int>(2, item);

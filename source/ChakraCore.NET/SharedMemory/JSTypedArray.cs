@@ -10,70 +10,75 @@ namespace ChakraCore.NET
         public uint Position { get; private set; }
         public JavaScriptTypedArrayType ArrayType { get; private set; }
 
-        public uint ElementLength
-        {
-            get
-            {
-                switch (ArrayType)
-                {
-                    case JavaScriptTypedArrayType.Int8:
-                    case JavaScriptTypedArrayType.Uint8:
-                    case JavaScriptTypedArrayType.Uint8Clamped:
-                        return 8;
-                    case JavaScriptTypedArrayType.Int16:
-                    case JavaScriptTypedArrayType.Uint16:
-                        return 16;
-                    case JavaScriptTypedArrayType.Int32:
-                    case JavaScriptTypedArrayType.Uint32:
-                    case JavaScriptTypedArrayType.Float32:
-                        return 32;
-                    case JavaScriptTypedArrayType.Float64:
-                        return 64;
-                    default:
-                        throw new ArgumentException("not a valid TypedArrayType", nameof(ArrayType));
-                }
-            }
-                
-                
-        }
+        public uint UnitSize { get; private set; }
+
+        public uint UnitCount { get; private set; }
 
 
-        private JSTypedArray(JavaScriptTypedArrayType type,JSArrayBuffer source,uint position, uint size) : base(SharedBufferSourceEnum.CreateByDotnet, size)
+        private JSTypedArray(JavaScriptTypedArrayType type,JSArrayBuffer source,uint position, uint unitCount) : base(SharedBufferSourceEnum.CreateByDotnet, unitCount*GetUnitByteSizeByArrayType(type))
         {
             ArrayType = type;
             Position = position;
+            UnitSize = GetUnitByteSizeByArrayType(type);
+            UnitCount = unitCount;
         }
 
-        private JSTypedArray(JavaScriptTypedArrayType type, uint position, uint size):base(SharedBufferSourceEnum.CreateByJavascript,size)
+        private JSTypedArray(JavaScriptTypedArrayType type, uint position, uint unitCount):base(SharedBufferSourceEnum.CreateByJavascript, unitCount * GetUnitByteSizeByArrayType(type))
         {
             ArrayType = type;
             Position = position;
+            UnitSize = GetUnitByteSizeByArrayType(type);
+            UnitCount = unitCount;
         }
 
-        private JSTypedArray(JavaScriptTypedArrayType type, uint position, uint size, Action<SharedMemoryBuffer>init ):base(SharedBufferSourceEnum.CreateInJavascript,size)
+        private JSTypedArray(JavaScriptTypedArrayType type, uint position, uint unitCount, Action<SharedMemoryBuffer>init ):base(SharedBufferSourceEnum.CreateInJavascript, unitCount * GetUnitByteSizeByArrayType(type))
         {
             ArrayType = type;
             Position = position;
+            UnitSize = GetUnitByteSizeByArrayType(type);
+            UnitCount = unitCount;
         }
 
-        public static JSTypedArray CreateFromArrayBuffer(JavaScriptTypedArrayType type, JSArrayBuffer source,uint position, uint size)
+        public static JSTypedArray CreateFromArrayBuffer(JavaScriptTypedArrayType type, JSArrayBuffer source,uint position, uint unitCount)
         {
-            JSTypedArray result = new JSTypedArray(type,source, position, size);
+            JSTypedArray result = new JSTypedArray(type,source, position, unitCount);
             result.InitWindow(source.Buffer, position);
             return result;
         }
 
-        internal static JSTypedArray CreateFromJS(JavaScriptTypedArrayType type, IntPtr data, uint size,JavaScriptValue source,ChakraContext context)
+        internal static JSTypedArray CreateFromJS(JavaScriptTypedArrayType type, IntPtr data, uint unitCount, JavaScriptValue source,ChakraContext context)
         {
-            JSTypedArray result = new JSTypedArray(type,0,size);
+            JSTypedArray result = new JSTypedArray(type,0, unitCount);
             result.InitWindow(data, false);
             result.SetJSSource(source,context);
             return result;
         }
 
-        public static JSTypedArray CreateInJS(JavaScriptTypedArrayType type,uint size,Action<SharedMemoryBuffer> init)
+        public static JSTypedArray CreateInJS(JavaScriptTypedArrayType type,uint unitCount, Action<SharedMemoryBuffer> init)
         {
-            return new JSTypedArray(type, 0, size, init) { InitValue = init };
+            return new JSTypedArray(type, 0, unitCount, init) { InitValue = init };
+        }
+
+        public static uint GetUnitByteSizeByArrayType(JavaScriptTypedArrayType type)
+        {
+            switch (type)
+            {
+                case JavaScriptTypedArrayType.Int8:
+                case JavaScriptTypedArrayType.Uint8:
+                case JavaScriptTypedArrayType.Uint8Clamped:
+                    return 1;
+                case JavaScriptTypedArrayType.Int16:
+                case JavaScriptTypedArrayType.Uint16:
+                    return 2;
+                case JavaScriptTypedArrayType.Int32:
+                case JavaScriptTypedArrayType.Uint32:
+                case JavaScriptTypedArrayType.Float32:
+                    return 4;
+                case JavaScriptTypedArrayType.Float64:
+                    return 8;
+                default:
+                    throw new ArgumentException("not a valid TypedArrayType", nameof(ArrayType));
+            }
         }
     }
 }
