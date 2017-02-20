@@ -132,30 +132,71 @@ namespace ChakraCore.NET
                 }
                 switch (source.BufferSource)
                 {
-                    case ArrayBufferSourceEnum.CreateByJavascript:
-                        throw new InvalidOperationException("source array buffer is unvalid");//create by javascript should already have JavaScriptValue
-                    case ArrayBufferSourceEnum.CreateInJavascript:
+                    case SharedBufferSourceEnum.CreateByJavascript:
+                        throw new InvalidOperationException("invalid source array buffer");//create by javascript should already have JavaScriptValue assigned
+                    case SharedBufferSourceEnum.CreateInJavascript:
                         {
-                            JavaScriptValue result = JavaScriptValue.CreateArrayBuffer((uint)source.Buffer.ByteLength);
+                            JavaScriptValue result = JavaScriptValue.CreateArrayBuffer((uint)source.Size);
+                            source.SetJSSource(result, this);//hold the varient
                             var data = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
-                            source.InitBuffer(data, bufferSize, false);
-                            source.InitDefaultValueInJS();
-                            source.SetJSSource(result, this);
+                            source.InitWindow(data, false);
+                            source.InitValue(source.Buffer);
                             return result;
                         }
-                    case ArrayBufferSourceEnum.CreateByDotnet:
-                    case ArrayBufferSourceEnum.CreateByExternal:
+                    case SharedBufferSourceEnum.CreateByDotnet:
+                    case SharedBufferSourceEnum.CreateByExternal:
                         {
                             var result = JavaScriptValue.CreateExternalArrayBuffer(source.Buffer.Handle, (uint)source.Buffer.ByteLength, null, IntPtr.Zero);//do not handle GC callback, user should control the varient life cycle
-                            source.SetJSSource(result,this);
+                            source.SetJSSource(result,this);//hold the varient
                             return result;
                         }
                         
                     default:
-                        throw new ArgumentOutOfRangeException("Invalid Source property in JSArryBuffer object");
+                        throw new ArgumentOutOfRangeException("Invalid BufferSource property in JSArryBuffer object");
                 }
             }
                 );
+        }
+
+
+
+        internal JavaScriptValue CreateTypedArray(JSTypedArray source)
+        {
+            if (source.JSSource.IsValid)
+            {
+                return source.JSSource;
+            }
+            switch (source.BufferSource)
+            {
+                case SharedBufferSourceEnum.CreateByDotnet:
+                    return With<JavaScriptValue>(
+                        () =>
+                        {
+                            var result= JavaScriptValue.CreateTypedArray(source.ArrayType, source.JSSource, source.Position, source.ElementLength);
+                            source.SetJSSource(result,this);
+                            return result;
+                        }
+                        );
+                case SharedBufferSourceEnum.CreateByJavascript:
+                    throw new InvalidOperationException("invalid source typed array");//create by javascript should already have JavaScriptValue assigned
+                case SharedBufferSourceEnum.CreateInJavascript:
+                    return With<JavaScriptValue>(
+                        () =>
+                        {
+                            var result= JavaScriptValue.CreateTypedArray(source.ArrayType, JavaScriptValue.Invalid , source.Position, source.ElementLength);
+                            source.SetJSSource(result, this);//hold the objec
+                            //get the internal storage
+                            JavaScriptValue.GetTypedArrayStorage(result, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType type, out int elementSize);
+                            source.InitWindow(data, false);
+                            source.InitValue?.Invoke(source.Buffer);
+                            return result;
+                        }
+                        );
+                case SharedBufferSourceEnum.CreateByExternal:
+                    throw new ArgumentException("TypedArray does not support create from external");
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid BufferSource property in JSTypedArray object");
+            }
         }
 
         /// <summary>

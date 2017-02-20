@@ -71,11 +71,27 @@
             return result;
         }
 
+
+        public static JavaScriptValue CreateTypedArray(JavaScriptTypedArrayType arrayType, JavaScriptValue arrayBuffer, uint byteOffset, uint elementLength)
+        {
+            Native.ThrowIfError(Native.JsCreateTypedArray(arrayType, arrayBuffer, byteOffset,elementLength, out JavaScriptValue result));
+            return result;
+        }
+
         public static IntPtr GetArrayBufferStorage(JavaScriptValue value,out uint bufferSize)
         {
             Native.ThrowIfError(Native.JsGetArrayBufferStorage(value, out IntPtr data, out uint bufferLength));
             bufferSize = bufferLength;
             return data;
+        }
+
+        public static void GetTypedArrayStorage(JavaScriptValue typedArray, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType arrayType, out int elementSize)
+        {
+            Native.ThrowIfError(Native.JsGetTypedArrayStorage(typedArray, out IntPtr _data, out uint _bufferLength,out JavaScriptTypedArrayType _arrayType,out int _elementSize));
+            data = _data;
+            bufferLength = _bufferLength;
+            arrayType = _arrayType;
+            elementSize = _elementSize;
         }
 
         /// <summary>

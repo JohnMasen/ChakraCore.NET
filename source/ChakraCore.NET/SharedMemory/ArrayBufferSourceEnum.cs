@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChakraCore.NET
 {
-    public enum ArrayBufferSourceEnum
+    public enum SharedBufferSourceEnum
     {
         CreateByDotnet,
         CreateByJavascript,

@@ -8,7 +8,7 @@ namespace ChakraCore.NET
     public class SharedMemoryBuffer : SafeBuffer
     {
         internal IntPtr Handle { get; set; }
-        public SharedMemoryBuffer(int size):base(true)
+        public SharedMemoryBuffer(IntPtr size):base(true)
         {
             var h=Marshal.AllocHGlobal(size);
             Handle = h;
@@ -24,6 +24,26 @@ namespace ChakraCore.NET
             System.Diagnostics.Debug.WriteLine($"Buffer created, ownsHandle={ownsHandle},Address={data}");
         }
 
+
+        public SharedMemoryBuffer CreateView(long position, ulong numBytes)
+        {
+            if (position < 0 || numBytes < 0)
+            {
+                throw new ArgumentOutOfRangeException("position or length cannot be negtive value");
+            }
+            long BufferStart = Handle.ToInt64();
+            long BufferEnd = BufferStart + (long)ByteLength;
+
+            long start = position;
+            long end = start + (long)numBytes;//potencial overflow, let dotnet handle this :)
+
+            if (start > BufferEnd || end > BufferEnd)
+            {
+                throw new ArgumentException("cannot project data accessor outside data area");
+            }
+            SharedMemoryBuffer result = new SharedMemoryBuffer((IntPtr)start, numBytes, false);
+            return result;
+        }
         protected override bool ReleaseHandle()
         {
             Marshal.FreeHGlobal(handle);

@@ -168,7 +168,26 @@ namespace ChakraCore.NET
                     
                 }
                 );
+            RegisterConverter<JSTypedArray>(
+                (context, value) =>
+                {
+                    return context.RuntimeContext.CreateTypedArray(value);
+                },
+                (context, value) =>
+                {
+                    return context.RuntimeContext.With<JSTypedArray>(() =>
+                    {
+                        if (value.ValueType != JavaScriptValueType.TypedArray)
+                        {
+                            throw new InvalidOperationException("source type should be TypedArray");
+                        }
+                        JavaScriptValue.GetTypedArrayStorage(value, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType type, out int elementSize);
+                        var result = JSTypedArray.CreateFromJS(type, data, bufferLength, value, context.RuntimeContext);
+                        return result;
+                    });
 
+                }
+                );
             #endregion
 
         }
