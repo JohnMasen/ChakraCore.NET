@@ -29,14 +29,14 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
         [TestMethod]
         public void ReadWriteTest()
         {
-            System.Diagnostics.Debug.WriteLine("ReadWriteTest start");
+            //System.Diagnostics.Debug.WriteLine("ReadWriteTest start");
             ReadWrite<string>("hello");
             ReadWrite<int>(1000);
             ReadWrite<float>(100.11f);
             ReadWrite<byte>(0x0f);
             ReadWrite<double>(-33.4455);
             ReadWrite<bool>(false);
-            System.Diagnostics.Debug.WriteLine("ReadWriteTest stop");
+            //System.Diagnostics.Debug.WriteLine("ReadWriteTest stop");
         }
 
         [TestMethod]
