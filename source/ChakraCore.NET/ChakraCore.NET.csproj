@@ -95,8 +95,4 @@
     </Compile>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="SharedMemory\" />
-  </ItemGroup>
-
 </Project>
