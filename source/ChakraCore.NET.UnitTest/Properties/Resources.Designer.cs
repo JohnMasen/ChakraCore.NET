@@ -62,35 +62,32 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to for (var i = 0; i &lt; dv1.byteLength; i++) {
-        ///    dv1.setInt8(i, dv1.getInt8(i) + 1);
-        ///}.
+        ///   Looks up a localized string similar to var array = new Int8Array(buffer);
+        ///array.fill(0x0f);.
         /// </summary>
-        internal static string DataViewReadWrite {
+        internal static string ArrayBufferReadWrite {
             get {
-                return ResourceManager.GetString("DataViewReadWrite", resourceCulture);
+                return ResourceManager.GetString("ArrayBufferReadWrite", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to var array = new Int8Array(buffer);
-        ///
+        ///   Looks up a localized string similar to var array = new Int8Array(buffer1);
         ///array.fill(0x0f);
-        ///.
+        ///var buffer2 = buffer1;.
         /// </summary>
-        internal static string JSArrayBuffer {
+        internal static string JSArrayBufferSetGet {
             get {
-                return ResourceManager.GetString("JSArrayBuffer", resourceCulture);
+                return ResourceManager.GetString("JSArrayBufferSetGet", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to function add(s) {
-        ///    return s + s;
+        ///    return s + s
         ///}
-        ///
         ///function addcallback(s, callback) {
-        ///    callback(s + s);
+        ///    return s + callback(s)
         ///}.
         /// </summary>
         internal static string JSCall {
@@ -100,11 +97,42 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to for (var i = 0; i &lt; dv1.byteLength; i++) {
+        ///    dv1.setInt8(i, dv1.getInt8(i) + 1)
+        ///}.
+        /// </summary>
+        internal static string JSDataViewReadWrite {
+            get {
+                return ResourceManager.GetString("JSDataViewReadWrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to var callProxyResult = myStub.echo(&apos;hi&apos;);.
         /// </summary>
-        internal static string Proxy {
+        internal static string JSProxy {
             get {
-                return ResourceManager.GetString("Proxy", resourceCulture);
+                return ResourceManager.GetString("JSProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to for (var i = 0; i &lt; array1.length; i++) {
+        ///    array1[i] = array1[i] + 1
+        ///};.
+        /// </summary>
+        internal static string JSTypedArrayReadWrite {
+            get {
+                return ResourceManager.GetString("JSTypedArrayReadWrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to var b = a;.
+        /// </summary>
+        internal static string JSValueTest {
+            get {
+                return ResourceManager.GetString("JSValueTest", resourceCulture);
             }
         }
         
@@ -115,17 +143,6 @@ namespace ChakraCore.NET.UnitTest.Properties {
         internal static string RunScript {
             get {
                 return ResourceManager.GetString("RunScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to for (var i = 0; i &lt; array1.length; i++) {
-        ///    array1[i] = array1[i] + 1
-        ///};.
-        /// </summary>
-        internal static string TypedArrayReadWrite {
-            get {
-                return ResourceManager.GetString("TypedArrayReadWrite", resourceCulture);
             }
         }
     }

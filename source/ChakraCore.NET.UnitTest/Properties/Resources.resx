@@ -118,22 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="DataViewReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Script\Core\DataViewReadWrite.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="ArrayBufferReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\memoryshare\arraybufferreadwrite.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="JSArrayBuffer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Script\Core\JSArrayBuffer.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="JSArrayBufferSetGet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\memoryshare\jsarraybuffersetget.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="JSCall" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Script\Core\JSCall.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\script\core\jscall.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="Proxy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Script\Core\Proxy.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="JSDataViewReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\memoryshare\jsdataviewreadwrite.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="JSProxy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\core\jsproxy.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="JSTypedArrayReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\memoryshare\jstypedarrayreadwrite.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="JSValueTest" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Script\Core\JSValueTest.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="RunScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Script\Core\RunScript.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="TypedArrayReadWrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Script\Core\TypedArrayReadWrite.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

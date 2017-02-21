@@ -1,7 +1,6 @@
 ﻿function add(s) {
-    return s + s;
+    return s + s
 }
-
 function addcallback(s, callback) {
-    callback(s + s);
+    return s + callback(s)
 }

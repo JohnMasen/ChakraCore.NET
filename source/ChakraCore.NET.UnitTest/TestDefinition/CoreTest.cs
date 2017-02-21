@@ -21,7 +21,7 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
         [TestMethod]
         public void RunScript()
         {
-            var result=context.RunScript(TestHelper.JSRunScript);
+            var result=runScript("RunScript");
             Assert.AreEqual<string>(result, "test");
         }
 
@@ -64,7 +64,7 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
         [TestMethod]
         public void CallBackTest()
         {
-            context.RunScript(TestHelper.JSCall);
+            runScript("JSCall");
             context.ValueConverter.RegisterFunctionConverter<int, int>();
             int result=context.RootObject.CallFunction<int, Func<int, int>,int>("addcallback",1,
                 (value) => {
@@ -76,12 +76,12 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
 
         private void CallMethod<T>(T value)
         {
-            context.RunScript(TestHelper.JSCall);
+            runScript("JSCall");
             context.RootObject.CallMethod<T>("add",value);
         }
         private void CallFunction<T>(T value,T expect)
         {
-            context.RunScript(TestHelper.JSCall);
+            runScript("JSCall");
             T result=context.RootObject.CallFunction<T,T>("add", value);
             Assert.AreEqual<T>(result, expect);
         }
@@ -91,7 +91,7 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
             
             TestStub stub = new TestStub();
             context.RootObject.WriteProperty("myStub", stub);
-            var result=context.RunScript(TestHelper.JSProxy);
+            runScript("JSProxy");
             string s = context.RootObject.ReadProperty<string>("callProxyResult");
             Assert.AreEqual("hihi", s);
         }
@@ -101,7 +101,7 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
         {
             TestStub stub = new TestStub();
             context.RootObject.WriteProperty("a", stub);
-            var result = context.RunScript(TestHelper.JSValueTest);
+            runScript("JSValueTest");
             TestStub b = context.RootObject.ReadProperty<TestStub>("b");
             Assert.IsTrue(object.ReferenceEquals(stub, b));
         }
@@ -114,7 +114,7 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
         private void ReadWrite<T>(T value)
         {
             context.RootObject.WriteProperty<T>("a", value);
-            context.RunScript(TestHelper.JSValueTest);
+            runScript("JSValueTest");
             T b = context.RootObject.ReadProperty<T>("b");
             Assert.AreEqual<T>(b, value);
         }
