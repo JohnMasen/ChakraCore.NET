@@ -7,50 +7,9 @@ using ChakraCore.NET.Extension.SharedMemory;
 namespace ChakraCore.NET.UnitTest
 {
     [TestClass,TestCategory("Core Features Isolated")]
-    public class CoreFeatureTest_Isolated
-    {
-        static ChakraRuntime runtime;
-        ChakraContext context;
-        static TestContext TestContext;
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
-        {
-            TestContext = testContext;
-            //runtime = ChakraRuntime.Create();
-        }
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            runtime = ChakraRuntime.Create();
-            context = runtime.CreateContext(true);
-            SharedMemoryValueConvertHelper.Inject(context);
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            context.Dispose();
-        }
-
-        [ClassCleanup]
-        public static void ClassCleanup()
-        {
-            runtime.Dispose();
-        }
-
-
-
-        [DeploymentItem(@"Script\Core\")]
-        [TestMethod]
-        [Ignore]
-        public void TestDeploymentItem()
-        {
-            Assert.IsTrue(File.Exists("RunScript.js"));
-        }
-
-
         
+    public class CoreFeatureTest_Isolated :ContextTestBase
+    {
 
         [TestMethod]
         public void RunScript()
@@ -141,112 +100,7 @@ namespace ChakraCore.NET.UnitTest
             Assert.IsTrue(object.ReferenceEquals(stub, b));
         }
 
-        [TestMethod]
-        public void ArrayBufferAll()
-        {
-            System.Diagnostics.Debug.WriteLine("ArrayBufferAll start");
-            ArrayBufferSetGet();
-            ArrayBufferReadWrite();
-            System.Diagnostics.Debug.WriteLine("ArrayBufferAll stop");
-
-        }
-
-        [TestMethod]
-        public void ArrayBufferReadWrite()
-        {
-            int buffersize = 1024*1024*10;
-            JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
-            context.RootObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
-            byte[] tmp = new byte[buffersize];
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                tmp[i] = 0x10;
-            }
-            byte[] target = new byte[buffersize];
-            for (int i = 0; i < target.Length; i++)
-            {
-                target[i] = 0x0f;
-            }
-            buffer.Buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
-            context.RunScript(TestHelper.JSArrayBuffer);
-            Assert.IsFalse(tmp.SequenceEqual(target));
-            buffer.Buffer.ReadArray<byte>(0,tmp,0,tmp.Length);
-            Assert.IsTrue(tmp.SequenceEqual(target));
-            buffer.Dispose();
-            runtime.CollectGarbage();
-        }
-
-        [TestMethod]
-        public void ArrayBufferSetGet()
-        {
-            int buffersize = 1024 * 1024 * 10;
-            JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
-            context.RootObject.WriteProperty<JSArrayBuffer>("buffer1", buffer);
-            byte[] tmp = new byte[buffersize];
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                tmp[i] = 0x10;
-            }
-            byte[] target = new byte[buffersize];
-            for (int i = 0; i < target.Length; i++)
-            {
-                target[i] = 0x0f;
-            }
-
-            buffer.Buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
-            context.RunScript(TestHelper.JSArrayBufferSetGet);
-
-            JSArrayBuffer buffer1 = context.RootObject.ReadProperty<JSArrayBuffer>("buffer1");
-            buffer1.Buffer.ReadArray<byte>(0, tmp, 0, tmp.Length);
-
-            Assert.IsTrue(tmp.SequenceEqual(target));
-            buffer.Dispose();
-            buffer1.Dispose();
-            runtime.CollectGarbage();
-        }
-
-        [TestMethod]
-        public void TypedArrayReadWrite()
-        {
-            uint size = 100;
-            byte[] initdata = new byte[size];
-            for (int i = 0; i < size; i++)
-            {
-                initdata[i] = 1;
-            }
-
-            Action<SharedMemoryBuffer> init = (x) => { x.WriteArray(0,initdata,0,initdata.Length); };
-            JSTypedArray array = JSTypedArray.CreateInJS(API.JavaScriptTypedArrayType.Int8, size, init);
-            context.RootObject.WriteProperty<JSTypedArray>("array1", array);
-            string s=context.RunScript(TestHelper.JSTypedArrayReadWrite);
-            array.Buffer.ReadArray(0, initdata, 0, initdata.Length);
-            array.Dispose();
-            foreach (var item in initdata)
-            {
-                Assert.AreEqual<int>(2, item);
-            }
-        }
-
-        [TestMethod]
-        public void DataViewReadWrite()
-        {
-            uint size = 100;
-            byte[] initdata = new byte[size];
-            for (int i = 0; i < size; i++)
-            {
-                initdata[i] = 1;
-            }
-            JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript(size, null);
-            JSDataView view = JSDataView.CreateFromArrayBuffer(buffer, 0, size, (b) => { b.WriteArray(0, initdata, 0, initdata.Length); });
-            context.RootObject.WriteProperty<JSDataView>("dv1", view);
-            context.RunScript(TestHelper.JSDataViewReadWrite);
-            JSDataView view1 = context.RootObject.ReadProperty<JSDataView>("dv1");
-            view1.Buffer.ReadArray(0, initdata, 0, initdata.Length);
-            foreach (var item in initdata)
-            {
-                Assert.AreEqual<byte>(2, item);
-            }
-        }
+        
 
 
 
