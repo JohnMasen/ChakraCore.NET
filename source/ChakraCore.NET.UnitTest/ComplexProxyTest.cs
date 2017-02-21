@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -27,6 +28,13 @@ namespace ChakraCore.NET.UnitTest
                 target = target + i.ToString() + ",";
             }
             context.RootObject.WriteProperty<IEnumerable<TestProxy>>("proxies", items);
+
+            var items_back=context.RootObject.ReadProperty<IEnumerable<TestProxy>>("proxies").ToArray();
+            Assert.AreEqual(items_back.Length, items.Length);
+            for (int i = 0; i < items.Length; i++)
+            {
+                Assert.AreSame(items[i], items_back[i]);
+            }
             string result=context.RootObject.CallFunction<string>("MultiTransfer");
             Assert.AreEqual<string>(target, result);
         }
