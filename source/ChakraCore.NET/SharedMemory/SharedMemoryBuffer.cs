@@ -68,11 +68,12 @@ namespace ChakraCore.NET
 
         public static bool operator == (SharedMemoryBuffer lhs, SharedMemoryBuffer rhs)
         {
-            return lhs.handle == rhs.handle && lhs.ByteLength == rhs.ByteLength;
+            return lhs?.handle == rhs?.handle && lhs?.ByteLength == rhs?.ByteLength;
         }
 
         public static bool operator !=(SharedMemoryBuffer lhs, SharedMemoryBuffer rhs)
         {
+            
             return !(lhs == rhs);
         }
     }

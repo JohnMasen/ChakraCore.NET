@@ -188,6 +188,27 @@ namespace ChakraCore.NET
 
                 }
                 );
+            RegisterConverter<JSDataView>(
+                (context, value) =>
+                {
+                    JavaScriptValue arrayBuffer = ToJSValue<JSArrayBuffer>(context,value.ArrayBuffer);
+                    return context.RuntimeContext.CreateDataView(arrayBuffer,value);
+                },
+                (context, value) =>
+                {
+                    return context.RuntimeContext.With<JSDataView>(() =>
+                    {
+                        if (value.ValueType != JavaScriptValueType.DataView)
+                        {
+                            throw new InvalidOperationException("source type should be DataView");
+                        }
+                        JavaScriptValue.GetDataViewStorage(value, out IntPtr data, out uint bufferLength);
+                        var result = JSDataView.CreateFromJS(value, data, bufferLength, context.RuntimeContext);
+                        return result;
+                    });
+
+                }
+                );
             #endregion
 
         }

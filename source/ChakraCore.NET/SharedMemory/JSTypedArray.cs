@@ -49,14 +49,16 @@ namespace ChakraCore.NET
         internal static JSTypedArray CreateFromJS(JavaScriptTypedArrayType type, IntPtr data, uint unitCount, JavaScriptValue source,ChakraContext context)
         {
             JSTypedArray result = new JSTypedArray(type,0, unitCount);
+            result.SetJSSource(source, context);
             result.InitWindow(data, false);
-            result.SetJSSource(source,context);
             return result;
         }
 
         public static JSTypedArray CreateInJS(JavaScriptTypedArrayType type,uint unitCount, Action<SharedMemoryBuffer> init)
         {
-            return new JSTypedArray(type, 0, unitCount, init) { InitValue = init };
+            var result= new JSTypedArray(type, 0, unitCount, init);
+            result.SetupInitValueAction(init);
+            return result;
         }
 
         public static uint GetUnitByteSizeByArrayType(JavaScriptTypedArrayType type)

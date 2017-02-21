@@ -42,8 +42,8 @@ namespace ChakraCore.NET
         internal static JSArrayBuffer CreateFromJS(IntPtr handle,uint size,JavaScriptValue value,ChakraContext context)
         {
             var result = new JSArrayBuffer(SharedBufferSourceEnum.CreateByJavascript,(ulong)size);
+            result.SetJSSource(value, context);
             result.InitWindow(handle,  false);//memory owned by js, do not release when object is disposed
-            result.SetJSSource(value,context);
             return result;
         }
 
@@ -56,7 +56,9 @@ namespace ChakraCore.NET
 
         public static JSArrayBuffer CreateInJavascript(uint size,Action<SharedMemoryBuffer> init)
         {
-            return new JSArrayBuffer(SharedBufferSourceEnum.CreateInJavascript,(ulong)size) { InitValue = init };
+            var result = new JSArrayBuffer(SharedBufferSourceEnum.CreateInJavascript, (ulong)size);
+            result.SetupInitValueAction(init);
+            return result;
             //do not init the buffer, buffer will be initialized when it's passed to javascript
         }
 

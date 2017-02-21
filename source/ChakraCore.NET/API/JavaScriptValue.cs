@@ -78,12 +78,26 @@
             return result;
         }
 
-        public static IntPtr GetArrayBufferStorage(JavaScriptValue value,out uint bufferSize)
+        public static IntPtr GetArrayBufferStorage(JavaScriptValue value, out uint bufferSize)
         {
             Native.ThrowIfError(Native.JsGetArrayBufferStorage(value, out IntPtr data, out uint bufferLength));
             bufferSize = bufferLength;
             return data;
         }
+
+        public static JavaScriptValue CreateDataView(JavaScriptValue arrayBuffer, uint byteOffset, uint byteOffsetLength)
+        {
+            Native.ThrowIfError(Native.JsCreateDataView(arrayBuffer, byteOffset, byteOffsetLength, out JavaScriptValue result));
+            return result;
+        }
+
+        public static void GetDataViewStorage(JavaScriptValue dataView, out IntPtr data, out uint bufferLength)
+        {
+            Native.ThrowIfError(Native.JsGetDataViewStorage(dataView, out IntPtr _data, out uint _bufferLength));
+            data = _data;
+            bufferLength = _bufferLength;
+        }
+        
 
         public static void GetTypedArrayStorage(JavaScriptValue typedArray, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType arrayType, out int elementSize)
         {

@@ -13,7 +13,7 @@ namespace ChakraCore.NET
         public JavaScriptValue JSSource { get; protected set; }
         private Action releaseJSValue;
 
-        internal Action<SharedMemoryBuffer> InitValue;
+        private Action<SharedMemoryBuffer> InitValue;
         public JSSharedMemoryObject(SharedBufferSourceEnum source,ulong size)
         {
             Size = size;
@@ -40,6 +40,27 @@ namespace ChakraCore.NET
             Buffer = source.CreateView(position, Size);
         }
 
+        internal virtual void InitBeforeConvert(SharedMemoryBuffer buffer)
+        {
+            if (InitValue!=null)
+            {
+                InitValue(buffer);
+                InitValue = null;
+            }
+        }
+
+        internal void SetupInitValueAction(Action<SharedMemoryBuffer> action)
+        {
+            if (InitValue!=null)
+            {
+                throw new InvalidOperationException("cannot call SetupInitValueAction twice");
+            }
+            if (JSSource.IsValid)
+            {
+                throw new InvalidOperationException("JSSource already initialized");
+            }
+            InitValue = action;
+        }
 
         internal void SetJSSource(JavaScriptValue value, ChakraContext context)
         {

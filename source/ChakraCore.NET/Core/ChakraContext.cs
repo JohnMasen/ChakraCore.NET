@@ -140,7 +140,7 @@ namespace ChakraCore.NET
                             source.SetJSSource(result, this);//hold the varient
                             var data = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
                             source.InitWindow(data, false);
-                            source.InitValue(source.Buffer);
+                            source.InitBeforeConvert(source.Buffer);
                             return result;
                         }
                     case SharedBufferSourceEnum.CreateByDotnet:
@@ -188,7 +188,7 @@ namespace ChakraCore.NET
                             //get the internal storage
                             JavaScriptValue.GetTypedArrayStorage(result, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType type, out int elementSize);
                             source.InitWindow(data, false);
-                            source.InitValue?.Invoke(source.Buffer);
+                            source.InitBeforeConvert(source.Buffer);
                             return result;
                         }
                         );
@@ -197,6 +197,52 @@ namespace ChakraCore.NET
                 default:
                     throw new ArgumentOutOfRangeException("Invalid BufferSource property in JSTypedArray object");
             }
+        }
+
+        /// <summary>
+        /// Create DataView in javascript
+        /// this method requires a sourceArrayBuffer which make sure the arraybuffer is initialized before transfer to javascript
+        /// </summary>
+        /// <param name="sourceArrayBuffer">ArrayBuffer object</param>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        internal JavaScriptValue CreateDataView(JavaScriptValue sourceArrayBuffer, JSDataView source)
+        {
+            if (source.JSSource.IsValid)
+            {
+                return source.JSSource;
+            }
+            switch (source.BufferSource)
+            {
+                case SharedBufferSourceEnum.CreateByDotnet:
+                    return With<JavaScriptValue>(
+                        ()=>
+                        {
+                            var result= JavaScriptValue.CreateDataView(sourceArrayBuffer, source.Position, (uint)source.Size);
+                            source.SetJSSource(result,this);
+                            return result;
+                        }
+                        );
+                case SharedBufferSourceEnum.CreateByJavascript:
+                    throw new InvalidOperationException("invalid source typed array");//create by javascript should already have JavaScriptValue assigned
+                case SharedBufferSourceEnum.CreateInJavascript:
+                    return With<JavaScriptValue>(
+                        () =>
+                        {
+                            var result=JavaScriptValue.CreateDataView(sourceArrayBuffer, source.Position, (uint)source.Size);
+                            source.SetJSSource(result, this);
+                            JavaScriptValue.GetDataViewStorage(result, out IntPtr data, out uint bufferLength);
+                            source.InitWindow(data, false);
+                            source.InitBeforeConvert(source.Buffer);
+                            return result;
+                        }
+                        );
+                case SharedBufferSourceEnum.CreateByExternal:
+                    throw new ArgumentException("DataView does not support create from external");
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid BufferSource property in JSDataView object");
+            }
+
         }
 
         /// <summary>

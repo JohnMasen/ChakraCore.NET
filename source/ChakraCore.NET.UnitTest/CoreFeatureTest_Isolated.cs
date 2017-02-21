@@ -225,6 +225,27 @@ namespace ChakraCore.NET.UnitTest
             }
         }
 
+        [TestMethod]
+        public void DataViewReadWrite()
+        {
+            uint size = 100;
+            byte[] initdata = new byte[size];
+            for (int i = 0; i < size; i++)
+            {
+                initdata[i] = 1;
+            }
+            JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript(size, null);
+            JSDataView view = JSDataView.CreateFromArrayBuffer(buffer, 0, size, (b) => { b.WriteArray(0, initdata, 0, initdata.Length); });
+            context.RootObject.WriteProperty<JSDataView>("dv1", view);
+            context.RunScript(TestHelper.JSDataViewReadWrite);
+            JSDataView view1 = context.RootObject.ReadProperty<JSDataView>("dv1");
+            view1.Buffer.ReadArray(0, initdata, 0, initdata.Length);
+            foreach (var item in initdata)
+            {
+                Assert.AreEqual<byte>(2, item);
+            }
+        }
+
 
 
 
