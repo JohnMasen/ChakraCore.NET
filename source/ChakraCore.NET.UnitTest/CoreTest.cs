@@ -13,7 +13,7 @@ namespace ChakraCore.NET.UnitTest
 
         protected override void SetupContext()
         {
-            TestStub.RegisterValueConverter(context);
+            TestProxy.RegisterValueConverter(context);
         }
 
         [TestMethod]
@@ -87,7 +87,7 @@ namespace ChakraCore.NET.UnitTest
         public void ProxyCallback()
         {
             
-            TestStub stub = new TestStub();
+            TestProxy stub = new TestProxy();
             context.RootObject.WriteProperty("myStub", stub);
             runScript("JSProxy");
             string s = context.RootObject.ReadProperty<string>("callProxyResult");
@@ -97,10 +97,10 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void ProxyTransferback()
         {
-            TestStub stub = new TestStub();
+            TestProxy stub = new TestProxy();
             context.RootObject.WriteProperty("a", stub);
             runScript("JSValueTest");
-            TestStub b = context.RootObject.ReadProperty<TestStub>("b");
+            TestProxy b = context.RootObject.ReadProperty<TestProxy>("b");
             Assert.IsTrue(object.ReferenceEquals(stub, b));
         }
 

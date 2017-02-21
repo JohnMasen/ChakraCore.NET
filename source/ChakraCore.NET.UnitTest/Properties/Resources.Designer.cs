@@ -72,6 +72,21 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to function MultiTransfer() {
+        ///    var result = &quot;&quot;;
+        ///    for (var i = 0; i &lt; proxies.length; i++) {
+        ///        result = result  +proxies[i].GetName()+&quot;,&quot;;
+        ///    }
+        ///    return result;
+        ///}.
+        /// </summary>
+        internal static string ComplexProxy {
+            get {
+                return ResourceManager.GetString("ComplexProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to var array = new Int8Array(buffer1);
         ///array.fill(0x0f);
         ///var buffer2 = buffer1;.
