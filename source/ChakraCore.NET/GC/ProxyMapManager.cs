@@ -9,7 +9,8 @@ namespace ChakraCore.NET.GC
 {
     public class ProxyMapManager
     {
-        private Dictionary<Type, object> mapList = new Dictionary<Type, object>();
+        private SortedDictionary<Type, object> mapList = new SortedDictionary<Type, object>(new TypeComparer());
+        
 
         
 
@@ -65,25 +66,44 @@ namespace ChakraCore.NET.GC
 
         private class MapItemList<T>  where T : class
         {
-            private Dictionary<Guid, ProxyMap<T>> internalMap = new Dictionary<Guid, ProxyMap<T>>();
-            private Dictionary<T, ProxyMap<T>> externalMap =new Dictionary<T, ProxyMap<T>>();
+            private IDictionary<Guid, ProxyMap<T>> internalMap;
+            private IDictionary<T, ProxyMap<T>> externalMap; 
 
+            
             public void Release(Guid value)
             {
                 var item = internalMap[value];
                 internalMap.Remove(value);
                 externalMap.Remove(item.source);
             }
+            private void initCollection(ProxyMap<T> item)
+            {
+                if ((item.source as IComparer<T>)!=null)
+                {
+                    //item implemented IComparer interface
+                    internalMap = new SortedDictionary<Guid, ProxyMap<T>>();
+                    externalMap = new SortedDictionary<T, ProxyMap<T>>();
+                }
+                else
+                {
+                    internalMap=new Dictionary<Guid, ProxyMap<T>>();
+                    externalMap = new Dictionary<T, ProxyMap<T>>();
+                }
+            }
 
             public void Add(ProxyMap<T> item)
             {
+                if (internalMap==null)
+                {
+                    initCollection(item);
+                }
                 internalMap.Add(item.ItemID, item);
                 externalMap.Add(item.source, item);
             }
 
             public JavaScriptValue? Get(T obj)
             {
-                if (externalMap.ContainsKey(obj))
+                if (externalMap?.ContainsKey(obj)==true)
                 {
                     return externalMap[obj].proxy;
                 }
@@ -103,6 +123,21 @@ namespace ChakraCore.NET.GC
                 {
                     throw new InvalidOperationException("Internal proxy map list corrupted");
                 }
+            }
+        }
+
+        private class TypeComparer :IComparer<Type>
+        {
+            public int Compare(Type x, Type y)
+            {
+                return x.GetHashCode() - y.GetHashCode();
+            }
+
+            
+
+            public int GetHashCode(Type obj)
+            {
+                return obj.GetHashCode();
             }
         }
 
