@@ -4,14 +4,12 @@ using System.IO;
 using System.Linq;
 using ChakraCore.NET.Extension.SharedMemory;
 
-namespace ChakraCore.NET.UnitTest.TestDefinition
+namespace ChakraCore.NET.UnitTest
 {
-        
-    public abstract class CoreTest :UnitTestBase
+    [TestClass]
+    public  class CoreTest :UnitTestBase
     {
-        public CoreTest(bool shareRuntime, bool shareContext) : base(shareRuntime, shareContext)
-        {
-        }
+        
 
         protected override void SetupContext()
         {
@@ -119,7 +117,6 @@ namespace ChakraCore.NET.UnitTest.TestDefinition
             Assert.AreEqual<T>(b, value);
         }
 
-
-
+        
     }
 }

@@ -5,14 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ChakraCore.NET.UnitTest.TestDefinition
+namespace ChakraCore.NET.UnitTest
 {
-    public abstract class SharedMemoryObjectsTest : UnitTestBase
+    [TestClass]
+    public class SharedMemoryObjectsTest : UnitTestBase
     {
-        public SharedMemoryObjectsTest(bool shareRuntime, bool shareContext) : base(shareRuntime, shareContext)
-        {
-
-        }
+        
         protected override void SetupContext()
         {
             SharedMemoryValueConvertHelper.Inject(context);
