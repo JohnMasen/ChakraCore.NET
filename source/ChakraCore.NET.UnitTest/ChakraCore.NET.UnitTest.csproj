@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ChakraCore.NET.Extension.SharedMemoryObjects\ChakraCore.NET.Extension.SharedMemoryObjects.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace ChakraCore.NET
+namespace ChakraCore.NET.Extension.SharedMemory
 {
     public class SharedMemoryBuffer : SafeBuffer
     {

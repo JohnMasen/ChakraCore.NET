@@ -5,7 +5,7 @@ using ChakraCore.NET.API;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace ChakraCore.NET
+namespace ChakraCore.NET.Extension.SharedMemory
 {
     public class JSArrayBuffer:JSSharedMemoryObject
     {

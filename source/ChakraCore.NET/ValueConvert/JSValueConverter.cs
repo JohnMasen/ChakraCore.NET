@@ -18,7 +18,7 @@ namespace ChakraCore.NET
 
         private Dictionary<Type, Tuple<object, object>> converters = new Dictionary<Type, Tuple<object, object>>();
 
-        internal void RegisterConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue, bool throewIfExists = true)
+        public void RegisterConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue, bool throewIfExists = true)
         {
             if (converters.ContainsKey(typeof(T)))
             {

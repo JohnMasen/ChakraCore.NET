@@ -2,6 +2,7 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Linq;
+using ChakraCore.NET.Extension.SharedMemory;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -23,6 +24,7 @@ namespace ChakraCore.NET.UnitTest
         {
             runtime = ChakraRuntime.Create();
             context = runtime.CreateContext(true);
+            SharedMemoryValueConvertHelper.Inject(context);
         }
 
         [TestCleanup]

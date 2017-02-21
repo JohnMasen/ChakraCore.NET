@@ -148,67 +148,6 @@ namespace ChakraCore.NET
                     return value;
                 }
                 );
-            RegisterConverter<JSArrayBuffer>(
-                (context, value) =>
-                {
-                    return context.RuntimeContext.CreateArrayBuffer(value);
-                },
-                (context, value) =>
-                {
-                    return context.RuntimeContext.With<JSArrayBuffer>(() =>
-                    {
-                        if (value.ValueType!=JavaScriptValueType.ArrayBuffer)
-                        {
-                            throw new InvalidOperationException("source type should be ArrayBuffer");
-                        }
-                        IntPtr buffer=JavaScriptValue.GetArrayBufferStorage(value, out uint size);
-                        var result = JSArrayBuffer.CreateFromJS(buffer, size, value, context.RuntimeContext);
-                        return result;
-                    });
-                    
-                }
-                );
-            RegisterConverter<JSTypedArray>(
-                (context, value) =>
-                {
-                    return context.RuntimeContext.CreateTypedArray(value);
-                },
-                (context, value) =>
-                {
-                    return context.RuntimeContext.With<JSTypedArray>(() =>
-                    {
-                        if (value.ValueType != JavaScriptValueType.TypedArray)
-                        {
-                            throw new InvalidOperationException("source type should be TypedArray");
-                        }
-                        JavaScriptValue.GetTypedArrayStorage(value, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType type, out int elementSize);
-                        var result = JSTypedArray.CreateFromJS(type, data, bufferLength, value, context.RuntimeContext);
-                        return result;
-                    });
-
-                }
-                );
-            RegisterConverter<JSDataView>(
-                (context, value) =>
-                {
-                    JavaScriptValue arrayBuffer = ToJSValue<JSArrayBuffer>(context,value.ArrayBuffer);
-                    return context.RuntimeContext.CreateDataView(arrayBuffer,value);
-                },
-                (context, value) =>
-                {
-                    return context.RuntimeContext.With<JSDataView>(() =>
-                    {
-                        if (value.ValueType != JavaScriptValueType.DataView)
-                        {
-                            throw new InvalidOperationException("source type should be DataView");
-                        }
-                        JavaScriptValue.GetDataViewStorage(value, out IntPtr data, out uint bufferLength);
-                        var result = JSDataView.CreateFromJS(value, data, bufferLength, context.RuntimeContext);
-                        return result;
-                    });
-
-                }
-                );
             #endregion
 
         }
