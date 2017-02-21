@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <Description>Provides ArrayBuffer, TypedArray and DataView objects</Description>
+    <Company />
+    <Product>ChakraCore.NET</Product>
+    <Authors>QianFan Jiang (John Masen)</Authors>
+    <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
