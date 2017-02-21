@@ -6,6 +6,7 @@ using ChakraCore.NET.Extension.SharedMemory;
 
 namespace ChakraCore.NET.UnitTest
 {
+    //for microsoft trouble shooting only, not used in my project
     [TestClass,TestCategory("Core Features")]
     public class CoreFeatureTest
     {

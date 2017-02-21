@@ -1,0 +1,34 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+<#
+    string[] tests=new string[]{"CoreTest","SharedMemoryObjectsTest"};
+
+            Tuple<string,string, string, string>[] testCases = new Tuple<string,string, string, string>[]
+        {
+                new Tuple<string,string, string, string>("NewRuntime",   "NewContext" ,"false"   ,"false"),
+                new Tuple<string,string, string, string>("NewRuntime",   "SharedContext"    ,"false"   ,"true"),
+                new Tuple<string,string, string, string>("SharedRuntime",      "NewContext" ,"true"  ,"false"),
+                new Tuple<string,string, string, string>("SharedRuntime",      "SharedContext"    ,"true"  ,"true"),
+        };
+
+foreach(var test in tests)
+    {
+        foreach( var testCase in testCases)
+        {
+
+
+            #>
+namespace <#=testCase.Item1#>.<#=testCase.Item2 #>.<#=test#>
+{
+    [TestClass]
+    public class <#=test #>_<#=testCase.Item1#>_<#=testCase.Item2 #> : ChakraCore.NET.UnitTest.TestDefinition.<#=test #>
+    {
+        public <#=test #>_<#=testCase.Item1#>_<#=testCase.Item2 #>() : base(<#=testCase.Item3 #>, <#=testCase.Item4 #>)
+        {
+        }
+    }
+}
+
+<#
+        }
+    }
+    #>

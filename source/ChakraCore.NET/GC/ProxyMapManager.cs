@@ -9,7 +9,7 @@ namespace ChakraCore.NET.GC
 {
     public class ProxyMapManager
     {
-        private SortedDictionary<Type, object> mapList = new SortedDictionary<Type, object>();
+        private Dictionary<Type, object> mapList = new Dictionary<Type, object>();
 
         
 
@@ -65,8 +65,8 @@ namespace ChakraCore.NET.GC
 
         private class MapItemList<T>  where T : class
         {
-            private SortedDictionary<Guid, ProxyMap<T>> internalMap = new SortedDictionary<Guid, ProxyMap<T>>();
-            private SortedDictionary<T, ProxyMap<T>> externalMap =new SortedDictionary<T, ProxyMap<T>>();
+            private Dictionary<Guid, ProxyMap<T>> internalMap = new Dictionary<Guid, ProxyMap<T>>();
+            private Dictionary<T, ProxyMap<T>> externalMap =new Dictionary<T, ProxyMap<T>>();
 
             public void Release(Guid value)
             {

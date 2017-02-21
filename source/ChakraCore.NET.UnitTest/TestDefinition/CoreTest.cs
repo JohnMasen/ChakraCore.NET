@@ -4,12 +4,19 @@ using System.IO;
 using System.Linq;
 using ChakraCore.NET.Extension.SharedMemory;
 
-namespace ChakraCore.NET.UnitTest
+namespace ChakraCore.NET.UnitTest.TestDefinition
 {
-    [TestClass,TestCategory("Core Features Isolated")]
         
-    public class CoreFeatureTest_Isolated :ContextTestBase
+    public abstract class CoreTest :UnitTestBase
     {
+        public CoreTest(bool shareRuntime, bool shareContext) : base(shareRuntime, shareContext)
+        {
+        }
+
+        protected override void SetupContext()
+        {
+            TestStub.RegisterValueConverter(context);
+        }
 
         [TestMethod]
         public void RunScript()
@@ -81,7 +88,7 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void ProxyCallback()
         {
-            TestStub.RegisterValueConverter(context);
+            
             TestStub stub = new TestStub();
             context.RootObject.WriteProperty("myStub", stub);
             var result=context.RunScript(TestHelper.JSProxy);
@@ -92,7 +99,6 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void ProxyTransferback()
         {
-            TestStub.RegisterValueConverter(context);
             TestStub stub = new TestStub();
             context.RootObject.WriteProperty("a", stub);
             var result = context.RunScript(TestHelper.JSValueTest);
