@@ -27,7 +27,7 @@ namespace ChakraCore.NET.Extension.SharedMemory
                         return result;
                     });
 
-                }
+                },false
                 );
             target.ValueConverter.RegisterConverter<JSTypedArray>(
                 (context, value) =>
@@ -47,7 +47,7 @@ namespace ChakraCore.NET.Extension.SharedMemory
                         return result;
                     });
 
-                }
+                },false
                 );
             target.ValueConverter.RegisterConverter<JSDataView>(
                 (context, value) =>
@@ -68,7 +68,7 @@ namespace ChakraCore.NET.Extension.SharedMemory
                         return result;
                     });
 
-                }
+                },false
                 );
         }
     }

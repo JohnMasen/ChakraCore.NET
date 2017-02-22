@@ -17,6 +17,7 @@ namespace ChakraCore.NET.UnitTest
 
         public string Echo(string s)
         {
+            System.Diagnostics.Debug.WriteLine($"Echo {s}");
             return s + s;
         }
 
