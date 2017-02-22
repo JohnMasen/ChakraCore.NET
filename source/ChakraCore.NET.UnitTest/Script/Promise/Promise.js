@@ -1,21 +1,18 @@
-﻿function SimplePromise() {
+﻿var hold;
+function SimplePromise() {
     return new Promise(function (resolve, reject) {
+        for (var i = 0; i < 100000; i++) {
+
+        }
         timer.setTimeout(function () {
-            test.echo(1);
+            test.echo(10);
             resolve(1);
-        },2000);
+        },1);
     });
 }
 
 
-function T1() {
-    SimplePromise().then(function (value) {
-        //do nothing
-        test.echo(value);
-    });
-    //timer.setTimeout(function ()    {
-    //    test.echo(2);
-    //}, 1000);
-    
-}
+
+
+
 

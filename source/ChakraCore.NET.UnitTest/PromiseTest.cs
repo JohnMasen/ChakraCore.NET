@@ -29,10 +29,6 @@ namespace ChakraCore.NET.UnitTest
             Assert.AreEqual(1, result);
         }
 
-        [TestMethod]
-        public void T1()
-        {
-            context.RootObject.CallMethod("T1");
-        }
+        
     }
 }

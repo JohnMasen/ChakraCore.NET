@@ -11,7 +11,7 @@ namespace ChakraCore.NET.UnitTest
         {
             Task.Factory.StartNew(async () =>
             {
-                await Task.Delay(delay);
+                await Task.Delay(delay);//TODO: need to hold the callback object or it will be GC by chakracore
                 a();
             });
         }

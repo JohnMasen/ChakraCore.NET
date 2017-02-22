@@ -5,6 +5,8 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Linq;
 using ChakraCore.NET.GC;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace ChakraCore.NET
 {
@@ -13,7 +15,7 @@ namespace ChakraCore.NET
         private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
         //private Dictionary<object, List<object>> holder = new Dictionary<object, List<object>>();
-        private static Queue<JavaScriptValue> taskQueue = new Queue<JavaScriptValue>();
+        //private static Queue<JavaScriptValue> taskQueue = new Queue<JavaScriptValue>();
 
         //private Dictionary<Type, object> proxyList = new Dictionary<Type, object>();
         public ProxyMapManager ProxyMapManager { get; private set; } = new ProxyMapManager();
@@ -22,6 +24,9 @@ namespace ChakraCore.NET
         public JSValueConverter ValueConverter { get; set; }
 
         private AutoResetEvent waitHanlder;
+
+        private CancellationTokenSource promiseTaskCTS = new CancellationTokenSource();
+        private BlockingCollection<JavaScriptValue> promiseTaskQueue = new BlockingCollection<JavaScriptValue>();
 
         public JavaScriptValue JSValue_Undefined;
         public JavaScriptValue JSValue_Null;
@@ -57,26 +62,34 @@ namespace ChakraCore.NET
         internal void Init(bool enableDebug)
         {
             isDebug = enableDebug;
-            JavaScriptContext.Current = jsContext;//TODO: use With()
-            JavaScriptPromiseContinuationCallback promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
+            With(() =>
             {
-                taskQueue.Enqueue(task);
-            };
+                JavaScriptPromiseContinuationCallback promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
+                {
+                    promiseTaskQueue.Add(task);
+                };
 
-            if (Native.JsSetPromiseContinuationCallback(promiseContinuationCallback, IntPtr.Zero) != JavaScriptErrorCode.NoError)
-            {
-                throw new InvalidOperationException("failed to setup callback for ES6 Promise");
-            }
-                
+                if (Native.JsSetPromiseContinuationCallback(promiseContinuationCallback, IntPtr.Zero) != JavaScriptErrorCode.NoError)
+                {
+                    throw new InvalidOperationException("failed to setup callback for ES6 Promise");
+                }
+                StartPromiseTaskLoop(promiseTaskCTS.Token);
 
-            ValueConverter = new JSValueConverter();
-            JSValue_Undefined = JavaScriptValue.Undefined;
-            JSValue_Null = JavaScriptValue.Null;
-            JSValue_True = JavaScriptValue.True;
-            JSValue_False = JavaScriptValue.False;
+                //Native.JsSetObjectBeforeCollectCallback()
 
-            RootObject = JSValue.CreateRoot(this);
-            JavaScriptContext.Current = JavaScriptContext.Invalid;
+
+                ValueConverter = new JSValueConverter();
+                JSValue_Undefined = JavaScriptValue.Undefined;
+                JSValue_Null = JavaScriptValue.Null;
+                JSValue_True = JavaScriptValue.True;
+                JSValue_False = JavaScriptValue.False;
+
+                RootObject = JSValue.CreateRoot(this);
+
+            });
+            //JavaScriptContext.Current = jsContext;//TODO: use With()
+
+            //JavaScriptContext.Current = JavaScriptContext.Invalid;
 
         }
 
@@ -105,23 +118,41 @@ namespace ChakraCore.NET
             return result;
         }
 
-        //internal JavaScriptValue CreateExternalArrayBuffer(JSExternalArrayBuffer source) 
-        //{
+        private void StartPromiseTaskLoop(CancellationToken token)
+        {
+            Task.Factory.StartNew(
+                ()=>
+                {
+                    System.Diagnostics.Debug.WriteLine("Promise task loop started");
+                    while (true)
+                    {
+                        JavaScriptValue task;
+                        try
+                        {
+                            task = promiseTaskQueue.Take(token);
+                            System.Diagnostics.Debug.WriteLine("Promise task taken");
+                        }
+                        catch(OperationCanceledException)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Promise task stop");
+                            return;
+                        }
+                        catch (Exception)
+                        {
 
-        //    var result = ProxyMapManager.ReigsterMap<JSExternalArrayBuffer>(source, (p, callback) =>
+                            throw;
+                        }
 
-        //    {
-        //        return With<JavaScriptValue>(() =>
-        //        {
-        //            return JavaScriptValue.CreateExternalArrayBuffer(source.data, Convert.ToUInt32(source.memorySize), callback, IntPtr.Zero);
-        //        }
-        //    );
-        //    }
-        //       , out DelegateHandler tmp //do not pass back, arraybuffer should not have any callback
-        //    );
-        //    return result;
-        //}
-
+                        With(() =>
+                        {
+                            task.CallFunction(GlobalObject);
+                        });
+                        System.Diagnostics.Debug.WriteLine("Promise task complete");
+                    }
+                }
+                ,token
+                );
+        }
         
         /// <summary>
         /// try switch context to current thread
@@ -235,6 +266,7 @@ namespace ChakraCore.NET
             {
                 if (disposing)
                 {
+                    promiseTaskCTS.Cancel();
                     jsContext.Release();
                 }
                 disposedValue = true;
