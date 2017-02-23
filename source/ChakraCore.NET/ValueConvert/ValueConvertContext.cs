@@ -9,16 +9,36 @@ namespace ChakraCore.NET
     public class JSValueConvertContext : ContextObjectBase
     {
         public DelegateHandler Handler { get; private set; }
-        public readonly JavaScriptValue JSClass;
-        public JSValueConvertContext(ChakraContext context,DelegateHandler handler,JavaScriptValue caller) : base(context)
+        /// <summary>
+        /// returns current caller, JSValueConvertContext and JSValueConverter both have their current caller(JSClass)
+        /// JSValueConverter has higher priority
+        /// </summary>
+        public JavaScriptValue JSClass
+        {
+            get
+            {
+                JavaScriptValue result = RuntimeContext.ValueConverter.JSCaller;
+                if (result.IsValid)
+                {
+                    return result;
+                }
+                else
+                {
+                    return contextJSCalss;
+                }
+            }
+
+        }
+        public readonly JavaScriptValue contextJSCalss;
+        public JSValueConvertContext(ChakraContext context, DelegateHandler handler, JavaScriptValue caller) : base(context)
         {
             Handler = handler;
-            JSClass = caller;
+            contextJSCalss = caller;
         }
         public JSValueConvertContext(ChakraContext context, JavaScriptValue caller) : base(context)
         {
             Handler = new DelegateHandler();
-            JSClass = caller;
+            contextJSCalss = caller;
         }
 
     }

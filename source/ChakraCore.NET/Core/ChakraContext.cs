@@ -190,6 +190,7 @@ namespace ChakraCore.NET
         {
             if (Enter())
             {
+                
                 a();
                 Leave();
             }
@@ -197,6 +198,13 @@ namespace ChakraCore.NET
             {
                 a();
             }
+        }
+        public void With(Action a, JavaScriptValue currentCaller)
+        {
+            JavaScriptValue prevousCaller = ValueConverter.JSCaller;
+            ValueConverter.JSCaller = currentCaller;
+            With(a);
+            ValueConverter.JSCaller = prevousCaller;
         }
 
         public T With<T>(Func<T> f)
@@ -211,6 +219,15 @@ namespace ChakraCore.NET
             {
                 return f();
             }
+        }
+
+        public T With<T>(Func<T>f,JavaScriptValue currentCaller)
+        {
+            JavaScriptValue prevousCaller = ValueConverter.JSCaller;
+            ValueConverter.JSCaller = currentCaller;
+            var result=With<T>(f);
+            ValueConverter.JSCaller = prevousCaller;
+            return result;
         }
 
 

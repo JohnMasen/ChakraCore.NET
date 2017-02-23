@@ -1,4 +1,5 @@
-﻿var hold;
+﻿var hold = true;
+var result;
 function SimplePromise() {
     return new Promise(function (resolve, reject) {
         for (var i = 0; i < 100000; i++) {
@@ -11,7 +12,13 @@ function SimplePromise() {
     });
 }
 
+function CallAsync() {
 
+    test.asyncFunction().then(function (x) {
+        result = x;
+        hold = false;
+    });
+}
 
 
 

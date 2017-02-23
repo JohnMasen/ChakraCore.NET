@@ -11,7 +11,7 @@ namespace ChakraCore.NET.UnitTest
     {
         protected override void SetupContext()
         {
-            TestProxy.RegisterValueConverter(context);
+            TestProxy.Inject(context);
             context.ValueConverter.RegisterArrayConverter<TestProxy>();
             runScript("ComplexProxy");
         }

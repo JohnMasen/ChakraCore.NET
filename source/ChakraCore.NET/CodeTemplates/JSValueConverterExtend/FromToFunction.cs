@@ -16,10 +16,8 @@ private JavaScriptValue toJSFunction<TResult> (JSValueConvertContext context, Fu
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 
                 
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall);
                 
@@ -73,10 +71,8 @@ private JavaScriptValue toJSFunction<T1,TResult> (JSValueConvertContext context,
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
                 arguments[1].AddRef();
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall,para1);
                 arguments[1].Release();
@@ -106,7 +102,7 @@ private JavaScriptValue toJSFunction<T1,TResult> (JSValueConvertContext context,
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined,p1);
                     }
                     else
                     {
@@ -130,12 +126,10 @@ private JavaScriptValue toJSFunction<T1,T2,TResult> (JSValueConvertContext conte
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
                 arguments[1].AddRef();
 arguments[2].AddRef();
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall,para1,para2);
                 arguments[1].Release();
@@ -168,7 +162,7 @@ p2.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined,p1,p2);
                     }
                     else
                     {
@@ -193,14 +187,12 @@ private JavaScriptValue toJSFunction<T1,T2,T3,TResult> (JSValueConvertContext co
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
                 arguments[1].AddRef();
 arguments[2].AddRef();
 arguments[3].AddRef();
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall,para1,para2,para3);
                 arguments[1].Release();
@@ -236,7 +228,7 @@ p3.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined,p1,p2,p3);
                     }
                     else
                     {
@@ -262,7 +254,6 @@ private JavaScriptValue toJSFunction<T1,T2,T3,T4,TResult> (JSValueConvertContext
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -271,7 +262,6 @@ T4 para4 = FromJSValue<T4>(context, arguments[4]);
 arguments[2].AddRef();
 arguments[3].AddRef();
 arguments[4].AddRef();
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall,para1,para2,para3,para4);
                 arguments[1].Release();
@@ -310,7 +300,7 @@ p4.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined,p1,p2,p3,p4);
                     }
                     else
                     {
@@ -337,7 +327,6 @@ private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,TResult> (JSValueConvertCont
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -348,7 +337,6 @@ arguments[2].AddRef();
 arguments[3].AddRef();
 arguments[4].AddRef();
 arguments[5].AddRef();
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall,para1,para2,para3,para4,para5);
                 arguments[1].Release();
@@ -390,7 +378,7 @@ p5.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined,p1,p2,p3,p4,p5);
                     }
                     else
                     {
@@ -418,7 +406,6 @@ private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,TResult> (JSValueConvertC
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -431,7 +418,6 @@ arguments[3].AddRef();
 arguments[4].AddRef();
 arguments[5].AddRef();
 arguments[6].AddRef();
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall,para1,para2,para3,para4,para5,para6);
                 arguments[1].Release();
@@ -476,7 +462,7 @@ p6.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined,p1,p2,p3,p4,p5,p6);
                     }
                     else
                     {
@@ -505,7 +491,6 @@ private JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult> (JSValueConve
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                //context.JSClass = arguments[0];//put the caller object to context
                 T1 para1 = FromJSValue<T1>(context, arguments[1]);
 T2 para2 = FromJSValue<T2>(context, arguments[2]);
 T3 para3 = FromJSValue<T3>(context, arguments[3]);
@@ -520,7 +505,6 @@ arguments[4].AddRef();
 arguments[5].AddRef();
 arguments[6].AddRef();
 arguments[7].AddRef();
-                //context.RuntimeContext.Leave();//leave the context. [1]user method does not require javascript context  [2]user may switch thread in the code.
 
                 TResult result=callback(isConstructCall,para1,para2,para3,para4,para5,para6,para7);
                 arguments[1].Release();
@@ -568,7 +552,7 @@ p7.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined);
+                        resultValue= value.ConstructObject(context.RuntimeContext.JSValue_Undefined,p1,p2,p3,p4,p5,p6,p7);
                     }
                     else
                     {

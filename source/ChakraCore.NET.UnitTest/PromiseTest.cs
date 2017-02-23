@@ -13,7 +13,7 @@ namespace ChakraCore.NET.UnitTest
         protected override void SetupContext()
         {
             context.ValueConverter.RegisterTask<int>();
-            TestProxy.RegisterValueConverter(context);
+            TestProxy.Inject(context);
             TimerHelper.RegisterConverter(context);
             context.RootObject.WriteProperty<TestProxy>("test", new TestProxy());
             context.RootObject.WriteProperty<TimerHelper>("timer", new TimerHelper());
@@ -29,5 +29,21 @@ namespace ChakraCore.NET.UnitTest
             Assert.AreEqual(1, result);
         }
         
+
+        [TestMethod]
+        public void PromiseCallFromJS()
+        {
+            context.RootObject.CallMethod("CallAsync");
+            while (true)
+            {
+                bool isHold = context.RootObject.ReadProperty<bool>("hold");
+                if (!isHold)
+                {
+                    int result = context.RootObject.ReadProperty<int>("result");
+                    Assert.AreEqual(1, result);
+                    return;
+                }
+            }
+        }
     }
 }

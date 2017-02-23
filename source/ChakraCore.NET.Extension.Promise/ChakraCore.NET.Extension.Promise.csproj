@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BindingHelper.cs" />
+    <Compile Remove="JSValueHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 

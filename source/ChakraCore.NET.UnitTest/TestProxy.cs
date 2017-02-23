@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using ChakraCore.NET;
+using System.Threading.Tasks;
+
 namespace ChakraCore.NET.UnitTest
 {
     class TestProxy
@@ -26,16 +28,25 @@ namespace ChakraCore.NET.UnitTest
             return Name;
         }
 
-        private static void Inject(JSValueBinding binding,TestProxy value)
+        public async Task<int> AsyncCall()
         {
-            binding.SetFunction<string, string>("echo", value.Echo);
-            binding.SetFunction<string>("GetName", value.GetName);
+            await Task.Delay(1);
+            return 1;
         }
 
-        public static void RegisterValueConverter(ChakraContext context)
+        
+
+        public static void Inject(ChakraContext context)
         {
-            context.ValueConverter.RegisterProxyConverter<TestProxy>(Inject);
+            context.ValueConverter.RegisterProxyConverter<TestProxy>((binding,value)=>
+            {
+                binding.SetFunction<string, string>("echo", value.Echo);
+                binding.SetFunction<string>("GetName", value.GetName);
+                binding.SetFunction<Task<int>>("asyncFunction", value.AsyncCall);
+            });
         }
+
+        
 
     }
 }

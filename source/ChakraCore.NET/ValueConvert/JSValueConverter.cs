@@ -8,6 +8,9 @@ namespace ChakraCore.NET
 {
     public partial class JSValueConverter
     {
+        //allows user to call function within a temporary caller, designed for Promise feature
+        public JavaScriptValue JSCaller { get; set; }
+
         public delegate JavaScriptValue toJSValueDelegate<T>(JSValueConvertContext convertContext, T value);
         public delegate TResult fromJSValueDelegate<out TResult>(JSValueConvertContext convertContext, JavaScriptValue value);
         partial void initDefault();

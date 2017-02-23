@@ -13,7 +13,7 @@ namespace ChakraCore.NET.UnitTest
 
         protected override void SetupContext()
         {
-            TestProxy.RegisterValueConverter(context);
+            TestProxy.Inject(context);
         }
 
         [TestMethod]
