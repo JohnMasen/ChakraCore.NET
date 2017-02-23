@@ -8,4 +8,8 @@
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CodeTemplates\" />
+  </ItemGroup>
+
 </Project>

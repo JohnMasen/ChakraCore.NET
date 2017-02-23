@@ -28,7 +28,6 @@ namespace ChakraCore.NET.UnitTest
             int result = await t;
             Assert.AreEqual(1, result);
         }
-
         
     }
 }

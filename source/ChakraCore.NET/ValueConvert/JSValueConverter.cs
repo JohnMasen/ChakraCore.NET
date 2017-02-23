@@ -16,11 +16,22 @@ namespace ChakraCore.NET
             initDefault();
         }
 
-        private Dictionary<Type, Tuple<object, object>> converters = new Dictionary<Type, Tuple<object, object>>();
+        private SortedDictionary<Type, Tuple<object, object>> converters = new SortedDictionary<Type, Tuple<object, object>>(new Helper.TypeComparer());
+
+
+        public bool CanConvert<T>()
+        {
+            return converters.ContainsKey(typeof(T));
+        }
+
+        public bool CanConvert(Type t)
+        {
+            return converters.ContainsKey(t);
+        }
 
         public void RegisterConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue, bool throewIfExists = true)
         {
-            if (converters.ContainsKey(typeof(T)))
+            if (CanConvert<T>())
             {
                 if (throewIfExists)
                 {
@@ -42,7 +53,7 @@ namespace ChakraCore.NET
 
         public JavaScriptValue ToJSValue<T>(JSValueConvertContext context, T value)
         {
-            if (converters.ContainsKey(typeof(T)))
+            if (CanConvert<T>())
             {
                 var f = (converters[typeof(T)].Item1 as toJSValueDelegate<T>);
                 if (f == null)
@@ -64,7 +75,7 @@ namespace ChakraCore.NET
 
         public T FromJSValue<T>(JSValueConvertContext context, JavaScriptValue value)
         {
-            if (converters.ContainsKey(typeof(T)))
+            if (CanConvert<T>())
             {
                 var f = (converters[typeof(T)].Item2 as fromJSValueDelegate<T>);
                 if (f == null)

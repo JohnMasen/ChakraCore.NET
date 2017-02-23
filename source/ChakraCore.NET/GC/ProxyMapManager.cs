@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using ChakraCore.NET.Helper;
 
 namespace ChakraCore.NET.GC
 {
@@ -123,21 +124,6 @@ namespace ChakraCore.NET.GC
                 {
                     throw new InvalidOperationException("Internal proxy map list corrupted");
                 }
-            }
-        }
-
-        private class TypeComparer :IComparer<Type>
-        {
-            public int Compare(Type x, Type y)
-            {
-                return x.GetHashCode() - y.GetHashCode();
-            }
-
-            
-
-            public int GetHashCode(Type obj)
-            {
-                return obj.GetHashCode();
             }
         }
 
