@@ -38,7 +38,7 @@ namespace ChakraCore.NET
                                    ()=>
                                    {
                                        resolve(result);
-                                   }, context.RuntimeContext.JSValue_Undefined
+                                   }
                                    );
                                
                            }
@@ -48,7 +48,7 @@ namespace ChakraCore.NET
                                    () =>
                                    {
                                        reject(ex.ToString());
-                                   }, context.RuntimeContext.JSValue_Undefined
+                                   }
                                    );
                            }
                            catch (Exception)
@@ -57,7 +57,7 @@ namespace ChakraCore.NET
                            }
                            
                        };
-                    promiseObject = context.RuntimeContext.RootObject.CallFunction<Action<Action<TResult>, Action<String>>, JavaScriptValue>("Promise",promiseBody,true);
+                    promiseObject = context.RuntimeContext.RootObject.CallFunction<Action<Action<TResult>, Action<String>>, JavaScriptValue>("createPromiseStub", promiseBody, false);
                     //var x = promiseObject.GetProperty(JavaScriptPropertyId.FromString("resolve "));
                     return promiseObject;
                 },

@@ -28,7 +28,15 @@ namespace ChakraCore.NET.UnitTest
             int result = await t;
             Assert.AreEqual(1, result);
         }
-        
+
+        [TestMethod]
+        public async Task CallPromiseTest1()
+        {
+            Task<int> t = context.RootObject.ReadProperty<Task<int>>("SimplePromise1");
+            int result = await t;
+            Assert.AreEqual(1, result);
+        }
+
 
         [TestMethod]
         public void PromiseCallFromJS()
