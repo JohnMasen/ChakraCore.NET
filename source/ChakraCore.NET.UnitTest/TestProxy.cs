@@ -37,8 +37,8 @@ namespace ChakraCore.NET.UnitTest
         public async Task<int> AsyncCallAsync()
         {
             TestHelper.DumpThreadID("Async delay start");
-            await Task.Delay(1000);
-            //System.GC.Collect();
+            await Task.Delay(200);
+            System.GC.Collect();
             TestHelper.DumpThreadID("Async delay stop");
             return 1;
         }

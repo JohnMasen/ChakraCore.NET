@@ -28,7 +28,7 @@ namespace ChakraCore.NET
 
         private CancellationTokenSource promiseTaskCTS = new CancellationTokenSource();
         private BlockingCollection<JavaScriptValue> promiseTaskQueue = new BlockingCollection<JavaScriptValue>();
-
+        private JavaScriptPromiseContinuationCallback promiseContinuationCallback;
         public JavaScriptValue JSValue_Undefined;
         public JavaScriptValue JSValue_Null;
         public JavaScriptValue JSValue_True;
@@ -68,7 +68,7 @@ namespace ChakraCore.NET
             isDebug = enableDebug;
             With(() =>
             {
-                JavaScriptPromiseContinuationCallback promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
+                promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
                 {
                     promiseTaskQueue.Add(task);
                 };
