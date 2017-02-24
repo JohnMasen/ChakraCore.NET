@@ -7,11 +7,12 @@ namespace ChakraCore.NET
     public class ChakraRuntime: IDisposable
     {
         JavaScriptRuntime runtime;
-        AutoResetEvent syncHandler;
+        public EventWaitHandle SyncHandler { get; private set; }
+        //AutoResetEvent SyncHandler;
         private ChakraRuntime(JavaScriptRuntime runtime)
         {
             this.runtime = runtime;
-            syncHandler = new AutoResetEvent(true);
+            SyncHandler = new AutoResetEvent(true);
         }
 
         public ChakraContext CreateContext(bool enableDebug)
@@ -19,7 +20,7 @@ namespace ChakraCore.NET
             try
             {
                 var c = runtime.CreateContext();
-                var result = new ChakraContext(c, syncHandler);
+                var result = new ChakraContext(c, this);
                 result.Init(enableDebug);
                 return result;
                 
@@ -72,7 +73,7 @@ namespace ChakraCore.NET
                 if (disposing)
                 {
                     runtime.Dispose();
-                    syncHandler.Dispose();
+                    SyncHandler.Dispose();
                 }
 
 

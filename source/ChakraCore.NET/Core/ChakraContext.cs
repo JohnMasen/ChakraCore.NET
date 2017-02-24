@@ -19,12 +19,12 @@ namespace ChakraCore.NET
         //private static Queue<JavaScriptValue> taskQueue = new Queue<JavaScriptValue>();
 
         //private Dictionary<Type, object> proxyList = new Dictionary<Type, object>();
-        public ProxyMapManager ProxyMapManager { get; private set; } = new ProxyMapManager();
+        public ProxyMapManager ProxyMapManager { get; private set; } 
 
         internal JavaScriptContext jsContext;
         public JSValueConverter ValueConverter { get; set; }
 
-        private AutoResetEvent waitHanlder;
+        private EventWaitHandle waitHanlder;
 
         private CancellationTokenSource promiseTaskCTS = new CancellationTokenSource();
         private BlockingCollection<JavaScriptValue> promiseTaskQueue = new BlockingCollection<JavaScriptValue>();
@@ -34,6 +34,7 @@ namespace ChakraCore.NET
         public JavaScriptValue JSValue_True;
         public JavaScriptValue JSValue_False;
 
+        private ChakraRuntime runtime;
         //public GC.StackTraceNode GCStackTrace { get; private set; }
 
         internal JavaScriptValue GlobalObject
@@ -53,11 +54,13 @@ namespace ChakraCore.NET
         public JSValue RootObject { get; private set; }
 
         private bool isDebug;
-        internal ChakraContext(JavaScriptContext jsContext, AutoResetEvent syncHandler)
+        internal ChakraContext(JavaScriptContext jsContext, ChakraRuntime runtime)
         {
             jsContext.AddRef();
             this.jsContext = jsContext;
-            this.waitHanlder = syncHandler;
+            this.runtime = runtime;
+            this.waitHanlder = runtime.SyncHandler;
+            ProxyMapManager = new ProxyMapManager();
         }
 
         internal void Init(bool enableDebug)
@@ -297,6 +300,8 @@ namespace ChakraCore.NET
                 if (disposing)
                 {
                     promiseTaskCTS.Cancel();
+                    runtime.CollectGarbage();
+                    ProxyMapManager.Dispose();
                     jsContext.Release();
                 }
                 disposedValue = true;

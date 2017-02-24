@@ -25,7 +25,7 @@ namespace ChakraCore.NET.UnitTest
 
         public void CallBackToJS(Action<string> callback)
         {
-            //System.GC.Collect();
+            System.GC.Collect();
             callback("callback from JS executed");
         }
 

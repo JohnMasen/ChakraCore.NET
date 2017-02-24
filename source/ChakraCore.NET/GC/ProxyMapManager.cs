@@ -8,7 +8,7 @@ using ChakraCore.NET.Helper;
 
 namespace ChakraCore.NET.GC
 {
-    public class ProxyMapManager
+    public class ProxyMapManager:IDisposable
     {
         private SortedDictionary<Type, object> mapList = new SortedDictionary<Type, object>(new TypeComparer());
         
@@ -45,7 +45,7 @@ namespace ChakraCore.NET.GC
             Guid g = Guid.NewGuid();
             var handle = GCHandle.Alloc(g, GCHandleType.Pinned);
             JavaScriptValue proxy = callback((IntPtr)handle, cb);
-            ProxyMap<T> map = new ProxyMap<T>(g, obj, proxy, delegateHandler);
+            ProxyMap<T> map = new ProxyMap<T>(g, obj, proxy, delegateHandler,cb);
             currentTypeList.Add(map);
             return proxy;
         }
@@ -64,6 +64,11 @@ namespace ChakraCore.NET.GC
             }
             var item = mapList[typeof(T)] as MapItemList<T>;
             return item.Get(source);
+        }
+
+        public void Dispose()
+        {
+            System.Diagnostics.Debug.WriteLine("ProxyMapManager disposed");
         }
 
         private class MapItemList<T>  where T : class

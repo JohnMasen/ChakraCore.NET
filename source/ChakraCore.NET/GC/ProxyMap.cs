@@ -11,12 +11,14 @@ namespace ChakraCore.NET.GC
         public T source;
         public JavaScriptValue proxy;
         public DelegateHandler DelegateHandler;
-        public ProxyMap(Guid id,T source,JavaScriptValue value,DelegateHandler handler)
+        public JavaScriptObjectFinalizeCallback finalizeCallback;
+        public ProxyMap(Guid id,T source,JavaScriptValue value,DelegateHandler handler, JavaScriptObjectFinalizeCallback finalizeCallback)
         {
             ItemID = id;
             this.source = source;
             proxy = value;
             DelegateHandler = handler;
+            this.finalizeCallback = finalizeCallback;
         }
     }
 }
