@@ -1,6 +1,7 @@
 ﻿namespace ChakraCore.NET.API
 {
     using System;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     ///     A script context.
@@ -65,6 +66,36 @@
         {
             get { return new JavaScriptContext(IntPtr.Zero); }
         }
+
+        public static void SetObjectBeforeCollectCallback(JavaScriptValue reference, IntPtr callbackState, JavaScriptObjectBeforeCollectCallback beforeCollectCallback)
+        {
+            Native.ThrowIfError(Native.JsSetObjectBeforeCollectCallback(reference, callbackState, beforeCollectCallback));
+        }
+
+        public static string GetLastError()
+        {
+            JavaScriptValue exception;
+            if (Native.JsGetAndClearException(out exception) != JavaScriptErrorCode.NoError)
+                return "failed to get and clear exception";
+
+            JavaScriptPropertyId messageName;
+            if (Native.JsGetPropertyIdFromName("message",
+                out messageName) != JavaScriptErrorCode.NoError)
+                return "failed to get error message id";
+
+            JavaScriptValue messageValue;
+            if (Native.JsGetProperty(exception, messageName, out messageValue)
+                != JavaScriptErrorCode.NoError)
+                return "failed to get error message";
+
+            IntPtr message;
+            UIntPtr length;
+            if (Native.JsStringToPointer(messageValue, out message, out length) != JavaScriptErrorCode.NoError)
+                return "failed to convert error message";
+
+            return Marshal.PtrToStringUni(message);
+        }
+
 
         /// <summary>
         ///     Gets or sets the current script context on the thread.

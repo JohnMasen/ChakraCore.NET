@@ -13,6 +13,7 @@ namespace ChakraCore.NET.UnitTest
         {
             TestProxy.Inject(context);
             context.ValueConverter.RegisterArrayConverter<TestProxy>();
+            context.RootObject.WriteProperty<TestProxy>("proxy", new TestProxy());
             runScript("ComplexProxy");
         }
 
@@ -37,6 +38,12 @@ namespace ChakraCore.NET.UnitTest
             }
             string result=context.RootObject.CallFunction<string>("MultiTransfer");
             Assert.AreEqual<string>(target, result);
+        }
+
+        [TestMethod]
+        public void CallBackFromJS()
+        {
+            context.RootObject.CallMethod("callBackToProxy");
         }
     }
 }

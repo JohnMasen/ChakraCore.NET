@@ -23,18 +23,27 @@ namespace ChakraCore.NET.UnitTest
             return s + s;
         }
 
+        public void CallBackToJS(Action<string> callback)
+        {
+            //System.GC.Collect();
+            callback("callback from JS executed");
+        }
+
         public string GetName()
         {
             return Name;
         }
 
-        public async Task<int> AsyncCall()
+        public async Task<int> AsyncCallAsync()
         {
-            await Task.Delay(1);
+            TestHelper.DumpThreadID("Async delay start");
+            await Task.Delay(1000);
+            //System.GC.Collect();
+            TestHelper.DumpThreadID("Async delay stop");
             return 1;
         }
 
-        
+
 
         public static void Inject(ChakraContext context)
         {
@@ -42,7 +51,9 @@ namespace ChakraCore.NET.UnitTest
             {
                 binding.SetFunction<string, string>("echo", value.Echo);
                 binding.SetFunction<string>("GetName", value.GetName);
-                binding.SetFunction<Task<int>>("asyncFunction", value.AsyncCall);
+                binding.SetFunction<Task<int>>("asyncFunction", value.AsyncCallAsync);
+                binding.RuntimeContext.ValueConverter.RegisterMethodConverter<string>();
+                binding.SetMethod<Action<string>>("callBackToJs", value.CallBackToJS);
             });
         }
 

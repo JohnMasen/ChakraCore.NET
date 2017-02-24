@@ -7,6 +7,7 @@ using System.Linq;
 using ChakraCore.NET.GC;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ChakraCore.NET
 {
@@ -169,6 +170,9 @@ namespace ChakraCore.NET
             }
             waitHanlder.WaitOne();//wait other call complete
             JavaScriptContext.Current = jsContext;
+#if DEBUG
+            Debug.WriteLine("context enter"); 
+#endif
             return true;
         }
 
@@ -184,6 +188,10 @@ namespace ChakraCore.NET
         {
             JavaScriptContext.Current = JavaScriptContext.Invalid;
             waitHanlder.Set();
+#if DEBUG
+            Debug.WriteLine("context leave");
+#endif
+
         }
 
         public void With(Action a)
@@ -198,6 +206,11 @@ namespace ChakraCore.NET
             {
                 a();
             }
+        }
+
+        public void TrackValueGC(JavaScriptValue value)
+        {
+            
         }
         public void With(Action a, JavaScriptValue currentCaller)
         {

@@ -4,14 +4,17 @@ using System.Text;
 
 namespace ChakraCore.NET.UnitTest
 {
-    class TestHelper
+    static class TestHelper
     {
         public static string script(string name)
         {
             string filename = System.IO.Directory.GetCurrentDirectory() + string.Format(@"\Scripts\{0}", name);
             return System.IO.File.OpenText(filename).ReadToEnd();
         }
-
+        public static void DumpThreadID(string text)
+        {
+            System.Diagnostics.Debug.WriteLine($"{System.Threading.Thread.CurrentThread.ManagedThreadId} [{text}]");
+        }
 
         //public static string JSRunScript = "var a='test'; a;";
         //public static string JSValueTest = "var b=a;";

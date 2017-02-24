@@ -34,6 +34,7 @@ namespace ChakraCore.NET.GC
 
             JavaScriptObjectFinalizeCallback cb = (p) =>
             {
+                System.Diagnostics.Debug.WriteLine("proxy object collected");
                 GCHandle h = GCHandle.FromIntPtr(p);
                 Guid id = (Guid)h.Target;
                 currentTypeList.Release(id);

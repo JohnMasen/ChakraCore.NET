@@ -19,8 +19,6 @@ namespace ChakraCore.NET.UnitTest
         private  Stack<string> prefixStack = new Stack<string>();
 
 
-        public bool SharedRuntime { get; private set; }
-        public bool SharedContext { get; private set; }
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {

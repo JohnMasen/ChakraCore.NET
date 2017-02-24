@@ -5,3 +5,12 @@
     }
     return result;
 }
+
+function callBackToProxy() {
+    proxy.callBackToJs(function (v) {
+        proxy.echo(v);
+    });
+}
+
+
+

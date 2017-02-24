@@ -24,30 +24,34 @@ namespace ChakraCore.NET
             converter.RegisterFunctionConverter<JavaScriptValue>();
             converter.RegisterMethodConverter<Action<TResult>, Action<string>>();
 
+            converter.RegisterMethodConverter<JavaScriptValue, JavaScriptValue>();
+
             converter.RegisterConverter<Task<TResult>>(
                 (context, value) =>
                 {
                     JavaScriptValue promiseObject=JavaScriptValue.Invalid;
                     //convert resolve, reject
-                    Action<Action<TResult>, Action<String>> promiseBody = async (resolve, reject) =>
+                    Action<JavaScriptValue, JavaScriptValue> promiseBody = async (resolve, reject) =>
                        {
                            try
                            {
+                               resolve.AddRef();
                                var result = await value;
+                               JavaScriptValue tt = context.RuntimeContext.ValueConverter.ToJSValue<TResult>(context,result);
                                context.RuntimeContext.With(
                                    ()=>
                                    {
-                                       resolve(result);
+                                       resolve.CallFunction(context.JSClass,tt);
+                                       resolve.Release();
                                    }
                                    );
-                               
                            }
                            catch (PromiseRejectedException ex)
                            {
                                context.RuntimeContext.With(
                                    () =>
                                    {
-                                       reject(ex.ToString());
+                                       reject.CallFunction();
                                    }
                                    );
                            }
@@ -57,7 +61,7 @@ namespace ChakraCore.NET
                            }
                            
                        };
-                    promiseObject = context.RuntimeContext.RootObject.CallFunction<Action<Action<TResult>, Action<String>>, JavaScriptValue>("createPromiseStub", promiseBody, false);
+                    promiseObject = context.RuntimeContext.RootObject.CallFunction<Action<JavaScriptValue, JavaScriptValue>, JavaScriptValue>("Promise", promiseBody, true);
                     //var x = promiseObject.GetProperty(JavaScriptPropertyId.FromString("resolve "));
                     return promiseObject;
                 },
@@ -121,6 +125,6 @@ namespace ChakraCore.NET
             return (result as AsyncResult<T>).Result;
         }
 
-
+        
     }
 }

@@ -10,13 +10,15 @@ namespace ChakraCore.NET.UnitTest
     [TestClass]
     public class PromiseTest : UnitTestBase
     {
+        private TestProxy proxy = new TestProxy();
+        private TimerHelper helper = new TimerHelper();
         protected override void SetupContext()
         {
             context.ValueConverter.RegisterTask<int>();
             TestProxy.Inject(context);
             TimerHelper.RegisterConverter(context);
-            context.RootObject.WriteProperty<TestProxy>("test", new TestProxy());
-            context.RootObject.WriteProperty<TimerHelper>("timer", new TimerHelper());
+            context.RootObject.WriteProperty<TestProxy>("test", proxy);
+            context.RootObject.WriteProperty<TimerHelper>("timer", helper);
             runScript("Promise");
             
         }
@@ -29,13 +31,7 @@ namespace ChakraCore.NET.UnitTest
             Assert.AreEqual(1, result);
         }
 
-        [TestMethod]
-        public async Task CallPromiseTest1()
-        {
-            Task<int> t = context.RootObject.ReadProperty<Task<int>>("SimplePromise1");
-            int result = await t;
-            Assert.AreEqual(1, result);
-        }
+        
 
 
         [TestMethod]
