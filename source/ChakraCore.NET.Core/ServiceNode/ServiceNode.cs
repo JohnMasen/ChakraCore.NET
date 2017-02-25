@@ -119,7 +119,13 @@ namespace ChakraCore.NET.Core
             }
         }
 
-        
+        public IService WithService<T>(T service,Action a) where T : IService
+        {
+            PushService(service);
+            a();
+            PopService<T>();
+            return service;
+        }
 
         public static IServiceNode CreateRoot()
         {
