@@ -12,6 +12,14 @@ namespace ChakraCore.NET.Core
         {
             this.context = context;
         }
+        public override void SetupNode(IServiceNode service)
+        {
+            base.SetupNode(service);
+            if (converter == null)
+            {
+                converter = serviceNode.GetService<IJSValueConverter>();
+            }
+        }
 
         public void With(Action a)
         {
@@ -28,10 +36,6 @@ namespace ChakraCore.NET.Core
 
         public T With<T>(Func<T> f)
         {
-            if (converter==null)
-            {
-                converter = serviceNode.GetService<IJSValueConverter>();
-            }
             T result;
             if (context.Enter())
             {

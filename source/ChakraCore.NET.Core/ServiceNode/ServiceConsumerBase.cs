@@ -6,10 +6,10 @@ namespace ChakraCore.NET.Core
 {
     public abstract class ServiceConsumerBase
     {
-        protected IServiceNode service;
-        public ServiceConsumerBase(IServiceNode service,string consumerName)
+        protected IServiceNode serviceNode;
+        public ServiceConsumerBase(IServiceNode serviceNode,string consumerName)
         {
-            this.service = service.Chain(consumerName);
+            this.serviceNode = serviceNode.Chain(consumerName);
         }
     }
 }

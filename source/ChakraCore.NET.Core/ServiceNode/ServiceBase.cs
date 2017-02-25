@@ -7,9 +7,9 @@ namespace ChakraCore.NET.Core
     public abstract class ServiceBase:IService
     {
         protected IServiceNode serviceNode;
-        public void SetupNode(IServiceNode service)
+        public virtual void SetupNode(IServiceNode serviceNode)
         {
-            serviceNode = service;
+            this.serviceNode = serviceNode;
         }
     }
 }

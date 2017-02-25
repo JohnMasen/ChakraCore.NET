@@ -20,7 +20,7 @@ namespace ChakraCore.NET.Core
             try
             {
                 var c = runtime.CreateContext();
-                var result = new ChakraContext(c, SyncHandler,service);
+                var result = new ChakraContext(c, SyncHandler,serviceNode);
                 result.Init(enableDebug);
                 return result;
                 
