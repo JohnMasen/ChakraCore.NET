@@ -146,38 +146,6 @@ namespace ChakraCore.NET.Core
 
         }
 
-        //public void With(Action a)
-        //{
-        //    if (Enter())
-        //    {
-                
-        //        a();
-        //        Leave();
-        //    }
-        //    else
-        //    {
-        //        a();
-        //    }
-        //}
-
-        
-        
-
-        //public T With<T>(Func<T> f)
-        //{
-        //    if (Enter())
-        //    {
-        //        T tmp = f();
-        //        Leave();
-        //        return tmp;
-        //    }
-        //    else
-        //    {
-        //        return f();
-        //    }
-        //}
-
-
 
         public string RunScript(string script)
         {

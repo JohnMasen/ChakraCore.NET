@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using ChakraCore.NET.Core.API;
 
-namespace ChakraCore.NET.Core.Service
+namespace ChakraCore.NET.Core
 {
-    public class JSValueConverter :ServiceBase, IJSValueConverter
+    public class JSValueConverterService :ServiceBase, IJSValueConverter
     {
         private SortedDictionary<Type, Tuple<object, object>> converters = new SortedDictionary<Type, Tuple<object, object>>(TypeComparer.Instance);
 

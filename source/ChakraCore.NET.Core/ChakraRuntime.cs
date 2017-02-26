@@ -13,6 +13,9 @@ namespace ChakraCore.NET.Core
         {
             this.runtime = runtime;
             SyncHandler = new AutoResetEvent(true);
+            //inject service
+            service.PushService<IJSValueConverter>(new JSValueConverterService());
+            service.PushService<IProxyMapManager>(new ProxyMapManagerService());
         }
 
         public ChakraContext CreateContext(bool enableDebug)
