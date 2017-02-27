@@ -5,7 +5,7 @@ using ChakraCore.NET.Core.API;
 
 namespace ChakraCore.NET.Core
 {
-    public class ProxyMapManagerService : ServiceBase, IProxyMapService
+    public class ProxyMapService : ServiceBase, IProxyMapService
     {
         SortedDictionary<Type, object> TypeMapLists = new SortedDictionary<Type, object>(TypeComparer.Instance);
         public T Get<T>(JavaScriptValue value) where T : class
@@ -17,7 +17,7 @@ namespace ChakraCore.NET.Core
             }
             if (list.jsList.ContainsKey(value))
             {
-                return list.jsList[value];
+                return list.jsList[value].Item1;
             }
             throw new ArgumentException("proxy object not mapped");
         }
@@ -38,13 +38,20 @@ namespace ChakraCore.NET.Core
             return null;
         }
 
-        public JavaScriptValue Map<T>(T obj) where T:class
+        public JavaScriptValue Map<T>(T obj,Action<JSValueBinding> createBinding) where T:class
         {
-            JavaScriptValue output = base.serviceNode.GetService<IContextSwitchService>().With<JavaScriptValue>(() =>
+            JavaScriptValue output;
+            var list = getMapList<T>(true);
+            if (list.objList.ContainsKey(obj))
+            {
+                return list.objList[obj];//object already mapped, return cached object
+            }
+            output = serviceNode.GetService<IContextSwitchService>().With<JavaScriptValue>(() =>
             {
                 return JavaScriptValue.CreateExternalObject(IntPtr.Zero, null);
             });
-            getMapList<T>().Add(obj, output);
+            JSValueBinding binding = new JSValueBinding(serviceNode, output);
+            list.Add(obj, output,binding);
             return output;
         }
 
@@ -72,12 +79,12 @@ namespace ChakraCore.NET.Core
 
         private class TypeMapList<T> where T : class
         {
-            public SortedDictionary<JavaScriptValue, T> jsList = new SortedDictionary<JavaScriptValue, T>();
+            public SortedDictionary<JavaScriptValue, Tuple<T,JSValueBinding>> jsList = new SortedDictionary<JavaScriptValue, Tuple<T, JSValueBinding>>();
             public IDictionary<T, JavaScriptValue> objList = new Dictionary<T, JavaScriptValue>(new ObjectReferenceEqualityComparer<T>());
 
-            public void Add(T obj, JavaScriptValue value)
+            public void Add(T obj, JavaScriptValue value, JSValueBinding binding)
             {
-                jsList.Add(value, obj);
+                jsList.Add(value, new Tuple<T, JSValueBinding>(obj,binding));
                 objList.Add(obj, value);
             }
         }

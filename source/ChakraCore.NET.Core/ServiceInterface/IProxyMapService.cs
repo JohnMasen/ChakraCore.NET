@@ -7,7 +7,7 @@ namespace ChakraCore.NET.Core
 {
     public interface IProxyMapService:IService
     {
-        JavaScriptValue Map<T>(T obj) where T : class;
+        JavaScriptValue Map<T>(T obj, Action<JSValueBinding> createBinding) where T : class;
 
         T Get<T>(JavaScriptValue value) where T : class;
 

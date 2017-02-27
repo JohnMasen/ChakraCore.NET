@@ -15,7 +15,7 @@ namespace ChakraCore.NET.Core
             SyncHandler = new AutoResetEvent(true);
             //inject service
             service.PushService<IJSValueConverterService>(new JSValueConverterService());
-            service.PushService<IProxyMapService>(new ProxyMapManagerService());
+            service.PushService<IProxyMapService>(new ProxyMapService());
             service.PushService<IJSValueService>(new JSValueService());
         }
 

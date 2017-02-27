@@ -52,6 +52,7 @@ namespace ChakraCore.NET.Core
                 {
                     var r = Parent.GetService<TResult>(currentNode);
                     PushService<TResult>(r);//cache the service instace
+                    r.SetupNode(currentNode);
                     return r;
                 }
                 throw new ServiceNotRegisteredException<TResult>();
