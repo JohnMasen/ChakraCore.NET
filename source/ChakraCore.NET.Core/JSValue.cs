@@ -12,12 +12,12 @@ namespace ChakraCore.NET.Core
         {
             ReferenceValue = value;
             //inject service
-            serviceNode.PushService<INativeFunctionHolder>(new NativeFunctionHolderService(false));
+            ServiceNode.PushService<INativeFunctionHolderService>(new NativeFunctionHolderService(false));
             //init binding here
 
             //chain the function holder to one time for ad-hoc call
-            serviceNode = serviceNode.Chain("JSValue onetime node");
-            serviceNode.PushService<INativeFunctionHolder>(new NativeFunctionHolderService(true));
+            ServiceNode = ServiceNode.Chain("JSValue onetime node");
+            ServiceNode.PushService<INativeFunctionHolderService>(new NativeFunctionHolderService(true));
         }
     }
 }

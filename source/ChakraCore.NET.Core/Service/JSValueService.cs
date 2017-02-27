@@ -9,19 +9,18 @@ namespace ChakraCore.NET.Core
     {
         public T ReadProperty<T>(JavaScriptValue target, JavaScriptPropertyId id)
         {
-            var convert = serviceNode.GetService<IJSValueConverter>();
+            var convert = serviceNode.GetService<IJSValueConverterService>();
             return serviceNode.GetService<IContextSwitchService>().With<T>(
                 () =>
                 {
                     return convert.FromJSValue<T>( target.GetProperty(id));
                 });
-
                 ;
         }
 
         public void WriteProperty<T>(JavaScriptValue target, JavaScriptPropertyId id, T value)
         {
-            var convert = serviceNode.GetService<IJSValueConverter>();
+            var convert = serviceNode.GetService<IJSValueConverterService>();
             serviceNode.GetService<IContextSwitchService>().With(
                 () =>
                 {
@@ -30,5 +29,6 @@ namespace ChakraCore.NET.Core
 
             ;
         }
+
     }
 }

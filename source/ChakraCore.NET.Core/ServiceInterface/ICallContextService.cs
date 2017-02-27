@@ -5,9 +5,8 @@ using System.Text;
 
 namespace ChakraCore.NET.Core
 {
-    public interface INativeFunctionHolder:IService
+    public interface ICallContextService:IService
     {
-        JavaScriptNativeFunction HoldFunction(JavaScriptNativeFunction function);
-        
+        JavaScriptValue Caller { get;  }
     }
 }

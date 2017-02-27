@@ -5,7 +5,7 @@ using ChakraCore.NET.Core.API;
 
 namespace ChakraCore.NET.Core
 {
-    public class ProxyMapManagerService : ServiceBase, IProxyMapManager
+    public class ProxyMapManagerService : ServiceBase, IProxyMapService
     {
         SortedDictionary<Type, object> TypeMapLists = new SortedDictionary<Type, object>(TypeComparer.Instance);
         public T Get<T>(JavaScriptValue value) where T : class

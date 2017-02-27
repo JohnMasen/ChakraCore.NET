@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ChakraCore.NET.Core
 {
-    public interface IProxyMapManager:IService
+    public interface IProxyMapService:IService
     {
         JavaScriptValue Map<T>(T obj) where T : class;
 

@@ -5,7 +5,7 @@ using ChakraCore.NET.Core.API;
 
 namespace ChakraCore.NET.Core
 {
-    public class JSValueConverterService :ServiceBase, IJSValueConverter
+    public class JSValueConverterService :ServiceBase, IJSValueConverterService
     {
         private SortedDictionary<Type, Tuple<object, object>> converters = new SortedDictionary<Type, Tuple<object, object>>(TypeComparer.Instance);
 

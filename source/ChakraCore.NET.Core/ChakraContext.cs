@@ -60,16 +60,14 @@ namespace ChakraCore.NET.Core
             }
             StartPromiseTaskLoop(promiseTaskCTS.Token);
 
-            //Native.JsSetObjectBeforeCollectCallback()
-
-
             JSValue_Undefined = JavaScriptValue.Undefined;
             JSValue_Null = JavaScriptValue.Null;
             JSValue_True = JavaScriptValue.True;
             JSValue_False = JavaScriptValue.False;
             GlobalObject = JavaScriptValue.GlobalObject;
             Leave();
-
+            ServiceNode.PushService<IContextSwitchService>(new ContextSwitchService(this));
+            ServiceNode.PushService<IContextService>(new ContextService());
         }
 
 

@@ -4,4 +4,56 @@
     <TargetFramework>netstandard1.4</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Update="CodeTemplates\JSValueConverterExtend\FromToCallbackFunction.cs">
+      <DependentUpon>FromToCallbackFunction.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="CodeTemplates\JSValueConverterExtend\FromToFunction.cs">
+      <DependentUpon>FromToFunction.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="CodeTemplates\JSValueConverterExtend\FromToMethod.cs">
+      <DependentUpon>FromToMethod.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="CodeTemplates\JSValueConverterExtend\RegisterHelper.cs">
+      <DependentUpon>RegisterHelper.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CodeTemplates\JSValueConverterExtend\FromToCallbackFunction.tt">
+      <LastGenOutput>FromToCallbackFunction.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="CodeTemplates\JSValueConverterExtend\FromToFunction.tt">
+      <LastGenOutput>FromToFunction.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="CodeTemplates\JSValueConverterExtend\FromToMethod.tt">
+      <LastGenOutput>FromToMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="CodeTemplates\JSValueConverterExtend\RegisterHelper.tt">
+      <LastGenOutput>RegisterHelper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="CodeTemplates\Template_Footer.t4">
+      <Generator></Generator>
+    </None>
+    <None Update="CodeTemplates\Template_Header.t4">
+      <Generator></Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
 </Project>

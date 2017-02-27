@@ -1,0 +1,62 @@
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("JSValueConverterHelper") #>
+<#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+
+        private static JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (IServiceNode node, Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult> callback)
+        {
+            var converter = node.GetService<IJSValueConverterService>();
+            JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
+            {
+                if (argumentCount != <#=i+1#>)
+                {
+                    throw new InvalidOperationException("call from javascript did not pass enough parameters");
+                }
+                <#=genCode(i,"T{1} para{1} = converter.FromJSValue<T{1}>(arguments[{1}]);",false,Environment.NewLine,"{0}")#>
+                <#=            genCode(i,"arguments[{1}].AddRef();",false,Environment.NewLine,"{0}")#>
+
+                TResult result=callback(isConstructCall<#=genCode(i,",para{1}",false,"","{0}")#>);
+                <#=            genCode(i,"arguments[{1}].Release();",false,Environment.NewLine,"{0}")#>
+                return converter.ToJSValue<TResult>(result);
+            };
+
+            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+        }
+
+        
+
+        private static Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSFunction<#=genCode(i,"T{1}",true)#>(IServiceNode node, JavaScriptValue value)
+        {
+            var converter = node.GetService<IJSValueConverterService>();
+            var context = node.GetService<IContextService>();
+            var callContext = node.GetService<ICallContextService>();
+            Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> result = (bool isConstruct<#=genCode(i,",T{1} para{1}",false,"","{0}")#>) =>
+            {
+                <#=genCode(i,"JavaScriptValue p{1} = converter.ToJSValue<T{1}>(para{1});",false,Environment.NewLine,"{0}")#>
+
+                JavaScriptValue r=node.WithContext<JavaScriptValue>(()=>
+                {
+                <#=genCode(i,"p{1}.AddRef();",false,Environment.NewLine,"{0}")#>
+                JavaScriptValue resultValue;
+                    if (isConstruct)
+                    {
+                        resultValue= context.ConstructObject(value,context.JSValue_Undefined<#=genCode(i,",p{1}",false,"","{0}")#>);
+                    }
+                    else
+                    {
+                        resultValue= context.CallFunction(value,callContext.Caller<#=genCode(i,",p{1}",false,"","{0}")#>);
+                    }
+                <#=genCode(i,"p{1}.Release();",false,Environment.NewLine,"{0}")#>
+                    return resultValue;
+                });
+                return converter.FromJSValue<TResult>(r);
+            };
+            return result;
+        }
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>

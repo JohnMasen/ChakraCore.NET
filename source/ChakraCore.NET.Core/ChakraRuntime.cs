@@ -14,8 +14,8 @@ namespace ChakraCore.NET.Core
             this.runtime = runtime;
             SyncHandler = new AutoResetEvent(true);
             //inject service
-            service.PushService<IJSValueConverter>(new JSValueConverterService());
-            service.PushService<IProxyMapManager>(new ProxyMapManagerService());
+            service.PushService<IJSValueConverterService>(new JSValueConverterService());
+            service.PushService<IProxyMapService>(new ProxyMapManagerService());
         }
 
         public ChakraContext CreateContext(bool enableDebug)
@@ -23,7 +23,7 @@ namespace ChakraCore.NET.Core
             try
             {
                 var c = runtime.CreateContext();
-                var result = new ChakraContext(c, SyncHandler,serviceNode);
+                var result = new ChakraContext(c, SyncHandler,ServiceNode);
                 result.Init(enableDebug);
                 return result;
                 
@@ -45,7 +45,7 @@ namespace ChakraCore.NET.Core
             JavaScriptRuntime result = JavaScriptRuntime.Create(attributes, JavaScriptRuntimeVersion.VersionEdge);
             if (service==null)
             {
-                service = ServiceNode.CreateRoot();
+                service = Core.ServiceNode.CreateRoot();
             }
             return new ChakraRuntime(result,service);
         }

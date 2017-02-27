@@ -1,0 +1,52 @@
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("JSValueConverterHelper") #>
+<#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+
+    private static JavaScriptValue toJSMethod<#=genCode(i,"T{1}")#> (IServiceNode node, Action<#=genCode(i,"T{1}")#> a)
+        {
+            var converter = node.GetService<IJSValueConverterService>();
+            JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
+            {
+                if (argumentCount != <#=i+1#>)
+                {
+                    throw new InvalidOperationException("call from javascript did not pass enough parameters");
+                }
+                <#=genCode(i,"T{1} para{1} = converter.FromJSValue<T{1}>(arguments[{1}]);",false,Environment.NewLine,"{0}")#>
+                <#=            genCode(i,"arguments[{1}].AddRef();",false,Environment.NewLine,"{0}")#>
+
+                a(<#=genCode(i,"para{1}",false,",","{0}")#>);
+                <#=genCode(i,"arguments[{1}].Release();",false,Environment.NewLine,"{0}")#>
+                return node.GetService<IContextService>().JSValue_Undefined;
+            };
+
+            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+        }
+
+
+        private static Action<#=genCode(i,"T{1}")#> fromJSMethod<#=genCode(i,"T{1}")#>(IServiceNode node,JavaScriptValue value)
+        {
+            var converter = node.GetService<IJSValueConverterService>();
+            Action<#=genCode(i,"T{1}")#> result = (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
+              {
+
+                  <#=genCode(i,"JavaScriptValue p{1} = converter.ToJSValue<T{1}>(para{1});",false,Environment.NewLine,"{0}")#>
+                  
+
+                  node.WithContext(()=>
+                  {
+                      var caller = node.GetService<ICallContextService>().Caller;
+                      <#=genCode(i,"p{1}.AddRef();",false,Environment.NewLine,"{0}")#>
+                      value.CallFunction(caller<#=genCode(i,",p{1}",false,"","{0}")#>);
+                      <#=genCode(i,"p{1}.Release();",false,Environment.NewLine,"{0}")#>
+                  });
+              };
+            return result;
+        }
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>

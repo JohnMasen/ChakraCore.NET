@@ -5,7 +5,7 @@ using ChakraCore.NET.Core.API;
 
 namespace ChakraCore.NET.Core
 {
-    public class NativeFunctionHolderService : ServiceBase, INativeFunctionHolder
+    public class NativeFunctionHolderService : ServiceBase, INativeFunctionHolderService
     {
         SortedDictionary<Guid, JavaScriptNativeFunction> dict = new SortedDictionary<Guid, JavaScriptNativeFunction>();
         public bool IsOneTime { get; private set; }
