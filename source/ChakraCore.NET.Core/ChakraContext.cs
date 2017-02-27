@@ -14,11 +14,6 @@ namespace ChakraCore.NET.Core
     {
         private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
-        //private Dictionary<object, List<object>> holder = new Dictionary<object, List<object>>();
-        //private static Queue<JavaScriptValue> taskQueue = new Queue<JavaScriptValue>();
-
-        //private Dictionary<Type, object> proxyList = new Dictionary<Type, object>();
-
         internal JavaScriptContext jsContext;
 
         private EventWaitHandle waitHanlder;
@@ -26,15 +21,11 @@ namespace ChakraCore.NET.Core
         private CancellationTokenSource promiseTaskCTS = new CancellationTokenSource();
         private BlockingCollection<JavaScriptValue> promiseTaskQueue = new BlockingCollection<JavaScriptValue>();
         private JavaScriptPromiseContinuationCallback promiseContinuationCallback;
-        public JavaScriptValue JSValue_Undefined;
-        public JavaScriptValue JSValue_Null;
-        public JavaScriptValue JSValue_True;
-        public JavaScriptValue JSValue_False;
-        public JavaScriptValue GlobalObject;
-
+        private JavaScriptValue GlobalObject;
+        ContextService contextService;
         //public GC.StackTraceNode GCStackTrace { get; private set; }
 
-        
+        public JSValue RootObject { get; private set; }
 
 
         private bool isDebug;
@@ -60,14 +51,12 @@ namespace ChakraCore.NET.Core
             }
             StartPromiseTaskLoop(promiseTaskCTS.Token);
 
-            JSValue_Undefined = JavaScriptValue.Undefined;
-            JSValue_Null = JavaScriptValue.Null;
-            JSValue_True = JavaScriptValue.True;
-            JSValue_False = JavaScriptValue.False;
             GlobalObject = JavaScriptValue.GlobalObject;
             Leave();
-            ServiceNode.PushService<IContextSwitchService>(new ContextSwitchService(this));
-            ServiceNode.PushService<IContextService>(new ContextService());
+            
+            ServiceNode.PushService<IContextSwitchService>(new ContextSwitchService(jsContext));
+            contextService = new ContextService();
+            ServiceNode.PushService<IContextService>(contextService);
         }
 
 

@@ -8,5 +8,8 @@ namespace ChakraCore.NET.Core
     {
         void With(Action a);
         T With<T>(Func<T> f);
+        bool Enter();
+        void Leave();
+        bool IsCurrentContext { get; }
     }
 }

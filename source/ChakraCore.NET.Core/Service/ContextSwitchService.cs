@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChakraCore.NET.Core.API;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,27 +7,42 @@ namespace ChakraCore.NET.Core
 {
     public class ContextSwitchService :ServiceBase, IContextSwitchService
     {
-        //IJSValueConverter converter;
-        ChakraContext context;
-        public ContextSwitchService(ChakraContext context)
+        JavaScriptContext context;
+        IEventWaitHandlerService syncService => serviceNode.GetService<IEventWaitHandlerService>();
+        public ContextSwitchService(JavaScriptContext context)
         {
             this.context = context;
         }
-        //public override void SetupNode(IServiceNode service)
-        //{
-        //    base.SetupNode(service);
-        //    if (converter == null)
-        //    {
-        //        converter = serviceNode.GetService<IJSValueConverter>();
-        //    }
-        //}
+
+
+        public bool IsCurrentContext => JavaScriptContext.Current==context;
+
+        public bool Enter()
+        {
+            if (IsCurrentContext)
+            {
+                return false;
+            }
+            else
+            {
+                syncService.WaitOne();
+                JavaScriptContext.Current = context;
+                return true;
+            }
+        }
+
+        public void Leave()
+        {
+            JavaScriptContext.Current = JavaScriptContext.Invalid;
+            syncService.Set();
+        }
 
         public void With(Action a)
         {
-            if(context.Enter())
+            if(Enter())
             {
                 a();
-                context.Leave();
+                Leave();
             }
             else
             {
@@ -37,10 +53,10 @@ namespace ChakraCore.NET.Core
         public T With<T>(Func<T> f)
         {
             T result;
-            if (context.Enter())
+            if (Enter())
             {
                 result=f();
-                context.Leave();
+                Leave();
             }
             else
             {

@@ -7,8 +7,8 @@ namespace ChakraCore.NET.Core
 {
     public partial class JSValue : ServiceConsumerBase
     {
-        IJSValueConverterService converter;
-        IJSValueService valueService;
+        protected IJSValueConverterService converter;
+        protected IJSValueService valueService;
         public JSValueBinding Binding { get; private set; }
         public JavaScriptValue ReferenceValue { get; private set; }
         public JSValue(IServiceNode parentNode,JavaScriptValue value) : base(parentNode, "JSValue")
