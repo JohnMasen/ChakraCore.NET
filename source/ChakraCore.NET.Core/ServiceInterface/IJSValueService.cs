@@ -9,5 +9,9 @@ namespace ChakraCore.NET.Core
     {
         T ReadProperty<T>(JavaScriptValue target, JavaScriptPropertyId id);
         void WriteProperty<T>(JavaScriptValue target,JavaScriptPropertyId id,T value);
+
+        T ReadProperty<T>(JavaScriptValue target, string id);
+        void WriteProperty<T>(JavaScriptValue target, string id, T value);
+
     }
 }

@@ -30,5 +30,28 @@ namespace ChakraCore.NET.Core
             ;
         }
 
+        public T ReadProperty<T>(JavaScriptValue target, string id)
+        {
+            var convert = serviceNode.GetService<IJSValueConverterService>();
+            return serviceNode.GetService<IContextSwitchService>().With<T>(
+                () =>
+                {
+                    return convert.FromJSValue<T>(target.GetProperty(JavaScriptPropertyId.FromString(id) ));
+                });
+            ;
+        }
+
+        public void WriteProperty<T>(JavaScriptValue target, string id, T value)
+        {
+            var convert = serviceNode.GetService<IJSValueConverterService>();
+            serviceNode.GetService<IContextSwitchService>().With(
+                () =>
+                {
+                    target.SetProperty(JavaScriptPropertyId.FromString(id), convert.ToJSValue<T>(value), true);
+                });
+
+            ;
+        }
+
     }
 }

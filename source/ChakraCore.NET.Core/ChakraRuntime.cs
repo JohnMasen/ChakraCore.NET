@@ -16,6 +16,7 @@ namespace ChakraCore.NET.Core
             //inject service
             service.PushService<IJSValueConverterService>(new JSValueConverterService());
             service.PushService<IProxyMapService>(new ProxyMapManagerService());
+            service.PushService<IJSValueService>(new JSValueService());
         }
 
         public ChakraContext CreateContext(bool enableDebug)

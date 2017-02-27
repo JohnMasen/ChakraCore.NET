@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 namespace ChakraCore.NET.Core
 {
-public  static partial class JSValueConverterHelper
+public static partial class JSValueConverterHelper
 {
 
     private static JavaScriptValue toJSMethod (IServiceNode node, Action a)

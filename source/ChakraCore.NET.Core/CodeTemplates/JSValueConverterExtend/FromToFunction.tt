@@ -1,5 +1,5 @@
 ﻿<#@ include file="..\Template_Header.t4" #>
-<#= Header("JSValueConverterHelper") #>
+<#= Header("public static partial class JSValueConverterHelper") #>
 <#
     for (int i = startFrom; i <= totalItems; i++)
     {

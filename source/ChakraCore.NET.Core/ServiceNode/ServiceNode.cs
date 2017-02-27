@@ -50,7 +50,9 @@ namespace ChakraCore.NET.Core
             {
                 if (Parent != null)
                 {
-                    return Parent.GetService<TResult>(currentNode);
+                    var r = Parent.GetService<TResult>(currentNode);
+                    PushService<TResult>(r);//cache the service instace
+                    return r;
                 }
                 throw new ServiceNotRegisteredException<TResult>();
             }

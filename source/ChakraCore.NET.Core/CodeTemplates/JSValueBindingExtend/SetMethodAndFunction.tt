@@ -1,0 +1,54 @@
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("public partial class JSValueBinding") #>
+<#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+        public void SetMethod<#=genCode(i,"T{1}")#>(string name,Action<#=genCode(i,"T{1}")#> a)
+        {
+            converter.RegisterMethodConverter<#=genCode(i,"T{1}")#>();
+            valueService.WriteProperty<Action<#=genCode(i,"T{1}")#>>(jsValue,name, a);
+        }
+
+        public void SetFunction<#=genCode(i,"T{1}",true)#>(string name,Func<#=genCode(i,"T{1}",true)#> callback, Func<#=genCode(i,"T{1}",true)#> constructCallback=null)
+        {
+            converter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
+            if (callback==null &&constructCallback==null)
+            {
+                throw new ArgumentException("callback and constructCallback cannot both be null");
+            }
+            Func<bool, <#=genCode(i,"T{1}",true,",","{0}")#>> tmp = (isConstruct<#=genCode(i,",para{1}",false,"","{0}")#>) =>
+               {
+                   TResult result;
+                   if (isConstruct)
+                   {
+                       if (constructCallback==null)
+                       {
+                           throw new NotImplementedException(@"function {name} does not support construct call");
+                       }
+                       else
+                       {
+                           result = constructCallback(<#=genCode(i,"para{1}",false,",","{0}")#>);
+                       }
+                   }
+                   else
+                   {
+                       if (callback==null)
+                       {
+                           throw new NotImplementedException(@"function {name} does not support direct call");
+                       }
+                       else
+                       {
+                           result = callback(<#=genCode(i,"para{1}",false,",","{0}")#>);
+                       }
+                   }
+                   return result;
+               };
+            valueService.WriteProperty<Func<bool, <#=genCode(i,"T{1}",true,",","{0}")#>>>(jsValue,name, tmp);
+        }
+
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>

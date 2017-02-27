@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Update="CodeTemplates\JSValueBindingExtend\SetMethodAndFunction.cs">
+      <DependentUpon>SetMethodAndFunction.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="CodeTemplates\JSValueConverterExtend\FromToCallbackFunction.cs">
       <DependentUpon>FromToCallbackFunction.tt</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -28,6 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="CodeTemplates\JSValueBindingExtend\SetMethodAndFunction.tt">
+      <LastGenOutput>SetMethodAndFunction.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="CodeTemplates\JSValueConverterExtend\FromToCallbackFunction.tt">
       <LastGenOutput>FromToCallbackFunction.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
