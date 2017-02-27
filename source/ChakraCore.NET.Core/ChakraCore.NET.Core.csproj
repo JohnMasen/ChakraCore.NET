@@ -30,6 +30,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="CodeTemplates\JSValueExtend\CallMethodAndFunction.cs">
+      <DependentUpon>CallMethodAndFunction.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +56,10 @@
     </None>
     <None Update="CodeTemplates\JSValueConverterExtend\RegisterHelper.tt">
       <LastGenOutput>RegisterHelper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="CodeTemplates\JSValueExtend\CallMethodAndFunction.tt">
+      <LastGenOutput>CallMethodAndFunction.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="CodeTemplates\Template_Footer.t4">
