@@ -1,9 +1,10 @@
-﻿using ChakraCore.NET.Core.API;
+﻿
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public interface IJSValueService:IService
     {
@@ -24,5 +25,7 @@ namespace ChakraCore.NET.Core
 
         JavaScriptValue CallFunction(JavaScriptValue target, params JavaScriptValue[] para);
         JavaScriptValue ConstructObject(JavaScriptValue target, params JavaScriptValue[] para);
+
+        JavaScriptValue CreateArray(uint size);
     }
 }

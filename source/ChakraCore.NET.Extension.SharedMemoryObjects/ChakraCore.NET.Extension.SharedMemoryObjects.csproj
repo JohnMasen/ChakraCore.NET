@@ -9,8 +9,4 @@
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
-  </ItemGroup>
-
 </Project>

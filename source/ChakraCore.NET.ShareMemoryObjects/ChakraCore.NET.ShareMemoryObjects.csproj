@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChakraCore.NET.Core\ChakraCore.NET.Core.csproj" />
+    <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public interface IServiceNode
     {

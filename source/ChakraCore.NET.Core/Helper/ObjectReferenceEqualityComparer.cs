@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public class ObjectReferenceEqualityComparer<T> : IEqualityComparer<T> where T : class
     {

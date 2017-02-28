@@ -1,9 +1,10 @@
-﻿using ChakraCore.NET.Core.API;
+﻿
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     class JavaScriptValueComparer : IComparer<JavaScriptValue>
     {
@@ -14,7 +15,7 @@ namespace ChakraCore.NET.Core
         }
         public int Compare(JavaScriptValue x, JavaScriptValue y)
         {
-            return x.reference.ToInt32() - y.reference.ToInt32();
+            return x.reference.ToInt64().CompareTo(y.reference.ToInt64());
         }
 
     }

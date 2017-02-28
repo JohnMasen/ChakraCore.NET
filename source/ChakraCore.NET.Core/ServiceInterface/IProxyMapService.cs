@@ -1,13 +1,14 @@
-﻿using ChakraCore.NET.Core.API;
+﻿
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public interface IProxyMapService:IService,IDisposable
     {
-        JavaScriptValue Map<T>(T obj, Action<JSValueBinding> createBinding) where T : class;
+        JavaScriptValue Map<T>(T obj, Action<JSValueBinding,T,IServiceNode> createBinding) where T : class;
 
         T Get<T>(JavaScriptValue value) where T : class;
 

@@ -1,155 +1,154 @@
-﻿using ChakraCore.NET.API;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using ChakraCore.NET.API;
 namespace ChakraCore.NET
 {
-    public partial class JSValueConverter
+    public partial class JSValueConverterService 
     {
-        partial void initDefault()
+        private void initDefault()
         {
             RegisterConverter<string>(
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<JavaScriptValue>(() =>
+                    return node.WithContext<JavaScriptValue>(() =>
                     {
                         return JavaScriptValue.FromString(value);
                     });
                 },
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<string>(() =>
+                    return node.WithContext<string>(() =>
                     {
                         return value.ConvertToString().ToString();
                     });
                 }
                 );
-            RegisterArrayConverter<string>();
+            this.RegisterArrayConverter<string>();
 
-            RegisterStructConverter<int>(
-                (context, value) =>
+            this.RegisterStructConverter<int>(
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<JavaScriptValue>(() =>
+                    return node.WithContext<JavaScriptValue>(() =>
                     {
                         return JavaScriptValue.FromInt32(value);
                     });
                 },
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<int>(() =>
+                    return node.WithContext<int>(() =>
                     {
                         return value.ConvertToNumber().ToInt32();
                     });
                 }
                 );
-            RegisterArrayConverter<int>();
+            this.RegisterArrayConverter<int>();
 
-            RegisterStructConverter<double>(
-                (context, value) =>
+            this.RegisterStructConverter<double>(
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<JavaScriptValue>(() =>
+                    return node.WithContext<JavaScriptValue>(() =>
                     {
                         return JavaScriptValue.FromDouble(value);
                     });
                 },
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<double>(() =>
+                    return node.WithContext<double>(() =>
                     {
                         return value.ConvertToNumber().ToDouble();
                     });
                 }
                 );
-            RegisterArrayConverter<double>();
+            this.RegisterArrayConverter<double>();
 
-            RegisterStructConverter<bool>(
-                (context, value) =>
+            this.RegisterStructConverter<bool>(
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<JavaScriptValue>(() =>
+                    return node.WithContext<JavaScriptValue>(() =>
                     {
                         return JavaScriptValue.FromBoolean(value);
                     });
                 },
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<bool>(() =>
+                    return node.WithContext<bool>(() =>
                     {
                         return value.ConvertToBoolean().ToBoolean();
                     });
                 }
                 );
-            RegisterArrayConverter<bool>();
+            this.RegisterArrayConverter<bool>();
 
-            RegisterStructConverter<Single>(
-                (context, value) =>
+            this.RegisterStructConverter<Single>(
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<JavaScriptValue>(() =>
+                    return node.WithContext<JavaScriptValue>(() =>
                     {
                         return JavaScriptValue.FromDouble(value);
                     });
                 },
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<Single>(() =>
+                    return node.WithContext<Single>(() =>
                     {
                         return Convert.ToSingle(value.ConvertToNumber().ToDouble());
                     });
                 }
                 );
-            RegisterArrayConverter<Single>();
+            this.RegisterArrayConverter<Single>();
 
-            RegisterStructConverter<byte>(
-                (context, value) =>
+            this.RegisterStructConverter<byte>(
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<JavaScriptValue>(() =>
+                    return node.WithContext<JavaScriptValue>(() =>
                     {
                         return JavaScriptValue.FromDouble(Convert.ToDouble(value));
                     });
                 },
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<byte>(() =>
+                    return node.WithContext<byte>(() =>
                     {
                         return BitConverter.GetBytes(value.ToInt32())[0];
                     });
                 }
                 );
-            RegisterArrayConverter<byte>();
+            this.RegisterArrayConverter<byte>();
 
-            RegisterStructConverter<decimal>(
-                (context, value) =>
+            this.RegisterStructConverter<decimal>(
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<JavaScriptValue>(() =>
+                    return node.WithContext<JavaScriptValue>(() =>
                     {
                         return JavaScriptValue.FromDouble(Convert.ToDouble(value));
                     });
                 },
-                (context, value) =>
+                (node, value) =>
                 {
-                    return context.RuntimeContext.With<decimal>(() =>
+                    return node.WithContext<decimal>(() =>
                     {
                         return Convert.ToDecimal(value.ConvertToNumber().ToDouble());
                     });
                 }
                 );
-            RegisterArrayConverter<decimal>();
+            this.RegisterArrayConverter<decimal>();
 
 
 
             #region Special Convert
-            RegisterStructConverter<JavaScriptValue>(
-                (context, value) =>
+            this.RegisterStructConverter<JavaScriptValue>(
+                (node, value) =>
                 {
                     return value;
                 },
-                (context, value) =>
+                (node, value) =>
                 {
                     return value;
                 }
                 );
             #endregion
-
         }
     }
 }

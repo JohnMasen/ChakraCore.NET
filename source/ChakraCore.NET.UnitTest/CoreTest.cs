@@ -2,7 +2,8 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Linq;
-using ChakraCore.NET.Extension.SharedMemory;
+using ChakraCore.NET.SharedMemory;
+using ChakraCore.NET;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -13,7 +14,7 @@ namespace ChakraCore.NET.UnitTest
 
         protected override void SetupContext()
         {
-            TestProxy.Inject(context);
+            TestProxy.Inject(runtime);
         }
 
         [TestMethod]
@@ -63,7 +64,7 @@ namespace ChakraCore.NET.UnitTest
         public void CallBackTest()
         {
             runScript("JSCall");
-            context.ValueConverter.RegisterFunctionConverter<int, int>();
+            converter.RegisterFunctionConverter<int, int>();
             int result=context.RootObject.CallFunction<int, Func<int, int>,int>("addcallback",1,
                 (value) => {
                     return value + value;

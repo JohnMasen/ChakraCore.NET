@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ChakraCore.NET;
 using System.Threading.Tasks;
+using ChakraCore.NET;
+using ChakraCore.NET;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -45,14 +46,15 @@ namespace ChakraCore.NET.UnitTest
 
 
 
-        public static void Inject(ChakraContext context)
+        public static void Inject(ChakraRuntime runtime)
         {
-            context.ValueConverter.RegisterProxyConverter<TestProxy>((binding,value)=>
+            runtime.ServiceNode.GetService<IJSValueConverterService>().RegisterProxyConverter<TestProxy>((binding,value,node)=>
             {
+                var converter = node.GetService<IJSValueConverterService>();
                 binding.SetFunction<string, string>("echo", value.Echo);
                 binding.SetFunction<string>("GetName", value.GetName);
                 binding.SetFunction<Task<int>>("asyncFunction", value.AsyncCallAsync);
-                binding.RuntimeContext.ValueConverter.RegisterMethodConverter<string>();
+                converter.RegisterMethodConverter<string>();
                 binding.SetMethod<Action<string>>("callBackToJs", value.CallBackToJS);
             });
         }

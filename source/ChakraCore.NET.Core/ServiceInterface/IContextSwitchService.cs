@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public interface IContextSwitchService:IService,IDisposable
     {

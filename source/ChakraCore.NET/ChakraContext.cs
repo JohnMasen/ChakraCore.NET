@@ -6,16 +6,17 @@ using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using ChakraCore.NET.Core.API;
+using ChakraCore.NET.API;
 
-namespace ChakraCore.NET.Core
+
+namespace ChakraCore.NET
 {
     public class ChakraContext : ServiceConsumerBase, IDisposable
     {
         //private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
 
         internal JavaScriptContext jsContext;
-
+        private EventWaitHandle syncHandle;
         private CancellationTokenSource promiseTaskCTS = new CancellationTokenSource();
         private BlockingCollection<JavaScriptValue> promiseTaskQueue = new BlockingCollection<JavaScriptValue>();
         private JavaScriptPromiseContinuationCallback promiseContinuationCallback;
@@ -27,17 +28,18 @@ namespace ChakraCore.NET.Core
         public ChakraRuntime Runtime { get; private set; }
 
         private bool isDebug;
-        internal ChakraContext(JavaScriptContext jsContext, ChakraRuntime runtime):base(runtime.ServiceNode,"ChakraContext")
+        internal ChakraContext(JavaScriptContext jsContext, ChakraRuntime runtime,EventWaitHandle handle):base(runtime.ServiceNode,"ChakraContext")
         {
             jsContext.AddRef();
             this.jsContext = jsContext;
             Runtime = runtime;
+            syncHandle = handle;
         }
 
         internal void Init(bool enableDebug)
         {
             isDebug = enableDebug;
-            contextSwitch = new ContextSwitchService(jsContext);
+            contextSwitch = new ContextSwitchService(jsContext, syncHandle);
             ServiceNode.PushService<IContextSwitchService>(contextSwitch);
 
             Enter();
@@ -52,12 +54,9 @@ namespace ChakraCore.NET.Core
                 }
                 StartPromiseTaskLoop(promiseTaskCTS.Token);
 
-                if (enableDebug)
-                {
-                    Native.ThrowIfError(Native.JsStartDebugging());
-                }
 
                 GlobalObject = JavaScriptValue.GlobalObject;
+                RootObject = new JSValue(ServiceNode, GlobalObject);
             Leave();
             
             
@@ -106,27 +105,27 @@ namespace ChakraCore.NET.Core
         /// <returns>true if release is required, false if context already running at current thread(no release call required)</returns>
         public bool Enter()
         {
-            return contextSwitch.Enter();
+            return ServiceNode.GetService<IContextSwitchService>().Enter();
         }
 
-        public bool IsCurrentContext => contextSwitch.IsCurrentContext;
+        public bool IsCurrentContext => ServiceNode.GetService<IContextSwitchService>().IsCurrentContext;
 
         public void Leave()
         {
-            contextSwitch.Leave();
+            ServiceNode.GetService<IContextSwitchService>().Leave();
 
         }
 
 
         public string RunScript(string script)
         {
-            return contextService.RunScript(script);
+            return ServiceNode.GetService<IContextService>().RunScript(script);
         }
 
 
         public JavaScriptValue ParseScript(string script)
         {
-            return contextService.ParseScript(script);
+            return ServiceNode.GetService<IContextService>().ParseScript(script);
         }
 
         #region IDisposable Support

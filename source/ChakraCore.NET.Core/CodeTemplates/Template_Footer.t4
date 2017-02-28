@@ -1,10 +1,10 @@
 ﻿    }
 }
 <#+
-    string header="using ChakraCore.NET.Core.API;"+Environment.NewLine+
+    string header=""+Environment.NewLine+
 "using System;"+Environment.NewLine+
 "using System.Collections.Generic;"+Environment.NewLine+
-"namespace ChakraCore.NET.Core"+Environment.NewLine+
+"namespace ChakraCore.NET"+Environment.NewLine+
 "{"+Environment.NewLine+
 "{0}"+Environment.NewLine+
 "{";

@@ -1,4 +1,4 @@
-namespace ChakraCore.NET.Core.API
+namespace ChakraCore.NET.API
 {
     using System;
 

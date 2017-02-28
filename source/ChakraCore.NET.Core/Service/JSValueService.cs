@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ChakraCore.NET.Core.API;
+using ChakraCore.NET.API;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public class JSValueService : ServiceBase, IJSValueService
     {
@@ -120,6 +120,14 @@ namespace ChakraCore.NET.Core
             return contextSwitch.With<JavaScriptValue>(() =>
             {
                 return target.ConstructObject(para);
+            });
+        }
+
+        public JavaScriptValue CreateArray(uint length)
+        {
+            return contextSwitch.With<JavaScriptValue>(() =>
+            {
+                return JavaScriptValue.CreateArray(length);
             });
         }
     }

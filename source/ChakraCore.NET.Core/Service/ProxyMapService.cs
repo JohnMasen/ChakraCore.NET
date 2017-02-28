@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using ChakraCore.NET.Core.API;
+using ChakraCore.NET.API;
 using System.Linq;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public class ProxyMapService : ServiceBase, IProxyMapService
     {
@@ -41,7 +41,7 @@ namespace ChakraCore.NET.Core
             return null;
         }
 
-        public JavaScriptValue Map<T>(T obj,Action<JSValueBinding> createBinding) where T:class
+        public JavaScriptValue Map<T>(T obj, Action<JSValueBinding, T, IServiceNode> createBinding) where T:class
         {
             JavaScriptValue output;
             var list = getMapList<T>(true);
@@ -56,7 +56,7 @@ namespace ChakraCore.NET.Core
                 return result;
             });
             JSValueBinding binding = new JSValueBinding(serviceNode, output);
-            createBinding?.Invoke(binding);
+            createBinding?.Invoke(binding,obj,serviceNode);
             list.Add(obj, output,binding);
             return output;
         }
@@ -112,7 +112,7 @@ namespace ChakraCore.NET.Core
 
         private class TypeMapList<T> :IEnumerable<JavaScriptValue> where T : class
         {
-            public SortedDictionary<JavaScriptValue, Tuple<T,JSValueBinding>> jsList = new SortedDictionary<JavaScriptValue, Tuple<T, JSValueBinding>>();
+            public SortedDictionary<JavaScriptValue, Tuple<T,JSValueBinding>> jsList = new SortedDictionary<JavaScriptValue, Tuple<T, JSValueBinding>>(JavaScriptValueComparer.Instance);
             public IDictionary<T, JavaScriptValue> objList = new Dictionary<T, JavaScriptValue>(new ObjectReferenceEqualityComparer<T>());
 
             public void Add(T obj, JavaScriptValue value, JSValueBinding binding)

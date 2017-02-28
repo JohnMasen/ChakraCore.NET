@@ -1,9 +1,10 @@
-﻿using ChakraCore.NET.Core.API;
+﻿
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public delegate JavaScriptValue toJSValueDelegate<T>(IServiceNode serviceNode, T value);
     public delegate TResult fromJSValueDelegate<out TResult>(IServiceNode serviceNode, JavaScriptValue value);

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static ChakraCore.NET.Core.TypeComparer;
-namespace ChakraCore.NET.Core
+using static ChakraCore.NET.TypeComparer;
+namespace ChakraCore.NET
 {
     public class ServiceNode : IServiceNode
     {
@@ -51,7 +51,7 @@ namespace ChakraCore.NET.Core
                 if (Parent != null)
                 {
                     var r = Parent.GetService<TResult>(currentNode);
-                    PushService<TResult>(r);//cache the service instace
+                    //PushService<TResult>(r);//cache the service instace
                     r.CurrentNode = currentNode;
                     return r;
                 }
@@ -74,6 +74,7 @@ namespace ChakraCore.NET.Core
             else
             {
                 item = new Stack<T>();
+                providerList.Add(typeof(T), item);
             }
             item.Push(service);
         }

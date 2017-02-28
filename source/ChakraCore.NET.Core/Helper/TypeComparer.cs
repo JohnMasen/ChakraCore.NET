@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public class TypeComparer : IComparer<Type>
     {
@@ -13,7 +13,7 @@ namespace ChakraCore.NET.Core
         }
         public int Compare(Type x, Type y)
         {
-            return x?.GetHashCode()??0 - y?.GetHashCode()??0;
+            return (x?.GetHashCode()??0) - (y?.GetHashCode()??0);
         }
 
         public static bool AreSameGenericType<T1,T2>()

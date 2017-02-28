@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using ChakraCore.NET;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -16,15 +17,16 @@ namespace ChakraCore.NET.UnitTest
             });
         }
 
-        public static void RegisterConverter(ChakraContext context)
+        public static void RegisterTimer(ChakraRuntime runtime)
         {
-            context.ValueConverter.RegisterMethodConverter();
-            context.ValueConverter.RegisterProxyConverter<TimerHelper>((binding, value) =>
-            {
-                binding.SetMethod<Action, int>("setTimeout", value.SetTimeout);
-            }
+            //ij
+            //conv.RegisterMethodConverter();
+            //context.ValueConverter.RegisterProxyConverter<TimerHelper>((binding, value) =>
+            //{
+            //    binding.SetMethod<Action, int>("setTimeout", value.SetTimeout);
+            //}
 
-            );
+            //);
         }
     }
 }

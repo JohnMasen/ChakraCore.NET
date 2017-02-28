@@ -1,4 +1,4 @@
-﻿using ChakraCore.NET.Extension.SharedMemory;
+﻿using ChakraCore.NET.SharedMemory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Text;
+using ChakraCore.NET;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -17,6 +18,7 @@ namespace ChakraCore.NET.UnitTest
         protected  static TestContext TestContext;
         private  string logPrefix = string.Empty;
         private  Stack<string> prefixStack = new Stack<string>();
+        protected IJSValueConverterService converter;
 
 
         [ClassInitialize]
@@ -28,14 +30,13 @@ namespace ChakraCore.NET.UnitTest
         [TestInitialize]
         public virtual void TestInitialize()
         {
-                runtime = ChakraRuntime.Create();
-                LogAndPush("Runtime Created");
-                context = runtime.CreateContext(true);
-                LogAndPush("Context created");
-                SetupContext();
-                Log("Context setup complete");
-            
-            
+            runtime = ChakraRuntime.Create();
+            LogAndPush("Runtime Created");
+            context = runtime.CreateContext(true);
+            LogAndPush("Context created");
+            converter = context.ServiceNode.GetService<IJSValueConverterService>();
+            SetupContext();
+            Log("Context setup complete");
         }
 
         [TestCleanup]
@@ -50,11 +51,7 @@ namespace ChakraCore.NET.UnitTest
             LogAndPop("Runtime released");
         }
 
-        [ClassCleanup]
-        public static void ClassCleanup()
-        {
-
-        }
+        
 
         protected string runScript(string fileName)
         {

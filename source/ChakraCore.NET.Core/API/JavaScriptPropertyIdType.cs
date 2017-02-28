@@ -1,4 +1,4 @@
-﻿namespace ChakraCore.NET.Core.API
+﻿namespace ChakraCore.NET.API
 {
     /// <summary>
     ///     Type enumeration of a JavaScript property

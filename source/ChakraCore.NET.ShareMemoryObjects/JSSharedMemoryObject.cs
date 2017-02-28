@@ -1,7 +1,8 @@
-﻿using ChakraCore.NET.Core.API;
+﻿using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ChakraCore.NET;
 
 namespace ChakraCore.NET.SharedMemory
 {
@@ -62,7 +63,7 @@ namespace ChakraCore.NET.SharedMemory
             InitValue = action;
         }
 
-        internal void SetJSSource(JavaScriptValue value, ChakraContext context)
+        internal void SetJSSource(JavaScriptValue value, IContextSwitchService context)
         {
             if (JSSource.IsValid)
             {

@@ -1,4 +1,4 @@
-﻿namespace ChakraCore.NET.Core.API
+﻿namespace ChakraCore.NET.API
 {
     /// <summary>
     ///     Called by the runtime to load the source code of the serialized script.

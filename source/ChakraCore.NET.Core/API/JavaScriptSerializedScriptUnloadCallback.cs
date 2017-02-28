@@ -1,4 +1,4 @@
-﻿namespace ChakraCore.NET.Core.API
+﻿namespace ChakraCore.NET.API
 {
     /// <summary>
     ///     Called by the runtime when it is finished with all resources related to the script execution.

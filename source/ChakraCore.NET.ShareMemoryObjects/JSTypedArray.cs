@@ -1,4 +1,5 @@
-﻿using ChakraCore.NET.Core.API;
+﻿using ChakraCore.NET;
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -46,7 +47,7 @@ namespace ChakraCore.NET.SharedMemory
             return result;
         }
 
-        internal static JSTypedArray CreateFromJS(JavaScriptTypedArrayType type, IntPtr data, uint unitCount, JavaScriptValue source,ChakraContext context)
+        internal static JSTypedArray CreateFromJS(JavaScriptTypedArrayType type, IntPtr data, uint unitCount, JavaScriptValue source,IContextSwitchService context)
         {
             JSTypedArray result = new JSTypedArray(type,0, unitCount);
             result.SetJSSource(source, context);

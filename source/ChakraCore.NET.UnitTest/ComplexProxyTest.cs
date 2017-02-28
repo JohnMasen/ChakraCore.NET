@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using ChakraCore.NET;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -11,8 +12,8 @@ namespace ChakraCore.NET.UnitTest
     {
         protected override void SetupContext()
         {
-            TestProxy.Inject(context);
-            context.ValueConverter.RegisterArrayConverter<TestProxy>();
+            TestProxy.Inject(runtime);
+            converter.RegisterArrayConverter<TestProxy>();
             context.RootObject.WriteProperty<TestProxy>("proxy", new TestProxy());
             runScript("ComplexProxy");
         }

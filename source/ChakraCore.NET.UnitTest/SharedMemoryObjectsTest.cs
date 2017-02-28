@@ -1,4 +1,4 @@
-﻿using ChakraCore.NET.Extension.SharedMemory;
+﻿using ChakraCore.NET.SharedMemory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace ChakraCore.NET.UnitTest
         
         protected override void SetupContext()
         {
-            SharedMemoryValueConvertHelper.Inject(context);
+            runtime.InjectShareMemoryObjects();
         }
 
 

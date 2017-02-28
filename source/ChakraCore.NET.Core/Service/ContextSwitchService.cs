@@ -1,16 +1,19 @@
-﻿using ChakraCore.NET.Core.API;
+﻿
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public class ContextSwitchService :ServiceBase, IContextSwitchService,IDisposable
     {
         JavaScriptContext context;
-        IEventWaitHandlerService syncService => serviceNode.GetService<IEventWaitHandlerService>();
-        public ContextSwitchService(JavaScriptContext context)
+        public EventWaitHandle Handle { get; private set; }
+        public ContextSwitchService(JavaScriptContext context,EventWaitHandle handle)
         {
+            Handle = handle;
             this.context = context;
             context.AddRef();
         }
@@ -26,7 +29,7 @@ namespace ChakraCore.NET.Core
             }
             else
             {
-                syncService.WaitOne();
+                Handle.WaitOne();
                 JavaScriptContext.Current = context;
                 return true;
             }
@@ -35,7 +38,7 @@ namespace ChakraCore.NET.Core
         public void Leave()
         {
             JavaScriptContext.Current = JavaScriptContext.Invalid;
-            syncService.Set();
+            Handle.Set();
         }
 
         public void With(Action a)

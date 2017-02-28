@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ChakraCore.NET.Core.API;
+using ChakraCore.NET.API;
 using System.Runtime.InteropServices;
 using System.IO;
+using ChakraCore.NET;
 
 namespace ChakraCore.NET.SharedMemory
 {
@@ -39,7 +40,7 @@ namespace ChakraCore.NET.SharedMemory
             return result;
         }
 
-        internal static JSArrayBuffer CreateFromJS(IntPtr handle,uint size,JavaScriptValue value,ChakraContext context)
+        internal static JSArrayBuffer CreateFromJS(IntPtr handle,uint size,JavaScriptValue value,IContextSwitchService context)
         {
             var result = new JSArrayBuffer(SharedBufferSourceEnum.CreateByJavascript,(ulong)size);
             result.SetJSSource(value, context);

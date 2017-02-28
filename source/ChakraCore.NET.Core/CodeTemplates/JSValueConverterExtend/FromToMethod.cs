@@ -1,8 +1,8 @@
 ﻿
-using ChakraCore.NET.Core.API;
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
 public static partial class JSValueConverterHelper
 {

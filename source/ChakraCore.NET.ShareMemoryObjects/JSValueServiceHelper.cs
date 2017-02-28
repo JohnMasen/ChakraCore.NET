@@ -1,4 +1,5 @@
-﻿using ChakraCore.NET.Core.API;
+﻿using ChakraCore.NET;
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,9 +8,10 @@ namespace ChakraCore.NET.SharedMemory
 {
     public static class JSValueServiceHelper
     {
-        public static JavaScriptValue CreateArrayBuffer(this ijs, JSArrayBuffer source)
+        public static JavaScriptValue CreateArrayBuffer(this IJSValueService valueService, JSArrayBuffer source)
         {
-            return context.With<JavaScriptValue>(() =>
+            IContextSwitchService switchService = valueService.CurrentNode.GetService<IRuntimeService>().InternalContextSwitchService;
+            return switchService.With<JavaScriptValue>(() =>
             {
                 if (source.JSSource.IsValid)
                 {
@@ -22,7 +24,7 @@ namespace ChakraCore.NET.SharedMemory
                     case SharedBufferSourceEnum.CreateInJavascript:
                         {
                             JavaScriptValue result = JavaScriptValue.CreateArrayBuffer((uint)source.Size);
-                            source.SetJSSource(result, context);//hold the varient
+                            source.SetJSSource(result, switchService);//hold the varient
                             var data = JavaScriptValue.GetArrayBufferStorage(result, out uint bufferSize);
                             source.InitWindow(data, false);
                             source.InitBeforeConvert(source.Buffer);
@@ -32,7 +34,7 @@ namespace ChakraCore.NET.SharedMemory
                     case SharedBufferSourceEnum.CreateByExternal:
                         {
                             var result = JavaScriptValue.CreateExternalArrayBuffer(source.Buffer.Handle, (uint)source.Buffer.ByteLength, null, IntPtr.Zero);//do not handle GC callback, user should control the varient life cycle
-                            source.SetJSSource(result, context);//hold the varient
+                            source.SetJSSource(result, switchService);//hold the varient
                             return result;
                         }
 
@@ -45,8 +47,9 @@ namespace ChakraCore.NET.SharedMemory
 
 
 
-        public static JavaScriptValue CreateTypedArray(ChakraContext context, JSTypedArray source)
+        public static JavaScriptValue CreateTypedArray(this IJSValueService valueService, JSTypedArray source)
         {
+            IContextSwitchService switchService = valueService.CurrentNode.GetService<IRuntimeService>().InternalContextSwitchService;
             if (source.JSSource.IsValid)
             {
                 return source.JSSource;
@@ -54,22 +57,22 @@ namespace ChakraCore.NET.SharedMemory
             switch (source.BufferSource)
             {
                 case SharedBufferSourceEnum.CreateByDotnet:
-                    return context.With<JavaScriptValue>(
+                    return switchService.With<JavaScriptValue>(
                         () =>
                         {
                             var result = JavaScriptValue.CreateTypedArray(source.ArrayType, source.JSSource, source.Position, source.UnitCount);
-                            source.SetJSSource(result, context);
+                            source.SetJSSource(result, switchService);
                             return result;
                         }
                         );
                 case SharedBufferSourceEnum.CreateByJavascript:
                     throw new InvalidOperationException("invalid source typed array");//create by javascript should already have JavaScriptValue assigned
                 case SharedBufferSourceEnum.CreateInJavascript:
-                    return context.With<JavaScriptValue>(
+                    return switchService.With<JavaScriptValue>(
                         () =>
                         {
                             var result = JavaScriptValue.CreateTypedArray(source.ArrayType, JavaScriptValue.Invalid, source.Position, source.UnitCount);
-                            source.SetJSSource(result, context);//hold the objec
+                            source.SetJSSource(result, switchService);//hold the objec
                             //get the internal storage
                             JavaScriptValue.GetTypedArrayStorage(result, out IntPtr data, out uint bufferLength, out JavaScriptTypedArrayType type, out int elementSize);
                             source.InitWindow(data, false);
@@ -91,8 +94,9 @@ namespace ChakraCore.NET.SharedMemory
         /// <param name="sourceArrayBuffer">ArrayBuffer object</param>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static JavaScriptValue CreateDataView(ChakraContext context, JavaScriptValue sourceArrayBuffer, JSDataView source)
+        public static JavaScriptValue CreateDataView(this IJSValueService valueService, JavaScriptValue sourceArrayBuffer, JSDataView source)
         {
+            IContextSwitchService switchService = valueService.CurrentNode.GetService<IRuntimeService>().InternalContextSwitchService;
             if (source.JSSource.IsValid)
             {
                 return source.JSSource;
@@ -100,22 +104,22 @@ namespace ChakraCore.NET.SharedMemory
             switch (source.BufferSource)
             {
                 case SharedBufferSourceEnum.CreateByDotnet:
-                    return context.With<JavaScriptValue>(
+                    return switchService.With<JavaScriptValue>(
                         () =>
                         {
                             var result = JavaScriptValue.CreateDataView(sourceArrayBuffer, source.Position, (uint)source.Size);
-                            source.SetJSSource(result, context);
+                            source.SetJSSource(result, switchService);
                             return result;
                         }
                         );
                 case SharedBufferSourceEnum.CreateByJavascript:
                     throw new InvalidOperationException("invalid source typed array");//create by javascript should already have JavaScriptValue assigned
                 case SharedBufferSourceEnum.CreateInJavascript:
-                    return context.With<JavaScriptValue>(
+                    return switchService.With<JavaScriptValue>(
                         () =>
                         {
                             var result = JavaScriptValue.CreateDataView(sourceArrayBuffer, source.Position, (uint)source.Size);
-                            source.SetJSSource(result, context);
+                            source.SetJSSource(result, switchService);
                             JavaScriptValue.GetDataViewStorage(result, out IntPtr data, out uint bufferLength);
                             source.InitWindow(data, false);
                             source.InitBeforeConvert(source.Buffer);

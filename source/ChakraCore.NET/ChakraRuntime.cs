@@ -1,29 +1,27 @@
-﻿using ChakraCore.NET.Core.API;
+﻿using ChakraCore.NET.API;
 using System;
 using System.Threading;
 
-namespace ChakraCore.NET.Core
+
+namespace ChakraCore.NET
 {
     public class ChakraRuntime: ServiceConsumerBase,IDisposable
     {
         JavaScriptRuntime runtime;
         IProxyMapService mapService = new ProxyMapService();
+        JSValueConverterService converter= new JSValueConverterService();
         IRuntimeService runtimeService;
-        //AutoResetEvent SyncHandler;
-        private ChakraRuntime(JavaScriptRuntime runtime,IServiceNode service):base(service, "ChakraRuntime")
+        EventWaitHandle SyncHandler;
+        private ChakraRuntime(JavaScriptRuntime runtime,IServiceNode service,EventWaitHandle syncHandler):base(service, "ChakraRuntime")
         {
             this.runtime = runtime;
-            runtimeService = new RuntimeService(runtime);
+            SyncHandler = syncHandler;
+            runtimeService = new RuntimeService(runtime, SyncHandler);
             //inject service
-            service.PushService(runtimeService);
-            if (!service.CanGetService<IEventWaitHandlerService>())
-            {
-                service.PushService<IEventWaitHandlerService>(new EventWaitHandlerService());
-            }
-            
-            service.PushService<IJSValueConverterService>(new JSValueConverterService());
-            service.PushService<IProxyMapService>(mapService);
-            service.PushService<IJSValueService>(new JSValueService());
+            ServiceNode.PushService(runtimeService);
+            ServiceNode.PushService<IJSValueConverterService>(converter);
+            ServiceNode.PushService<IProxyMapService>(mapService);
+            ServiceNode.PushService<IJSValueService>(new JSValueService());
         }
 
         public ChakraContext CreateContext(bool enableDebug)
@@ -31,7 +29,7 @@ namespace ChakraCore.NET.Core
             try
             {
                 var c = runtime.CreateContext();
-                var result = new ChakraContext(c, this);
+                var result = new ChakraContext(c, this, SyncHandler);
                 result.Init(enableDebug);
                 return result;
                 
@@ -42,14 +40,18 @@ namespace ChakraCore.NET.Core
             }
         }
         
-        public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes= JavaScriptRuntimeAttributes.None, IServiceNode service=null)
+        public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes= JavaScriptRuntimeAttributes.None, IServiceNode service=null,EventWaitHandle syncHandle=null)
         {
             JavaScriptRuntime result = JavaScriptRuntime.Create(attributes, JavaScriptRuntimeVersion.VersionEdge);
             if (service==null)
             {
-                service = Core.ServiceNode.CreateRoot();
+                service = ChakraCore.NET.ServiceNode.CreateRoot();
             }
-            return new ChakraRuntime(result,service);
+            if (syncHandle==null)
+            {
+                syncHandle = new AutoResetEvent(true);
+            }
+            return new ChakraRuntime(result,service,syncHandle);
         }
 
 

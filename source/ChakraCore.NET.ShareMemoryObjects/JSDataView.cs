@@ -1,4 +1,5 @@
-﻿using ChakraCore.NET.Core.API;
+﻿using ChakraCore.NET;
+using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,7 +33,7 @@ namespace ChakraCore.NET.SharedMemory
             return result;
         }
 
-        internal static JSDataView CreateFromJS(JavaScriptValue value,IntPtr handle,uint size,ChakraContext context)
+        internal static JSDataView CreateFromJS(JavaScriptValue value,IntPtr handle,uint size,IContextSwitchService context)
         {
             JSDataView result = new JSDataView(SharedBufferSourceEnum.CreateByJavascript, null,0, size);
             result.SetJSSource(value,context);

@@ -1,14 +1,18 @@
-﻿using System;
+﻿using ChakraCore.NET.API;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using ChakraCore.NET.Core.API;
 
-namespace ChakraCore.NET.Core
+
+namespace ChakraCore.NET
 {
-    public class JSValueConverterService :ServiceBase, IJSValueConverterService
+    public partial class JSValueConverterService :ServiceBase, IJSValueConverterService
     {
         private SortedDictionary<Type, Tuple<object, object>> converters = new SortedDictionary<Type, Tuple<object, object>>(TypeComparer.Instance);
-
+        public JSValueConverterService()
+        {
+            initDefault();
+        }
 
         public bool CanConvert<T>()
         {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ChakraCore.NET.Core.API;
+using ChakraCore.NET.API;
 
-namespace ChakraCore.NET.Core
+namespace ChakraCore.NET
 {
     public class ContextService : ServiceBase, IContextService
     {
