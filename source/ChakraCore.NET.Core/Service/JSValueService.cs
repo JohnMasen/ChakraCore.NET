@@ -31,7 +31,7 @@ namespace ChakraCore.NET
             return result;
         });
 
-        public JavaScriptValue GlobalObject => contextSwitch.With<JavaScriptValue>(() =>
+        public JavaScriptValue JSGlobalObject => contextSwitch.With<JavaScriptValue>(() =>
         {
             Native.ThrowIfError(Native.JsGetGlobalObject(out JavaScriptValue result));
             return result;

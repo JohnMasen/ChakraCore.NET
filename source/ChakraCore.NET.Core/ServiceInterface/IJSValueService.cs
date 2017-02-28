@@ -17,7 +17,7 @@ namespace ChakraCore.NET
         JavaScriptValue JSValue_Null { get; }
         JavaScriptValue JSValue_True { get; }
         JavaScriptValue JSValue_False { get; }
-        JavaScriptValue GlobalObject { get; }
+        JavaScriptValue JSGlobalObject { get; }
 
         JavaScriptValue CreateFunction(JavaScriptNativeFunction function, IntPtr callbackData);
         JavaScriptValue CreateObject();

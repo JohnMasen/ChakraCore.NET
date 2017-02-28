@@ -65,7 +65,7 @@ namespace ChakraCore.NET.UnitTest
         {
             runScript("JSCall");
             converter.RegisterFunctionConverter<int, int>();
-            int result=context.RootObject.CallFunction<int, Func<int, int>,int>("addcallback",1,
+            int result=context.GlobalObject.CallFunction<int, Func<int, int>,int>("addcallback",1,
                 (value) => {
                     return value + value;
                 }
@@ -76,12 +76,12 @@ namespace ChakraCore.NET.UnitTest
         private void CallMethod<T>(T value)
         {
             runScript("JSCall");
-            context.RootObject.CallMethod<T>("add",value);
+            context.GlobalObject.CallMethod<T>("add",value);
         }
         private void CallFunction<T>(T value,T expect)
         {
             runScript("JSCall");
-            T result=context.RootObject.CallFunction<T,T>("add", value);
+            T result=context.GlobalObject.CallFunction<T,T>("add", value);
             Assert.AreEqual<T>(result, expect);
         }
         [TestMethod]
@@ -89,9 +89,9 @@ namespace ChakraCore.NET.UnitTest
         {
             
             TestProxy stub = new TestProxy();
-            context.RootObject.WriteProperty("myStub", stub);
+            context.GlobalObject.WriteProperty("myStub", stub);
             runScript("JSProxy");
-            string s = context.RootObject.ReadProperty<string>("callProxyResult");
+            string s = context.GlobalObject.ReadProperty<string>("callProxyResult");
             Assert.AreEqual("hihi", s);
         }
 
@@ -99,9 +99,9 @@ namespace ChakraCore.NET.UnitTest
         public void ProxyTransferback()
         {
             TestProxy stub = new TestProxy();
-            context.RootObject.WriteProperty("a", stub);
+            context.GlobalObject.WriteProperty("a", stub);
             runScript("JSValueTest");
-            TestProxy b = context.RootObject.ReadProperty<TestProxy>("b");
+            TestProxy b = context.GlobalObject.ReadProperty<TestProxy>("b");
             Assert.IsTrue(object.ReferenceEquals(stub, b));
         }
 
@@ -112,9 +112,9 @@ namespace ChakraCore.NET.UnitTest
 
         private void ReadWrite<T>(T value)
         {
-            context.RootObject.WriteProperty<T>("a", value);
+            context.GlobalObject.WriteProperty<T>("a", value);
             runScript("JSValueTest");
-            T b = context.RootObject.ReadProperty<T>("b");
+            T b = context.GlobalObject.ReadProperty<T>("b");
             Assert.AreEqual<T>(b, value);
         }
 

@@ -14,7 +14,7 @@ namespace ChakraCore.NET.UnitTest
         {
             TestProxy.Inject(runtime);
             converter.RegisterArrayConverter<TestProxy>();
-            context.RootObject.WriteProperty<TestProxy>("proxy", new TestProxy());
+            context.GlobalObject.WriteProperty<TestProxy>("proxy", new TestProxy());
             runScript("ComplexProxy");
         }
 
@@ -29,22 +29,22 @@ namespace ChakraCore.NET.UnitTest
                 items[i] = new TestProxy(i.ToString());
                 target = target + i.ToString() + ",";
             }
-            context.RootObject.WriteProperty<IEnumerable<TestProxy>>("proxies", items);
+            context.GlobalObject.WriteProperty<IEnumerable<TestProxy>>("proxies", items);
 
-            var items_back=context.RootObject.ReadProperty<IEnumerable<TestProxy>>("proxies").ToArray();
+            var items_back=context.GlobalObject.ReadProperty<IEnumerable<TestProxy>>("proxies").ToArray();
             Assert.AreEqual(items_back.Length, items.Length);
             for (int i = 0; i < items.Length; i++)
             {
                 Assert.AreSame(items[i], items_back[i]);
             }
-            string result=context.RootObject.CallFunction<string>("MultiTransfer");
+            string result=context.GlobalObject.CallFunction<string>("MultiTransfer");
             Assert.AreEqual<string>(target, result);
         }
 
         [TestMethod]
         public void CallBackFromJS()
         {
-            context.RootObject.CallMethod("callBackToProxy");
+            context.GlobalObject.CallMethod("callBackToProxy");
         }
     }
 }

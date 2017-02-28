@@ -134,8 +134,18 @@ namespace ChakraCore.NET
                 }
                 );
             this.RegisterArrayConverter<decimal>();
+            this.RegisterConverter<JSValue>(
+                (node,value)=>
+                {
+                    return value.ReferenceValue;
+                },
+                (node,value)=>
+                {
+                    return new JSValue(node, value);
+                }
+                );
 
-
+            this.RegisterMethodConverter();
 
             #region Special Convert
             this.RegisterStructConverter<JavaScriptValue>(

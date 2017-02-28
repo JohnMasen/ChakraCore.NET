@@ -23,7 +23,7 @@ namespace ChakraCore.NET.UnitTest
         {
             int buffersize = 1024 * 1024 * 10;
             JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
-            context.RootObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
+            context.GlobalObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
             byte[] tmp = new byte[buffersize];
             for (int i = 0; i < tmp.Length; i++)
             {
@@ -48,7 +48,7 @@ namespace ChakraCore.NET.UnitTest
         {
             int buffersize = 1024 * 1024 * 10;
             JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
-            context.RootObject.WriteProperty<JSArrayBuffer>("buffer1", buffer);
+            context.GlobalObject.WriteProperty<JSArrayBuffer>("buffer1", buffer);
             byte[] tmp = new byte[buffersize];
             for (int i = 0; i < tmp.Length; i++)
             {
@@ -63,7 +63,7 @@ namespace ChakraCore.NET.UnitTest
             buffer.Buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
             runScript("JSArrayBufferSetGet");
 
-            JSArrayBuffer buffer1 = context.RootObject.ReadProperty<JSArrayBuffer>("buffer1");
+            JSArrayBuffer buffer1 = context.GlobalObject.ReadProperty<JSArrayBuffer>("buffer1");
             buffer1.Buffer.ReadArray<byte>(0, tmp, 0, tmp.Length);
 
             Assert.IsTrue(tmp.SequenceEqual(target));
@@ -84,7 +84,7 @@ namespace ChakraCore.NET.UnitTest
 
             Action<SharedMemoryBuffer> init = (x) => { x.WriteArray(0, initdata, 0, initdata.Length); };
             JSTypedArray array = JSTypedArray.CreateInJS(API.JavaScriptTypedArrayType.Int8, size, init);
-            context.RootObject.WriteProperty<JSTypedArray>("array1", array);
+            context.GlobalObject.WriteProperty<JSTypedArray>("array1", array);
             runScript("JSTypedArrayReadWrite");
             array.Buffer.ReadArray(0, initdata, 0, initdata.Length);
             array.Dispose();
@@ -105,9 +105,9 @@ namespace ChakraCore.NET.UnitTest
             }
             JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript(size, null);
             JSDataView view = JSDataView.CreateFromArrayBuffer(buffer, 0, size, (b) => { b.WriteArray(0, initdata, 0, initdata.Length); });
-            context.RootObject.WriteProperty<JSDataView>("dv1", view);
+            context.GlobalObject.WriteProperty<JSDataView>("dv1", view);
             runScript("JSDataViewReadWrite");
-            JSDataView view1 = context.RootObject.ReadProperty<JSDataView>("dv1");
+            JSDataView view1 = context.GlobalObject.ReadProperty<JSDataView>("dv1");
             view1.Buffer.ReadArray(0, initdata, 0, initdata.Length);
             foreach (var item in initdata)
             {

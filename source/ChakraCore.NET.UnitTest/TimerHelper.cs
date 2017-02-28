@@ -19,14 +19,10 @@ namespace ChakraCore.NET.UnitTest
 
         public static void RegisterTimer(ChakraRuntime runtime)
         {
-            //ij
-            //conv.RegisterMethodConverter();
-            //context.ValueConverter.RegisterProxyConverter<TimerHelper>((binding, value) =>
-            //{
-            //    binding.SetMethod<Action, int>("setTimeout", value.SetTimeout);
-            //}
-
-            //);
+            runtime.ServiceNode.GetService<IJSValueConverterService>().RegisterProxyConverter<TimerHelper>((binding,value,node)=>
+            {
+                binding.SetMethod<Action, int>("setTimeout", value.SetTimeout);
+            });
         }
     }
 }

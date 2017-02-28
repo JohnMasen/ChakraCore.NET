@@ -20,11 +20,11 @@ namespace ChakraCore.NET
         private CancellationTokenSource promiseTaskCTS = new CancellationTokenSource();
         private BlockingCollection<JavaScriptValue> promiseTaskQueue = new BlockingCollection<JavaScriptValue>();
         private JavaScriptPromiseContinuationCallback promiseContinuationCallback;
-        private JavaScriptValue GlobalObject;
+        private JavaScriptValue JSGlobalObject;
         private ContextService contextService;
         private ContextSwitchService contextSwitch;
 
-        public JSValue RootObject { get; private set; }
+        public JSValue GlobalObject { get; private set; }
         public ChakraRuntime Runtime { get; private set; }
 
         private bool isDebug;
@@ -55,8 +55,8 @@ namespace ChakraCore.NET
                 StartPromiseTaskLoop(promiseTaskCTS.Token);
 
 
-                GlobalObject = JavaScriptValue.GlobalObject;
-                RootObject = new JSValue(ServiceNode, GlobalObject);
+                JSGlobalObject = JavaScriptValue.GlobalObject;
+                GlobalObject = new JSValue(ServiceNode, JSGlobalObject);
             Leave();
             
             
@@ -68,7 +68,7 @@ namespace ChakraCore.NET
         private void StartPromiseTaskLoop(CancellationToken token)
         {
             Task.Factory.StartNew(
-                ()=>
+(Action)(()=>
                 {
                     Debug.WriteLine("Promise task loop started");
                     while (true)
@@ -90,12 +90,12 @@ namespace ChakraCore.NET
                             throw;
                         }
                         Enter();
-                        task.CallFunction(GlobalObject);
+                        task.CallFunction((JavaScriptValue)this.JSGlobalObject);
                         Leave();
                         Debug.WriteLine("Promise task complete");
                     }
-                }
-                ,token
+                })
+                , token
                 );
         }
         
