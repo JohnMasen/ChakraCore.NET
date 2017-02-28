@@ -8,8 +8,9 @@ namespace ChakraCore.NET
 {
     public partial class JSValue : ServiceConsumerBase
     {
-        protected IJSValueConverterService converter;
-        protected IJSValueService valueService;
+        protected IJSValueConverterService converter => ServiceNode.GetService<IJSValueConverterService>();
+        protected IJSValueService valueService=> ServiceNode.GetService<IJSValueService>();
+
         public JSValueBinding Binding { get; private set; }
         public JavaScriptValue ReferenceValue { get; private set; }
 
@@ -23,8 +24,6 @@ namespace ChakraCore.NET
             //add my own one time delegate handler for method/function call
             ServiceNode.PushService<INativeFunctionHolderService>(new NativeFunctionHolderService(true));
             
-            converter = ServiceNode.GetService<IJSValueConverterService>();
-            valueService = ServiceNode.GetService<IJSValueService>();
         }
 
         public T ReadProperty<T>(JavaScriptPropertyId id)

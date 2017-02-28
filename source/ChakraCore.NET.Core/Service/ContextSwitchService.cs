@@ -29,6 +29,7 @@ namespace ChakraCore.NET
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("Enter");
                 Handle.WaitOne();
                 JavaScriptContext.Current = context;
                 return true;
@@ -39,6 +40,7 @@ namespace ChakraCore.NET
         {
             JavaScriptContext.Current = JavaScriptContext.Invalid;
             Handle.Set();
+            System.Diagnostics.Debug.WriteLine("Leave");
         }
 
         public void With(Action a)

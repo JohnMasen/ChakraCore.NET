@@ -11,14 +11,13 @@ namespace ChakraCore.NET
     {
         JavaScriptRuntime runtime;
         JavaScriptContext context;
-        IContextSwitchService switchService;
+        public IContextSwitchService InternalContextSwitchService { get; private set; }
         public RuntimeService(JavaScriptRuntime runtime,EventWaitHandle handle)
         {
             this.runtime = runtime;
             context = runtime.CreateContext();
-            switchService = new ContextSwitchService(context, handle);
+            InternalContextSwitchService = new RuntimeInternalContextSwitcher(context);
         }
-        public IContextSwitchService InternalContextSwitchService => serviceNode.GetService<IContextSwitchService>(serviceNode);//force the service search path from current node
 
         public void CollectGarbage()
         {
@@ -27,7 +26,7 @@ namespace ChakraCore.NET
 
         public void Dispose()
         {
-            switchService.Dispose();
+            InternalContextSwitchService.Dispose();
         }
 
         public void TerminateRuningScript()
