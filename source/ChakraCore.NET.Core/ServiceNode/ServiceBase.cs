@@ -6,10 +6,28 @@ namespace ChakraCore.NET.Core
 {
     public abstract class ServiceBase:IService
     {
+
         protected IServiceNode serviceNode;
-        public virtual void SetupNode(IServiceNode serviceNode)
+
+        public IServiceNode CurrentNode
         {
-            this.serviceNode = serviceNode;
+            get { return serviceNode; }
+            set
+            {
+                if (ReferenceEquals(serviceNode,value))
+                {
+                    return;
+                }
+                OnServiceNodeSwitch(serviceNode, value);
+                serviceNode = value;
+            }
+        }
+
+
+        protected IContextSwitchService contextSwitch => serviceNode.GetService<IContextSwitchService>();
+        protected IJSValueConverterService converter => serviceNode.GetService<IJSValueConverterService>();
+        protected virtual void OnServiceNodeSwitch(IServiceNode before, IServiceNode after)
+        {
         }
     }
 }

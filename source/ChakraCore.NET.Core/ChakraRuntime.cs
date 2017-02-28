@@ -7,16 +7,22 @@ namespace ChakraCore.NET.Core
     public class ChakraRuntime: ServiceConsumerBase,IDisposable
     {
         JavaScriptRuntime runtime;
-        public EventWaitHandle SyncHandler { get; private set; }
+        IProxyMapService mapService = new ProxyMapService();
+        IRuntimeService runtimeService;
         //AutoResetEvent SyncHandler;
         private ChakraRuntime(JavaScriptRuntime runtime,IServiceNode service):base(service, "ChakraRuntime")
         {
             this.runtime = runtime;
-            SyncHandler = new AutoResetEvent(true);
+            runtimeService = new RuntimeService(runtime);
             //inject service
-            service.PushService<IEventWaitHandlerService>(new EventWaitHandlerService());
+            service.PushService(runtimeService);
+            if (!service.CanGetService<IEventWaitHandlerService>())
+            {
+                service.PushService<IEventWaitHandlerService>(new EventWaitHandlerService());
+            }
+            
             service.PushService<IJSValueConverterService>(new JSValueConverterService());
-            service.PushService<IProxyMapService>(new ProxyMapService());
+            service.PushService<IProxyMapService>(mapService);
             service.PushService<IJSValueService>(new JSValueService());
         }
 
@@ -25,7 +31,7 @@ namespace ChakraCore.NET.Core
             try
             {
                 var c = runtime.CreateContext();
-                var result = new ChakraContext(c, SyncHandler,ServiceNode);
+                var result = new ChakraContext(c, this);
                 result.Init(enableDebug);
                 return result;
                 
@@ -34,12 +40,6 @@ namespace ChakraCore.NET.Core
             {
                 throw ex;
             }
-            
-            //if (enableDebug)
-            //{
-            //    DebugHelper.Inject(result);
-            //}
-            
         }
         
         public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes= JavaScriptRuntimeAttributes.None, IServiceNode service=null)
@@ -55,7 +55,7 @@ namespace ChakraCore.NET.Core
 
         public void CollectGarbage()
         {
-            runtime.CollectGarbage();
+            runtimeService.CollectGarbage();
         }
 
         /// <summary>
@@ -65,8 +65,7 @@ namespace ChakraCore.NET.Core
         /// </summary>
         public void TerminateRuningScript()
         {
-            runtime.Disabled = true;
-            runtime.Disabled = false;
+            runtimeService.TerminateRuningScript();
         }
 
         #region IDisposable Support
@@ -78,11 +77,9 @@ namespace ChakraCore.NET.Core
             {
                 if (disposing)
                 {
+                    mapService.Dispose();
                     runtime.Dispose();
-                    SyncHandler.Dispose();
                 }
-
-
                 disposedValue = true;
             }
         }

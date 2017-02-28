@@ -24,7 +24,7 @@ public static partial class JSValueConverterHelper
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -32,7 +32,7 @@ public static partial class JSValueConverterHelper
         private static Func<bool,TResult> fromJSFunction<TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,TResult> result = (bool isConstruct) =>
             {
@@ -44,11 +44,11 @@ public static partial class JSValueConverterHelper
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller);
                     }
                 
                     return resultValue;
@@ -77,7 +77,7 @@ public static partial class JSValueConverterHelper
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -85,7 +85,7 @@ public static partial class JSValueConverterHelper
         private static Func<bool,T1,TResult> fromJSFunction<T1,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,T1,TResult> result = (bool isConstruct,T1 para1) =>
             {
@@ -97,11 +97,11 @@ public static partial class JSValueConverterHelper
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined,p1);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined,p1);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller,p1);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller,p1);
                     }
                 p1.Release();
                     return resultValue;
@@ -133,7 +133,7 @@ arguments[2].Release();
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -141,7 +141,7 @@ arguments[2].Release();
         private static Func<bool,T1,T2,TResult> fromJSFunction<T1,T2,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,T1,T2,TResult> result = (bool isConstruct,T1 para1,T2 para2) =>
             {
@@ -155,11 +155,11 @@ p2.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined,p1,p2);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined,p1,p2);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller,p1,p2);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller,p1,p2);
                     }
                 p1.Release();
 p2.Release();
@@ -195,7 +195,7 @@ arguments[3].Release();
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -203,7 +203,7 @@ arguments[3].Release();
         private static Func<bool,T1,T2,T3,TResult> fromJSFunction<T1,T2,T3,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,T1,T2,T3,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3) =>
             {
@@ -219,11 +219,11 @@ p3.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined,p1,p2,p3);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined,p1,p2,p3);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller,p1,p2,p3);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller,p1,p2,p3);
                     }
                 p1.Release();
 p2.Release();
@@ -263,7 +263,7 @@ arguments[4].Release();
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -271,7 +271,7 @@ arguments[4].Release();
         private static Func<bool,T1,T2,T3,T4,TResult> fromJSFunction<T1,T2,T3,T4,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,T1,T2,T3,T4,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4) =>
             {
@@ -289,11 +289,11 @@ p4.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined,p1,p2,p3,p4);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined,p1,p2,p3,p4);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller,p1,p2,p3,p4);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller,p1,p2,p3,p4);
                     }
                 p1.Release();
 p2.Release();
@@ -337,7 +337,7 @@ arguments[5].Release();
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -345,7 +345,7 @@ arguments[5].Release();
         private static Func<bool,T1,T2,T3,T4,T5,TResult> fromJSFunction<T1,T2,T3,T4,T5,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,T1,T2,T3,T4,T5,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5) =>
             {
@@ -365,11 +365,11 @@ p5.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined,p1,p2,p3,p4,p5);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined,p1,p2,p3,p4,p5);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller,p1,p2,p3,p4,p5);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller,p1,p2,p3,p4,p5);
                     }
                 p1.Release();
 p2.Release();
@@ -417,7 +417,7 @@ arguments[6].Release();
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -425,7 +425,7 @@ arguments[6].Release();
         private static Func<bool,T1,T2,T3,T4,T5,T6,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,T1,T2,T3,T4,T5,T6,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6) =>
             {
@@ -447,11 +447,11 @@ p6.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined,p1,p2,p3,p4,p5,p6);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined,p1,p2,p3,p4,p5,p6);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller,p1,p2,p3,p4,p5,p6);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller,p1,p2,p3,p4,p5,p6);
                     }
                 p1.Release();
 p2.Release();
@@ -503,7 +503,7 @@ arguments[7].Release();
                 return converter.ToJSValue<TResult>(result);
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return node.GetService<IJSValueService>().CreateFunction(f, IntPtr.Zero);
         }
 
         
@@ -511,7 +511,7 @@ arguments[7].Release();
         private static Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
-            var context = node.GetService<IContextService>();
+            var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
             Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7) =>
             {
@@ -535,11 +535,11 @@ p7.AddRef();
                 JavaScriptValue resultValue;
                     if (isConstruct)
                     {
-                        resultValue= context.ConstructObject(value,context.JSValue_Undefined,p1,p2,p3,p4,p5,p6,p7);
+                        resultValue= jsValueService.ConstructObject(value,jsValueService.JSValue_Undefined,p1,p2,p3,p4,p5,p6,p7);
                     }
                     else
                     {
-                        resultValue= context.CallFunction(value,callContext.Caller,p1,p2,p3,p4,p5,p6,p7);
+                        resultValue= jsValueService.CallFunction(value,callContext.Caller,p1,p2,p3,p4,p5,p6,p7);
                     }
                 p1.Release();
 p2.Release();

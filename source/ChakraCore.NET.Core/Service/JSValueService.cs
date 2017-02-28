@@ -7,6 +7,35 @@ namespace ChakraCore.NET.Core
 {
     public class JSValueService : ServiceBase, IJSValueService
     {
+        public JavaScriptValue JSValue_Undefined => contextSwitch.With<JavaScriptValue>(() =>
+        {
+            Native.ThrowIfError(Native.JsGetUndefinedValue(out JavaScriptValue result));
+            return result;
+        });
+
+        public JavaScriptValue JSValue_Null => contextSwitch.With<JavaScriptValue>(() =>
+        {
+            Native.ThrowIfError(Native.JsGetUndefinedValue(out JavaScriptValue result));
+            return result;
+        });
+
+        public JavaScriptValue JSValue_True => contextSwitch.With<JavaScriptValue>(() =>
+        {
+            Native.ThrowIfError(Native.JsGetTrueValue(out JavaScriptValue result));
+            return result;
+        });
+
+        public JavaScriptValue JSValue_False => contextSwitch.With<JavaScriptValue>(() =>
+        {
+            Native.ThrowIfError(Native.JsGetFalseValue(out JavaScriptValue result));
+            return result;
+        });
+
+        public JavaScriptValue GlobalObject => contextSwitch.With<JavaScriptValue>(() =>
+        {
+            Native.ThrowIfError(Native.JsGetGlobalObject(out JavaScriptValue result));
+            return result;
+        });
         public T ReadProperty<T>(JavaScriptValue target, JavaScriptPropertyId id)
         {
             var convert = serviceNode.GetService<IJSValueConverterService>();
@@ -52,6 +81,46 @@ namespace ChakraCore.NET.Core
 
             ;
         }
+        public JavaScriptValue CreateFunction(JavaScriptNativeFunction function, IntPtr callbackData)
+        {
+            return contextSwitch.With<JavaScriptValue>(() =>
+            {
+                var f = serviceNode.GetService<INativeFunctionHolderService>().HoldFunction(function);
+                return JavaScriptValue.CreateFunction(function, callbackData);
+            });
 
+        }
+
+        public JavaScriptValue CreateObject()
+        {
+            return contextSwitch.With<JavaScriptValue>(() =>
+            {
+                return JavaScriptValue.CreateObject();
+            });
+        }
+
+        public JavaScriptValue CreateExternalObject(IntPtr data, JavaScriptObjectFinalizeCallback finalizeCallback)
+        {
+            return contextSwitch.With<JavaScriptValue>(() =>
+            {
+                return JavaScriptValue.CreateExternalObject(data, finalizeCallback);
+            });
+        }
+
+        public JavaScriptValue CallFunction(JavaScriptValue target, params JavaScriptValue[] para)
+        {
+            return contextSwitch.With<JavaScriptValue>(() =>
+            {
+                return target.CallFunction(para);
+            });
+        }
+
+        public JavaScriptValue ConstructObject(JavaScriptValue target, params JavaScriptValue[] para)
+        {
+            return contextSwitch.With<JavaScriptValue>(() =>
+            {
+                return target.ConstructObject(para);
+            });
+        }
     }
 }

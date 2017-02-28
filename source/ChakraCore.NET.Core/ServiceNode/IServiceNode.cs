@@ -13,7 +13,6 @@ namespace ChakraCore.NET.Core
 
         void PushService<T>(T service) where T : IService;
         void PopService<T>() where T : IService;
-        IService WithService<T>(T service,Action a) where T : IService;
         IServiceNode Chain(string name);
         void Detach();
     }

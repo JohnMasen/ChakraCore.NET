@@ -10,6 +10,7 @@ public static partial class JSValueConverterHelper
     private static JavaScriptValue toJSMethod (IServiceNode node, Action a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 1)
@@ -21,10 +22,10 @@ public static partial class JSValueConverterHelper
 
                 a();
                 
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 
@@ -53,6 +54,7 @@ public static partial class JSValueConverterHelper
     private static JavaScriptValue toJSMethod<T1> (IServiceNode node, Action<T1> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 2)
@@ -64,10 +66,10 @@ public static partial class JSValueConverterHelper
 
                 a(para1);
                 arguments[1].Release();
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 
@@ -96,6 +98,7 @@ public static partial class JSValueConverterHelper
     private static JavaScriptValue toJSMethod<T1,T2> (IServiceNode node, Action<T1,T2> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 3)
@@ -110,10 +113,10 @@ arguments[2].AddRef();
                 a(para1,para2);
                 arguments[1].Release();
 arguments[2].Release();
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 
@@ -145,6 +148,7 @@ p2.Release();
     private static JavaScriptValue toJSMethod<T1,T2,T3> (IServiceNode node, Action<T1,T2,T3> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 4)
@@ -162,10 +166,10 @@ arguments[3].AddRef();
                 arguments[1].Release();
 arguments[2].Release();
 arguments[3].Release();
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 
@@ -200,6 +204,7 @@ p3.Release();
     private static JavaScriptValue toJSMethod<T1,T2,T3,T4> (IServiceNode node, Action<T1,T2,T3,T4> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 5)
@@ -220,10 +225,10 @@ arguments[4].AddRef();
 arguments[2].Release();
 arguments[3].Release();
 arguments[4].Release();
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 
@@ -261,6 +266,7 @@ p4.Release();
     private static JavaScriptValue toJSMethod<T1,T2,T3,T4,T5> (IServiceNode node, Action<T1,T2,T3,T4,T5> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 6)
@@ -284,10 +290,10 @@ arguments[2].Release();
 arguments[3].Release();
 arguments[4].Release();
 arguments[5].Release();
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 
@@ -328,6 +334,7 @@ p5.Release();
     private static JavaScriptValue toJSMethod<T1,T2,T3,T4,T5,T6> (IServiceNode node, Action<T1,T2,T3,T4,T5,T6> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 7)
@@ -354,10 +361,10 @@ arguments[3].Release();
 arguments[4].Release();
 arguments[5].Release();
 arguments[6].Release();
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 
@@ -401,6 +408,7 @@ p6.Release();
     private static JavaScriptValue toJSMethod<T1,T2,T3,T4,T5,T6,T7> (IServiceNode node, Action<T1,T2,T3,T4,T5,T6,T7> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != 8)
@@ -430,10 +438,10 @@ arguments[4].Release();
 arguments[5].Release();
 arguments[6].Release();
 arguments[7].Release();
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 

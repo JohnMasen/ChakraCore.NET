@@ -6,6 +6,6 @@ namespace ChakraCore.NET.Core
 {
     public interface IService
     {
-        void SetupNode(IServiceNode service);
+        IServiceNode CurrentNode { get; set; }
     }
 }

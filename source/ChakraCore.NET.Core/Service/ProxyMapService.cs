@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using ChakraCore.NET.Core.API;
+using System.Linq;
 
 namespace ChakraCore.NET.Core
 {
     public class ProxyMapService : ServiceBase, IProxyMapService
     {
-        SortedDictionary<Type, object> TypeMapLists = new SortedDictionary<Type, object>(TypeComparer.Instance);
+        private IRuntimeService runtimeService => serviceNode.GetService<IRuntimeService>();
+        SortedDictionary<Type, IEnumerable<JavaScriptValue>> TypeMapLists = new SortedDictionary<Type, IEnumerable<JavaScriptValue>>(TypeComparer.Instance);
         public T Get<T>(JavaScriptValue value) where T : class
         {
             var list = getMapList<T>(false);
@@ -46,11 +49,14 @@ namespace ChakraCore.NET.Core
             {
                 return list.objList[obj];//object already mapped, return cached object
             }
-            output = serviceNode.GetService<IContextSwitchService>().With<JavaScriptValue>(() =>
+            output = runtimeService.InternalContextSwitchService.With<JavaScriptValue>(() =>
             {
-                return JavaScriptValue.CreateExternalObject(IntPtr.Zero, null);
+                var result= JavaScriptValue.CreateExternalObject(IntPtr.Zero, null);//do not handle the external GC event as the value will be hold until user dispose current service
+                result.AddRef();
+                return result;
             });
             JSValueBinding binding = new JSValueBinding(serviceNode, output);
+            createBinding?.Invoke(binding);
             list.Add(obj, output,binding);
             return output;
         }
@@ -65,19 +71,46 @@ namespace ChakraCore.NET.Core
             if (list.objList.ContainsKey(obj))
             {
                 var jsvalue = list.objList[obj];
-                list.jsList.Remove(jsvalue);
-                list.objList.Remove(obj);
+                runtimeService.InternalContextSwitchService.With(()=> { jsvalue.Release(); });//use runtime internal context to ensure value can be safely released
+                list.Remove(obj);
             }
 
         }
 
-
+        public void Release<T>(JavaScriptValue value) where T : class
+        {
+            var list = getMapList<T>(false);
+            if (list!=null)
+            {
+                if(list.jsList.TryGetValue(value,out Tuple<T, JSValueBinding> output))
+                {
+                    runtimeService.InternalContextSwitchService.With(() => { value.Release(); });
+                    list.Remove(value);
+                }
+            }
+        }
         public void ReleaseAll()
         {
+            runtimeService.InternalContextSwitchService.With(() =>
+            {
+                foreach (var list in TypeMapLists)
+                {
+                    foreach (var item in list.Value)
+                    {
+                        item.Release();
+                    }
+                }
+            });
+            
             TypeMapLists.Clear();
         }
 
-        private class TypeMapList<T> where T : class
+        public void Dispose()
+        {
+            
+        }
+
+        private class TypeMapList<T> :IEnumerable<JavaScriptValue> where T : class
         {
             public SortedDictionary<JavaScriptValue, Tuple<T,JSValueBinding>> jsList = new SortedDictionary<JavaScriptValue, Tuple<T, JSValueBinding>>();
             public IDictionary<T, JavaScriptValue> objList = new Dictionary<T, JavaScriptValue>(new ObjectReferenceEqualityComparer<T>());
@@ -86,6 +119,36 @@ namespace ChakraCore.NET.Core
             {
                 jsList.Add(value, new Tuple<T, JSValueBinding>(obj,binding));
                 objList.Add(obj, value);
+            }
+
+            public void Remove(T obj)
+            {
+                if (objList.ContainsKey(obj))
+                {
+                    JavaScriptValue v = objList[obj];
+                    objList.Remove(obj);
+                    jsList.Remove(v);
+                }
+            }
+
+            public void Remove(JavaScriptValue value)
+            {
+                if (jsList.ContainsKey(value))
+                {
+                    T obj = jsList[value].Item1;
+                    objList.Remove(obj);
+                    jsList.Remove(value);
+                }
+            }
+
+            public IEnumerator<JavaScriptValue> GetEnumerator()
+            {
+                return jsList.Keys.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return jsList.Keys.GetEnumerator();
             }
         }
     }

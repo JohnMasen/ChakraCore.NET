@@ -5,13 +5,14 @@ using System.Text;
 
 namespace ChakraCore.NET.Core
 {
-    public class ContextSwitchService :ServiceBase, IContextSwitchService
+    public class ContextSwitchService :ServiceBase, IContextSwitchService,IDisposable
     {
         JavaScriptContext context;
         IEventWaitHandlerService syncService => serviceNode.GetService<IEventWaitHandlerService>();
         public ContextSwitchService(JavaScriptContext context)
         {
             this.context = context;
+            context.AddRef();
         }
 
 
@@ -63,6 +64,11 @@ namespace ChakraCore.NET.Core
                 result = f();
             }
             return result;
+        }
+
+        public void Dispose()
+        {
+            context.Release();
         }
     }
 }

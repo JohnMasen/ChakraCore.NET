@@ -8,6 +8,7 @@
     private static JavaScriptValue toJSMethod<#=genCode(i,"T{1}")#> (IServiceNode node, Action<#=genCode(i,"T{1}")#> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
             {
                 if (argumentCount != <#=i+1#>)
@@ -19,10 +20,10 @@
 
                 a(<#=genCode(i,"para{1}",false,",","{0}")#>);
                 <#=genCode(i,"arguments[{1}].Release();",false,Environment.NewLine,"{0}")#>
-                return node.GetService<IContextService>().JSValue_Undefined;
+                return jsValueService.JSValue_Undefined;
             };
 
-            return node.GetService<IContextService>().CreateFunction(f, IntPtr.Zero);
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
 

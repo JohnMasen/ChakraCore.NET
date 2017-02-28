@@ -642,7 +642,8 @@
 
         internal static extern JavaScriptErrorCode JsCreateError(JavaScriptValue message, out JavaScriptValue error);
 
-
+        [DllImport(DllName)]
+        internal static extern JavaScriptErrorCode JsStartDebugging();
 
         [DllImport(DllName)]
 

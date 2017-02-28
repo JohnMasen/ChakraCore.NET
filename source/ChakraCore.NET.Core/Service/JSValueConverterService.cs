@@ -37,10 +37,10 @@ namespace ChakraCore.NET.Core
         }
 
 
-        public void RegisterStructConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue) where T : struct
-        {
-            RegisterConverter<T>(toJSValue, fromJSValue);
-        }
+        //public void RegisterStructConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue) where T : struct
+        //{
+        //    RegisterConverter<T>(toJSValue, fromJSValue);
+        //}
 
         public JavaScriptValue ToJSValue<T>(T value)
         {

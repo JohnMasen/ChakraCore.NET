@@ -43,7 +43,7 @@ namespace ChakraCore.NET.Core
         {
             if (tryGetService<TResult>(out TResult result))
             {
-                result.SetupNode(currentNode);
+                result.CurrentNode = currentNode;
                 return result;
             }
             else
@@ -52,7 +52,7 @@ namespace ChakraCore.NET.Core
                 {
                     var r = Parent.GetService<TResult>(currentNode);
                     PushService<TResult>(r);//cache the service instace
-                    r.SetupNode(currentNode);
+                    r.CurrentNode = currentNode;
                     return r;
                 }
                 throw new ServiceNotRegisteredException<TResult>();
@@ -122,13 +122,6 @@ namespace ChakraCore.NET.Core
             }
         }
 
-        public IService WithService<T>(T service,Action a) where T : IService
-        {
-            PushService(service);
-            a();
-            PopService<T>();
-            return service;
-        }
 
         public static IServiceNode CreateRoot()
         {
@@ -137,6 +130,7 @@ namespace ChakraCore.NET.Core
 
         public virtual void Detach()
         {
+            Parent = null;
         }
 
        
