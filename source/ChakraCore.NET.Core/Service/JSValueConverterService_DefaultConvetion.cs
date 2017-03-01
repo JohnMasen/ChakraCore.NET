@@ -146,6 +146,22 @@ namespace ChakraCore.NET
                 );
 
             this.RegisterMethodConverter();
+            this.RegisterStructConverter<Guid>(
+                (node, value) =>
+                {
+                    return node.WithContext<JavaScriptValue>(() =>
+                    {
+                        return JavaScriptValue.FromString(value.ToString());
+                    });
+                },
+                (node, value) =>
+                {
+                    return node.WithContext<Guid>(() =>
+                    {
+                        return Guid.Parse(value.ConvertToString().ToString());
+                    });
+                }
+                );
 
             #region Special Convert
             this.RegisterStructConverter<JavaScriptValue>(

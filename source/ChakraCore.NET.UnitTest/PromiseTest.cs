@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using ChakraCore.NET.Timer;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,14 +11,13 @@ namespace ChakraCore.NET.UnitTest
     public class PromiseTest : UnitTestBase
     {
         private TestProxy proxy = new TestProxy();
-        private TimerHelper helper = new TimerHelper();
         protected override void SetupContext()
         {
             runtime.InjectTaskService();
             TestProxy.Inject(runtime);
-            TimerHelper.RegisterTimer(runtime);
+            runtime.InjecTimerService();
             context.GlobalObject.WriteProperty<TestProxy>("test", proxy);
-            context.GlobalObject.WriteProperty<TimerHelper>("timer", helper);
+            context.InitTimer();
             runScript("Promise");
 
         }

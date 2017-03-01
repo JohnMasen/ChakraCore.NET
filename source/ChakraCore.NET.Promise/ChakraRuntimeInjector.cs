@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChakraCore.NET
 {
-    public static class ChakraContextRegister
+    public static class ChakraRuntimeInjector
     {
 
         public static void InjectTaskService(this ChakraRuntime target)

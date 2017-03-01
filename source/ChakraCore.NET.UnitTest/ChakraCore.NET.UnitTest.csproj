@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ChakraCore.NET.Promise\ChakraCore.NET.Promise.csproj" />
     <ProjectReference Include="..\ChakraCore.NET.ShareMemoryObjects\ChakraCore.NET.ShareMemoryObjects.csproj" />
+    <ProjectReference Include="..\ChakraCore.NET.Timer\ChakraCore.NET.Timer.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 
