@@ -8,7 +8,7 @@ function SimplePromise() {
         timer.setTimeout(function () {
             test.echo(10);
             resolve(1);
-        },1);
+        },1000);
     });
 }
 
