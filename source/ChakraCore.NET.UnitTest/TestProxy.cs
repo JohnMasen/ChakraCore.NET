@@ -53,6 +53,7 @@ namespace ChakraCore.NET.UnitTest
                 var converter = node.GetService<IJSValueConverterService>();
                 binding.SetFunction<string, string>("echo", value.Echo);
                 binding.SetFunction<string>("GetName", value.GetName);
+                converter.RegisterTask<int>();
                 binding.SetFunction<Task<int>>("asyncFunction", value.AsyncCallAsync);
                 converter.RegisterMethodConverter<string>();
                 binding.SetMethod<Action<string>>("callBackToJs", value.CallBackToJS);

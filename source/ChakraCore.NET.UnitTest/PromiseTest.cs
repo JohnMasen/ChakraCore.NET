@@ -13,7 +13,7 @@ namespace ChakraCore.NET.UnitTest
         private TimerHelper helper = new TimerHelper();
         protected override void SetupContext()
         {
-            context.RegisterTask<int>();
+            runtime.InjectTaskService();
             TestProxy.Inject(runtime);
             TimerHelper.RegisterTimer(runtime);
             context.GlobalObject.WriteProperty<TestProxy>("test", proxy);
