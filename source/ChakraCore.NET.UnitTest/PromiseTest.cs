@@ -13,11 +13,8 @@ namespace ChakraCore.NET.UnitTest
         private TestProxy proxy = new TestProxy();
         protected override void SetupContext()
         {
-            runtime.InjectTaskService();
             TestProxy.Inject(runtime);
-            runtime.InjecTimerService();
             context.GlobalObject.WriteProperty<TestProxy>("test", proxy);
-            context.InitTimer();
             runScript("Promise");
 
         }

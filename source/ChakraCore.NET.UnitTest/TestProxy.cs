@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ChakraCore.NET;
-using ChakraCore.NET;
 
 namespace ChakraCore.NET.UnitTest
 {

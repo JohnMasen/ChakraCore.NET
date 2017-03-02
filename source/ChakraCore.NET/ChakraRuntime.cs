@@ -22,6 +22,9 @@ namespace ChakraCore.NET
             ServiceNode.PushService<IJSValueConverterService>(converter);
             ServiceNode.PushService<IProxyMapService>(mapService);
             ServiceNode.PushService<IJSValueService>(new JSValueService());
+            ServiceNode.InjectShareMemoryObjects();
+            ServiceNode.InjectTaskService();
+            ServiceNode.InjecTimerService();
         }
 
         public ChakraContext CreateContext(bool enableDebug)

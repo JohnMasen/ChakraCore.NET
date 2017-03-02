@@ -18,8 +18,6 @@ namespace ChakraCore.NET.UnitTest
         private byte[] target;
         protected override void SetupContext()
         {
-            runtime.InjectShareMemoryObjects();
-
             payloadToJS = new byte[payloadSize];
             payloadFromJS = new byte[payloadSize];
             target = new byte[payloadSize];

@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace ChakraCore.NET
 {
-    public static class ChakraRuntimeInjector
+    public static class PromiseServiceInjector
     {
 
-        public static void InjectTaskService(this ChakraRuntime target)
+        public static void InjectTaskService(this IServiceNode target)
         {
-            if (!target.ServiceNode.CanGetService< PromiseCallbackPairService>())
+            if (target.CanGetService<PromiseCallbackPairService>())
             {
-                PromiseCallbackPairService service = new PromiseCallbackPairService();
-                target.ServiceNode.PushService(service);
+                return;
             }
+            PromiseCallbackPairService service = new PromiseCallbackPairService();
+            target.PushService(service);
         }
 
         public static void RegisterTask(this IJSValueConverterService target)

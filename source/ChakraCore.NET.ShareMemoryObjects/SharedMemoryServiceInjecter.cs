@@ -8,14 +8,17 @@ using ChakraCore.NET.API;
 
 namespace ChakraCore.NET
 {
-    public static class SharedMemoryRuntimeInjecter
+    public static class SharedMemoryServiceInjecter
     {
-        public static void InjectShareMemoryObjects(this ChakraRuntime target)
+        public static void InjectShareMemoryObjects(this IServiceNode target)
         {
             //create/release all these objects inside the runtime internal context, this make sure all objects can be destroyed even user context is released
-            var converter = target.ServiceNode.GetService<IJSValueConverterService>();
+            var converter = target.GetService<IJSValueConverterService>();
             //var switchService = target.ServiceNode.GetService<IRuntimeService>().InternalContextSwitchService;
-            
+            if (converter.CanConvert<JSArrayBuffer>())
+            {
+                return;
+            }
             
             converter.RegisterConverter<JSArrayBuffer>(
                 (node, value) =>

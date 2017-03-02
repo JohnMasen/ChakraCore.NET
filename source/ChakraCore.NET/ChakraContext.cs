@@ -62,6 +62,7 @@ namespace ChakraCore.NET
             
             contextService = new ContextService();
             ServiceNode.PushService<IContextService>(contextService);
+            GlobalObject.InitTimer();
         }
 
 

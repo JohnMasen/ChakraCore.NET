@@ -8,9 +8,9 @@ namespace ChakraCore.NET
 {
     public static class JSTimerRuntimeInjector
     {
-        public static void InjecTimerService(this ChakraRuntime runtime)
+        public static void InjecTimerService(this IServiceNode target)
         {
-            runtime.ServiceNode.GetService<IJSValueConverterService>().RegisterProxyConverter<JSTimer>((binding, value, node) =>
+            target.GetService<IJSValueConverterService>().RegisterProxyConverter<JSTimer>((binding, value, node) =>
             {
                 binding.SetMethod<Action, int>("setTimeout", value.SetTimeout);
                 binding.SetFunction<JavaScriptValue, int, Guid>("setInterval", value.SetInterval);
@@ -18,9 +18,9 @@ namespace ChakraCore.NET
             });
         }
 
-        public static void InitTimer(this ChakraContext context)
+        public static void InitTimer(this JSValue globalObject)
         {
-            context.GlobalObject.WriteProperty<JSTimer>("timer", new JSTimer(context.ServiceNode));
+            globalObject.WriteProperty<JSTimer>("timer", new JSTimer(globalObject.ServiceNode));
         }
     }
 }
