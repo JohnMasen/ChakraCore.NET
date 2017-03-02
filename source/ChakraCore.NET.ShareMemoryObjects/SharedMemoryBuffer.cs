@@ -32,7 +32,7 @@ namespace ChakraCore.NET.SharedMemory
             long BufferStart = Handle.ToInt64();
             long BufferEnd = BufferStart + (long)ByteLength;
 
-            long start = position;
+            long start = position+BufferStart;
             long end = start + (long)numBytes;//potencial overflow, let dotnet handle this :)
 
             if (start > BufferEnd || end > BufferEnd)

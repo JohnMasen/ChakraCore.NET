@@ -13,17 +13,19 @@ namespace ChakraCore.NET
         public static void InjectShareMemoryObjects(this ChakraRuntime target)
         {
             //create/release all these objects inside the runtime internal context, this make sure all objects can be destroyed even user context is released
-            var converter=target.ServiceNode.GetService<IJSValueConverterService>();
-            var switchService = target.ServiceNode.GetService<IRuntimeService>().InternalContextSwitchService;
-            var jsValueService = target.ServiceNode.GetService<IJSValueService>();
+            var converter = target.ServiceNode.GetService<IJSValueConverterService>();
+            //var switchService = target.ServiceNode.GetService<IRuntimeService>().InternalContextSwitchService;
+            
             
             converter.RegisterConverter<JSArrayBuffer>(
                 (node, value) =>
                 {
+                    var jsValueService = node.GetService<IJSValueService>();
                     return jsValueService.CreateArrayBuffer(value);
                 },
                 (node, value) =>
                 {
+                    var switchService = node.GetService<IRuntimeService>().InternalContextSwitchService;
                     return switchService.With<JSArrayBuffer>(() =>
                     {
                         if (value.ValueType != JavaScriptValueType.ArrayBuffer)
@@ -40,10 +42,18 @@ namespace ChakraCore.NET
             converter.RegisterConverter<JSTypedArray>(
                 (node, value) =>
                 {
-                    return jsValueService.CreateTypedArray(value);
+                    var jsValueService = node.GetService<IJSValueService>();
+                    var convertService = node.GetService<IJSValueConverterService>();
+                    JavaScriptValue? arryBuffer=null;
+                    if (value.ArrayBuffer!=null)
+                    {
+                        arryBuffer = convertService.ToJSValue<JSArrayBuffer>(value.ArrayBuffer);
+                    }
+                    return jsValueService.CreateTypedArray(value,arryBuffer);
                 },
                 (node, value) =>
                 {
+                    var switchService = node.GetService<IRuntimeService>().InternalContextSwitchService;
                     return switchService.With<JSTypedArray>(() =>
                     {
                         if (value.ValueType != JavaScriptValueType.TypedArray)
@@ -60,11 +70,14 @@ namespace ChakraCore.NET
             converter.RegisterConverter<JSDataView>(
                 (node, value) =>
                 {
-                    JavaScriptValue arrayBuffer = converter.ToJSValue<JSArrayBuffer>(value.ArrayBuffer);
+                    var jsValueService = node.GetService<IJSValueService>();
+                    var convertService = node.GetService <IJSValueConverterService>();
+                    JavaScriptValue arrayBuffer = convertService.ToJSValue<JSArrayBuffer>(value.ArrayBuffer);
                     return jsValueService.CreateDataView(arrayBuffer, value);
                 },
                 (node, value) =>
                 {
+                    var switchService = node.GetService<IRuntimeService>().InternalContextSwitchService;
                     return switchService.With<JSDataView>(() =>
                     {
                         if (value.ValueType != JavaScriptValueType.DataView)

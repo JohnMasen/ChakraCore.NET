@@ -14,3 +14,4 @@ function dataViewAdd(d) {
         d.setInt8(d.getInt8(i) * 2);
     }
 }
+

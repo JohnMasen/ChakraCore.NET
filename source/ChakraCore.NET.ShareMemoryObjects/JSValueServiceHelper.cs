@@ -47,7 +47,7 @@ namespace ChakraCore.NET.SharedMemory
 
 
 
-        public static JavaScriptValue CreateTypedArray(this IJSValueService valueService, JSTypedArray source)
+        public static JavaScriptValue CreateTypedArray(this IJSValueService valueService, JSTypedArray source,JavaScriptValue? arrayBufferSource)
         {
             IContextSwitchService switchService = valueService.CurrentNode.GetService<IRuntimeService>().InternalContextSwitchService;
             if (source.JSSource.IsValid)
@@ -60,7 +60,11 @@ namespace ChakraCore.NET.SharedMemory
                     return switchService.With<JavaScriptValue>(
                         () =>
                         {
-                            var result = JavaScriptValue.CreateTypedArray(source.ArrayType, source.JSSource, source.Position, source.UnitCount);
+                            if (arrayBufferSource==null)
+                            {
+                                throw new ArgumentNullException(nameof(arrayBufferSource));
+                            }
+                            var result = JavaScriptValue.CreateTypedArray(source.ArrayType, arrayBufferSource.Value, source.Position, source.UnitCount);
                             source.SetJSSource(result, switchService);
                             return result;
                         }

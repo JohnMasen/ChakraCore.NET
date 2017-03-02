@@ -20,9 +20,6 @@ namespace ChakraCore.NET.UnitTest
         {
             runtime.InjectShareMemoryObjects();
 
-            //TestProxy.Inject(runtime);
-            //context.GlobalObject.WriteProperty<TestProxy>("test", proxy);
-
             payloadToJS = new byte[payloadSize];
             payloadFromJS = new byte[payloadSize];
             target = new byte[payloadSize];
@@ -40,7 +37,7 @@ namespace ChakraCore.NET.UnitTest
         {
             JSArrayBuffer buffer = JSArrayBuffer.Create(payloadSize);
             buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
-            smoTest(buffer, "arrayBufferAdd");
+            smoAdd(buffer, "arrayBufferAdd");
             buffer.Dispose();
         }
 
@@ -50,7 +47,7 @@ namespace ChakraCore.NET.UnitTest
             var p=Marshal.AllocHGlobal(payloadSize);
             JSArrayBuffer buffer = JSArrayBuffer.CreateFromExternal(p,(ulong)payloadSize);
             buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
-            smoTest(buffer, "arrayBufferAdd");
+            smoAdd(buffer, "arrayBufferAdd");
             buffer.Dispose();
             Marshal.FreeHGlobal(p);
         }
@@ -62,59 +59,83 @@ namespace ChakraCore.NET.UnitTest
             {
                 b.WriteArray(0, payloadToJS, 0, payloadSize);
             });
-            smoTest(buffer, "arrayBufferAdd");
+            smoAdd(buffer, "arrayBufferAdd");
             buffer.Dispose();
         }
 
         [TestMethod]
-        public void ArrayBufferSetGet()
+        public void ArrayBufferSetGet_CreateInDotnet()
         {
-            int buffersize = 1024 * 1024 * 10;
-            JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
-            context.GlobalObject.WriteProperty<JSArrayBuffer>("buffer1", buffer);
-            byte[] tmp = new byte[buffersize];
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                tmp[i] = 0x10;
-            }
-            byte[] target = new byte[buffersize];
-            for (int i = 0; i < target.Length; i++)
-            {
-                target[i] = 0x0f;
-            }
-
-            buffer.Buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
-            runScript("JSArrayBufferSetGet");
-
-            JSArrayBuffer buffer1 = context.GlobalObject.ReadProperty<JSArrayBuffer>("buffer1");
-            buffer1.Buffer.ReadArray<byte>(0, tmp, 0, tmp.Length);
-
-            Assert.IsTrue(tmp.SequenceEqual(target));
+            JSArrayBuffer buffer = JSArrayBuffer.Create(payloadSize);
+            buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            smoSetGet(buffer);
             buffer.Dispose();
-            buffer1.Dispose();
-            runtime.CollectGarbage();
         }
 
         [TestMethod]
-        public void TypedArrayReadWrite()
+        public void ArrayBufferSetGet_FromExternal()
         {
-            uint size = 100;
-            byte[] initdata = new byte[size];
-            for (int i = 0; i < size; i++)
-            {
-                initdata[i] = 1;
-            }
+            var p = Marshal.AllocHGlobal(payloadSize);
+            JSArrayBuffer buffer = JSArrayBuffer.CreateFromExternal(p, (ulong)payloadSize);
+            buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            smoSetGet(buffer);
+            buffer.Dispose();
+            Marshal.FreeHGlobal(p);
+        }
 
-            Action<SharedMemoryBuffer> init = (x) => { x.WriteArray(0, initdata, 0, initdata.Length); };
-            JSTypedArray array = JSTypedArray.CreateInJS(API.JavaScriptTypedArrayType.Int8, size, init);
-            context.GlobalObject.WriteProperty<JSTypedArray>("array1", array);
-            runScript("JSTypedArrayReadWrite");
-            array.Buffer.ReadArray(0, initdata, 0, initdata.Length);
+        [TestMethod]
+        public void ArrayBufferSetGet_InJavascript()
+        {
+            JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript((uint)payloadSize, (b) =>
+            {
+                b.WriteArray(0, payloadToJS, 0, payloadSize);
+            });
+            smoSetGet(buffer);
+            buffer.Dispose();
+        }
+        
+        [TestMethod]
+        public void TypedArrayAdd_CreateInJS()
+        {
+            JSTypedArray array=JSTypedArray.CreateInJS(JavaScriptTypedArrayType.Int8,(uint)payloadSize, (b) =>
+            {
+                b.WriteArray(0, payloadToJS, 0, payloadSize);
+            });
+            smoAdd(array, "typedArrayAdd");
             array.Dispose();
-            foreach (var item in initdata)
+        }
+
+        [TestMethod]
+        public void TypedArrayAdd_CreateFromArrayBuffer()
+        {
+            JSArrayBuffer buffer = JSArrayBuffer.Create(payloadSize);
+            JSTypedArray array = JSTypedArray.CreateFromArrayBuffer(JavaScriptTypedArrayType.Int8, buffer, 0, (uint)payloadSize);
+            array.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            smoAdd(array, "typedArrayAdd");
+            array.Dispose();
+            buffer.Dispose();
+        }
+
+        [TestMethod]
+        public void TypedArraySetGet_CreateInJS()
+        {
+            JSTypedArray array = JSTypedArray.CreateInJS(JavaScriptTypedArrayType.Int8, (uint)payloadSize, (b) =>
             {
-                Assert.AreEqual<int>(2, item);
-            }
+                b.WriteArray(0, payloadToJS, 0, payloadSize);
+            });
+            smoSetGet(array);
+            array.Dispose();
+        }
+
+        [TestMethod]
+        public void TypedArraySetGet_CreateFromArrayBuffer()
+        {
+            JSArrayBuffer buffer = JSArrayBuffer.Create(payloadSize);
+            JSTypedArray array = JSTypedArray.CreateFromArrayBuffer(JavaScriptTypedArrayType.Int8, buffer, 0, (uint)payloadSize);
+            array.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            smoSetGet(array);
+            array.Dispose();
+            buffer.Dispose();
         }
 
         [TestMethod]
@@ -139,13 +160,21 @@ namespace ChakraCore.NET.UnitTest
         }
 
 
-        private void smoTest<T>(T obj,string testMethod) where T:JSSharedMemoryObject
+        private void smoAdd<T>(T obj,string testMethod) where T:JSSharedMemoryObject
         {
-            context.GlobalObject.WriteProperty<T>("buffer", obj);
+            
             var s=runScript("SMOTest");
             context.GlobalObject.CallMethod<T>(testMethod,obj);
             obj.Buffer.ReadArray<byte>(0, payloadFromJS, 0, payloadSize);
             Assert.IsTrue(target.SequenceEqual(payloadFromJS));
+        }
+
+        private void smoSetGet<T>(T obj) where T:JSSharedMemoryObject
+        {
+            context.GlobalObject.WriteProperty<T>("buffer", obj);
+            var b1 = context.GlobalObject.ReadProperty<T>("buffer");
+            b1.Buffer.ReadArray<byte>(0, payloadFromJS, 0, payloadSize);
+            Assert.IsTrue(payloadToJS.SequenceEqual(payloadToJS));
         }
     }
 }

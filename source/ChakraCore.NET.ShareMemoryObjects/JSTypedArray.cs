@@ -14,7 +14,7 @@ namespace ChakraCore.NET.SharedMemory
         public uint UnitSize { get; private set; }
 
         public uint UnitCount { get; private set; }
-
+        public JSArrayBuffer ArrayBuffer { get; private set; }
 
         private JSTypedArray(JavaScriptTypedArrayType type,JSArrayBuffer source,uint position, uint unitCount) : base(SharedBufferSourceEnum.CreateByDotnet, unitCount*GetUnitByteSizeByArrayType(type))
         {
@@ -22,6 +22,7 @@ namespace ChakraCore.NET.SharedMemory
             Position = position;
             UnitSize = GetUnitByteSizeByArrayType(type);
             UnitCount = unitCount;
+            ArrayBuffer = source;
         }
 
         private JSTypedArray(JavaScriptTypedArrayType type, uint position, uint unitCount):base(SharedBufferSourceEnum.CreateByJavascript, unitCount * GetUnitByteSizeByArrayType(type))
