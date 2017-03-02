@@ -139,24 +139,51 @@ namespace ChakraCore.NET.UnitTest
         }
 
         [TestMethod]
-        public void DataViewReadWrite()
+        public void DataViewReadWrite_CreateInDotnet()
         {
-            uint size = 100;
-            byte[] initdata = new byte[size];
-            for (int i = 0; i < size; i++)
+            JSArrayBuffer buffer = JSArrayBuffer.Create(payloadSize);
+            buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            JSDataView view = JSDataView.CreateFromArrayBuffer(buffer,0,(uint)payloadSize,null);
+            smoAdd(view, "dataViewAdd");
+            view.Dispose();
+            buffer.Dispose();
+        }
+
+        [TestMethod]
+        public void DataViewReadWrite_CreateInJS()
+        {
+            JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript((uint)payloadSize, null);
+            JSDataView view = JSDataView.CreateFromArrayBuffer(buffer, 0, (uint)payloadSize, (b)=>
             {
-                initdata[i] = 1;
-            }
-            JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript(size, null);
-            JSDataView view = JSDataView.CreateFromArrayBuffer(buffer, 0, size, (b) => { b.WriteArray(0, initdata, 0, initdata.Length); });
-            context.GlobalObject.WriteProperty<JSDataView>("dv1", view);
-            runScript("JSDataViewReadWrite");
-            JSDataView view1 = context.GlobalObject.ReadProperty<JSDataView>("dv1");
-            view1.Buffer.ReadArray(0, initdata, 0, initdata.Length);
-            foreach (var item in initdata)
+                b.WriteArray(0, payloadToJS, 0, payloadSize);
+            });
+            smoAdd(view, "dataViewAdd");
+            view.Dispose();
+            buffer.Dispose();
+        }
+
+        [TestMethod]
+        public void DataViewSetGet_CreateInDotnet()
+        {
+            JSArrayBuffer buffer = JSArrayBuffer.Create(payloadSize);
+            buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            JSDataView view = JSDataView.CreateFromArrayBuffer(buffer, 0, (uint)payloadSize, null);
+            smoSetGet(view);
+            view.Dispose();
+            buffer.Dispose();
+        }
+
+        [TestMethod]
+        public void DataViewSetGet_CreateInJS()
+        {
+            JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript((uint)payloadSize, null);
+            JSDataView view = JSDataView.CreateFromArrayBuffer(buffer, 0, (uint)payloadSize, (b) =>
             {
-                Assert.AreEqual<byte>(2, item);
-            }
+                b.WriteArray(0, payloadToJS, 0, payloadSize);
+            });
+            smoSetGet(view);
+            view.Dispose();
+            buffer.Dispose();
         }
 
 

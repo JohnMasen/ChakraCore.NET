@@ -52,6 +52,10 @@ namespace ChakraCore.NET.SharedMemory
 
         internal void SetupInitValueAction(Action<SharedMemoryBuffer> action)
         {
+            if (action==null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
             if (InitValue!=null)
             {
                 throw new InvalidOperationException("cannot call SetupInitValueAction twice");

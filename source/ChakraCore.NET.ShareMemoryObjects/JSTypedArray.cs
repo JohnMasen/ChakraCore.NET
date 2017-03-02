@@ -59,7 +59,10 @@ namespace ChakraCore.NET.SharedMemory
         public static JSTypedArray CreateInJS(JavaScriptTypedArrayType type,uint unitCount, Action<SharedMemoryBuffer> init)
         {
             var result= new JSTypedArray(type, 0, unitCount, init);
-            result.SetupInitValueAction(init);
+            if (init!=null)
+            {
+                result.SetupInitValueAction(init);
+            }
             return result;
         }
 

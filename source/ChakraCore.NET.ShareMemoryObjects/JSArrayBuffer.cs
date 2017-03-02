@@ -74,7 +74,10 @@ namespace ChakraCore.NET.SharedMemory
         public static JSArrayBuffer CreateInJavascript(uint size,Action<SharedMemoryBuffer> init)
         {
             var result = new JSArrayBuffer(SharedBufferSourceEnum.CreateInJavascript, (ulong)size);
-            result.SetupInitValueAction(init);
+            if (init!=null)
+            {
+                result.SetupInitValueAction(init);
+            }
             return result;
         }
 

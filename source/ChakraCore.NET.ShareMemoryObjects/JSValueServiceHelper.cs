@@ -113,6 +113,7 @@ namespace ChakraCore.NET.SharedMemory
                         {
                             var result = JavaScriptValue.CreateDataView(sourceArrayBuffer, source.Position, (uint)source.Size);
                             source.SetJSSource(result, switchService);
+                            source.InitBeforeConvert(source.Buffer);
                             return result;
                         }
                         );

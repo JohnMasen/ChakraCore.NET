@@ -11,7 +11,7 @@ function typedArrayAdd(a) {
 
 function dataViewAdd(d) {
     for (var i = 0; i < d.byteLength; i++) {
-        d.setInt8(d.getInt8(i) * 2);
+        d.setInt8(i,d.getInt8(i) * 2);
     }
 }
 

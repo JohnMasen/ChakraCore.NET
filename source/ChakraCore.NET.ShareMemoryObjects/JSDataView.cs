@@ -23,12 +23,15 @@ namespace ChakraCore.NET.SharedMemory
             if (source.Buffer==null)
             {
                 result = new JSDataView(SharedBufferSourceEnum.CreateInJavascript, source, position, size);
-                result.SetupInitValueAction(init);
             }
             else
             {
                 result = new JSDataView(SharedBufferSourceEnum.CreateByDotnet, source, position, size);
                 result.InitWindow(source.Buffer, position);
+            }
+            if (init != null)
+            {
+                result.SetupInitValueAction(init);
             }
             return result;
         }
