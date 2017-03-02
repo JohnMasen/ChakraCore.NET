@@ -13,6 +13,9 @@ namespace ChakraCore.NET
 
         T ReadProperty<T>(JavaScriptValue target, string id);
         void WriteProperty<T>(JavaScriptValue target, string id, T value);
+
+        bool HasProperty(JavaScriptValue target, JavaScriptPropertyId id);
+        bool HasProperty(JavaScriptValue target, string id);
         JavaScriptValue JSValue_Undefined { get; }
         JavaScriptValue JSValue_Null { get; }
         JavaScriptValue JSValue_True { get; }

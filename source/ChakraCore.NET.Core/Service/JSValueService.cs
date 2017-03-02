@@ -38,22 +38,20 @@ namespace ChakraCore.NET
         });
         public T ReadProperty<T>(JavaScriptValue target, JavaScriptPropertyId id)
         {
-            var convert = serviceNode.GetService<IJSValueConverterService>();
-            return serviceNode.GetService<IContextSwitchService>().With<T>(
+            return contextSwitch.With<T>(
                 () =>
                 {
-                    return convert.FromJSValue<T>( target.GetProperty(id));
+                    return converter.FromJSValue<T>( target.GetProperty(id));
                 });
                 ;
         }
 
         public void WriteProperty<T>(JavaScriptValue target, JavaScriptPropertyId id, T value)
         {
-            var convert = serviceNode.GetService<IJSValueConverterService>();
-            serviceNode.GetService<IContextSwitchService>().With(
+            contextSwitch.With(
                 () =>
                 {
-                    target.SetProperty(id, convert.ToJSValue<T>(value),true);
+                    target.SetProperty(id, converter.ToJSValue<T>(value),true);
                 });
 
             ;
@@ -61,22 +59,19 @@ namespace ChakraCore.NET
 
         public T ReadProperty<T>(JavaScriptValue target, string id)
         {
-            var convert = serviceNode.GetService<IJSValueConverterService>();
-            return serviceNode.GetService<IContextSwitchService>().With<T>(
+            return contextSwitch.With<T>(
                 () =>
                 {
-                    return convert.FromJSValue<T>(target.GetProperty(JavaScriptPropertyId.FromString(id) ));
+                    return converter.FromJSValue<T>(target.GetProperty(JavaScriptPropertyId.FromString(id) ));
                 });
             ;
         }
 
         public void WriteProperty<T>(JavaScriptValue target, string id, T value)
         {
-            var convert = serviceNode.GetService<IJSValueConverterService>();
-            serviceNode.GetService<IContextSwitchService>().With(
-                () =>
+            contextSwitch.With(() =>
                 {
-                    target.SetProperty(JavaScriptPropertyId.FromString(id), convert.ToJSValue<T>(value), true);
+                    target.SetProperty(JavaScriptPropertyId.FromString(id), converter.ToJSValue<T>(value), true);
                 });
 
             ;
@@ -128,6 +123,23 @@ namespace ChakraCore.NET
             return contextSwitch.With<JavaScriptValue>(() =>
             {
                 return JavaScriptValue.CreateArray(length);
+            });
+        }
+
+        public bool HasProperty(JavaScriptValue target, JavaScriptPropertyId id)
+        {
+            
+            return contextSwitch.With<bool>(() =>
+            {
+                return target.HasProperty(id);
+            });
+        }
+
+        public bool HasProperty(JavaScriptValue target, string id)
+        {
+            return contextSwitch.With<bool>(() =>
+            {
+                return target.HasProperty(JavaScriptPropertyId.FromString(id));
             });
         }
     }

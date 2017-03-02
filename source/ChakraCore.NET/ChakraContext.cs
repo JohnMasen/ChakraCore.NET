@@ -11,6 +11,9 @@ using ChakraCore.NET.API;
 
 namespace ChakraCore.NET
 {
+    /// <summary>
+    /// A helper class wraps the key feature of chakracore context
+    /// </summary>
     public class ChakraContext : ServiceConsumerBase, IDisposable
     {
         //private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
@@ -24,7 +27,15 @@ namespace ChakraCore.NET
         private ContextService contextService;
         private ContextSwitchService contextSwitch;
 
+        /// <summary>
+        /// The global object of a context, it is the root of everything inside the context
+        /// <para>A context is like an isolated class in javascript, everything directly defined in script is a property of the root object</para>
+        /// </summary>
         public JSValue GlobalObject { get; private set; }
+
+        /// <summary>
+        /// The ChakraRuntime object this context belongs to
+        /// </summary>
         public ChakraRuntime Runtime { get; private set; }
 
         private bool isDebug;
@@ -68,9 +79,8 @@ namespace ChakraCore.NET
 
         private void StartPromiseTaskLoop(CancellationToken token)
         {
-            Task.Factory.StartNew(
-(Action)(()=>
-                {
+            Task.Factory.StartNew((Action)(() =>
+            {
                     Debug.WriteLine("Promise task loop started");
                     while (true)
                     {
@@ -101,7 +111,7 @@ namespace ChakraCore.NET
         }
         
         /// <summary>
-        /// try switch context to current thread
+        /// Try switch context to current thread
         /// </summary>
         /// <returns>true if release is required, false if context already running at current thread(no release call required)</returns>
         public bool Enter()
@@ -109,21 +119,39 @@ namespace ChakraCore.NET
             return ServiceNode.GetService<IContextSwitchService>().Enter();
         }
 
+        /// <summary>
+        /// If chakracore is running at current thread
+        /// <para>True if context is running at current thread, otherwise false</para>
+        /// </summary>
         public bool IsCurrentContext => ServiceNode.GetService<IContextSwitchService>().IsCurrentContext;
 
+        /// <summary>
+        /// Release the context from current thread, this method should be called before you call <see cref="Enter"/> on another thread
+        /// </summary>
         public void Leave()
         {
             ServiceNode.GetService<IContextSwitchService>().Leave();
 
         }
 
-
+        /// <summary>
+        /// Execute a javascript and returns the script result in string
+        /// </summary>
+        /// <param name="script">Script text</param>
+        /// <returns>Script running result</returns>
         public string RunScript(string script)
         {
             return ServiceNode.GetService<IContextService>().RunScript(script);
         }
 
 
+        /// <summary>
+        /// Parses a script and returns a function representing the script. 
+        /// </summary>
+        /// <remarks>The script will be wrapped into a javascript function, then return to the caller. Useful for support moduling in javascript
+        /// </remarks>
+        /// <param name="script">Script text</param>
+        /// <returns>A javascript function in <see cref="JavaScriptValue"/></returns>
         public JavaScriptValue ParseScript(string script)
         {
             return ServiceNode.GetService<IContextService>().ParseScript(script);

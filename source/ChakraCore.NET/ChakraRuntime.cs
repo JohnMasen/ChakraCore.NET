@@ -5,6 +5,9 @@ using System.Threading;
 
 namespace ChakraCore.NET
 {
+    /// <summary>
+    /// A helper class wraps the key feature of chakracore runtime
+    /// </summary>
     public class ChakraRuntime: ServiceConsumerBase,IDisposable
     {
         JavaScriptRuntime runtime;
@@ -27,6 +30,11 @@ namespace ChakraCore.NET
             ServiceNode.InjecTimerService();
         }
 
+        /// <summary>
+        /// Create a new context for script execution
+        /// </summary>
+        /// <param name="enableDebug">Not used by now</param>
+        /// <returns></returns>
         public ChakraContext CreateContext(bool enableDebug)
         {
             try
@@ -43,7 +51,15 @@ namespace ChakraCore.NET
             }
         }
         
-        public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes= JavaScriptRuntimeAttributes.None, IServiceNode service=null,EventWaitHandle syncHandle=null)
+        /// <summary>
+        /// Create a ChakraRuntime
+        /// </summary>
+        /// <param name="attributes">Runtime creation attributes</param>
+        /// <param name="service">Parent serviceNode, default is null</param>
+        /// <param name="syncHandle">Runtime thread sync hanlder, default is null</param>
+        /// <param name="memoryLimit">Memory limit for the runtime in bytes, default is ulong.MaxValue</param>
+        /// <returns></returns>
+        public static ChakraRuntime Create(JavaScriptRuntimeAttributes attributes= JavaScriptRuntimeAttributes.None, IServiceNode service=null,EventWaitHandle syncHandle=null,ulong memoryLimit=ulong.MaxValue)
         {
             JavaScriptRuntime result = JavaScriptRuntime.Create(attributes, JavaScriptRuntimeVersion.VersionEdge);
             if (service==null)
@@ -54,10 +70,16 @@ namespace ChakraCore.NET
             {
                 syncHandle = new AutoResetEvent(true);
             }
+            if (memoryLimit!=ulong.MaxValue)
+            {
+                result.MemoryLimit = new UIntPtr(memoryLimit);
+            }
             return new ChakraRuntime(result,service,syncHandle);
         }
 
-
+        /// <summary>
+        /// Force runtime perform the garbage collection (GC) operation
+        /// </summary>
         public void CollectGarbage()
         {
             runtimeService.CollectGarbage();
@@ -65,8 +87,8 @@ namespace ChakraCore.NET
 
         /// <summary>
         /// Force terminate running scripts without clean up varibles .
-        /// this function cannot stop a infinite loop like (function hang() {while (true) { } })(); 
-        /// unless runtime is created with AllowScriptInterrupt attribute
+        /// <para> this function cannot stop a infinite loop like (function hang() {while (true) { } })(); </para>
+        /// <para>unless runtime is created with AllowScriptInterrupt attribute</para>
         /// </summary>
         public void TerminateRuningScript()
         {
