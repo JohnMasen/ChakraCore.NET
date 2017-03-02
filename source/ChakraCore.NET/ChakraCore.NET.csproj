@@ -5,9 +5,12 @@
     <Authors>QianFan Jiang (John Masen)</Authors>
     <Company />
     <Product />
-    <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.</Description>
+    <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.
+this package contains all features in one package.</Description>
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
-    <PackageTags>chakracore</PackageTags>
+    <PackageTags>chakracore,netcore</PackageTags>
+    <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

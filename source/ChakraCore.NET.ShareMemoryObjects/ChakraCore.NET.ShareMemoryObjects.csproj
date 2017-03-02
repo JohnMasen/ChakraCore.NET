@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <Authors>QianFan Jiang (John Masen)</Authors>
+    <Company>QianFan Jiang (John Masen)</Company>
+    <Product>ChakraCore.NET</Product>
+    <PackageTags>chakracore,netcore</PackageTags>
+    <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.
+this package contains dotnet ArrayBuffer, TypedArray &amp; DataView implementation</Description>
   </PropertyGroup>
 
   <ItemGroup>
