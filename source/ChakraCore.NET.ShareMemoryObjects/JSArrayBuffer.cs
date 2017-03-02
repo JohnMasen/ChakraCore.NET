@@ -32,7 +32,11 @@ namespace ChakraCore.NET.SharedMemory
         //}
 
         
-
+    /// <summary>
+    /// Create a ArrayBuffer and assign memory inside dotnet caller, the memory will be released when the JSArrayBuffer is disposed
+    /// </summary>
+    /// <param name="size">arraybuffer size in bytes</param>
+    /// <returns>JSArrayBuffer</returns>
         public static JSArrayBuffer Create(long size)
         {
             var result = new JSArrayBuffer(SharedBufferSourceEnum.CreateByDotnet,(ulong)size);
@@ -48,6 +52,12 @@ namespace ChakraCore.NET.SharedMemory
             return result;
         }
 
+        /// <summary>
+        /// Create a ArrayBuffer from a pointer to an pre-allocated memory cache, the memory will not be released when the JSArrayBuffer is disposed
+        /// </summary>
+        /// <param name="handle">pointer to memory cache</param>
+        /// <param name="size">arraybuffer size in bytes</param>
+        /// <returns></returns>
         public static JSArrayBuffer CreateFromExternal(IntPtr handle,ulong size)
         {
             var result = new JSArrayBuffer(SharedBufferSourceEnum.CreateByExternal,size);
@@ -55,12 +65,17 @@ namespace ChakraCore.NET.SharedMemory
             return result;
         }
 
+        /// <summary>
+        /// Create a JSArrayBuffer and let javascript allocate memory for it. Read/Write to the JSArrayBuffer is not available until the object is passed to a javascript context
+        /// </summary>
+        /// <param name="size">arraybuffer size in bytes</param>
+        /// <param name="init">Action to setup initial value when the JSArrayBuffer is initialized in the javascript context</param>
+        /// <returns>JSArrayBuffer</returns>
         public static JSArrayBuffer CreateInJavascript(uint size,Action<SharedMemoryBuffer> init)
         {
             var result = new JSArrayBuffer(SharedBufferSourceEnum.CreateInJavascript, (ulong)size);
             result.SetupInitValueAction(init);
             return result;
-            //do not init the buffer, buffer will be initialized when it's passed to javascript
         }
 
 

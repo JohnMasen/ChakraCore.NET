@@ -1,8 +1,10 @@
-﻿using ChakraCore.NET.SharedMemory;
+﻿using ChakraCore.NET.API;
+using ChakraCore.NET.SharedMemory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace ChakraCore.NET.UnitTest
@@ -10,37 +12,58 @@ namespace ChakraCore.NET.UnitTest
     [TestClass]
     public class SharedMemoryObjectsTest : UnitTestBase
     {
-        
+        private int payloadSize = 1024;
+        private byte[] payloadToJS;
+        private byte[] payloadFromJS;
+        private byte[] target;
         protected override void SetupContext()
         {
             runtime.InjectShareMemoryObjects();
+
+            //TestProxy.Inject(runtime);
+            //context.GlobalObject.WriteProperty<TestProxy>("test", proxy);
+
+            payloadToJS = new byte[payloadSize];
+            payloadFromJS = new byte[payloadSize];
+            target = new byte[payloadSize];
+            for (int i = 0; i < payloadSize; i++)
+            {
+                payloadToJS[i] = 1;
+                target[i] = (byte)(payloadToJS[i]+ payloadToJS[i]);
+            }
         }
 
 
 
         [TestMethod]
-        public void ArrayBufferReadWrite()
+        public void ArrayBufferReadWrite_CreateInDotnet()
         {
-            int buffersize = 1024 * 1024 * 10;
-            JSArrayBuffer buffer = JSArrayBuffer.Create(buffersize);
-            context.GlobalObject.WriteProperty<JSArrayBuffer>("buffer", buffer);
-            byte[] tmp = new byte[buffersize];
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                tmp[i] = 0x10;
-            }
-            byte[] target = new byte[buffersize];
-            for (int i = 0; i < target.Length; i++)
-            {
-                target[i] = 0x0f;
-            }
-            buffer.Buffer.WriteArray<byte>(0, tmp, 0, tmp.Length);
-            runScript("ArrayBufferReadWrite");
-            Assert.IsFalse(tmp.SequenceEqual(target));
-            buffer.Buffer.ReadArray<byte>(0, tmp, 0, tmp.Length);
-            Assert.IsTrue(tmp.SequenceEqual(target));
+            JSArrayBuffer buffer = JSArrayBuffer.Create(payloadSize);
+            buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            smoTest(buffer, "arrayBufferAdd");
             buffer.Dispose();
-            runtime.CollectGarbage();
+        }
+
+        [TestMethod]
+        public void ArrayBufferReadWrite_FromExternal()
+        {
+            var p=Marshal.AllocHGlobal(payloadSize);
+            JSArrayBuffer buffer = JSArrayBuffer.CreateFromExternal(p,(ulong)payloadSize);
+            buffer.Buffer.WriteArray(0, payloadToJS, 0, payloadSize);
+            smoTest(buffer, "arrayBufferAdd");
+            buffer.Dispose();
+            Marshal.FreeHGlobal(p);
+        }
+
+        [TestMethod]
+        public void ArrayBufferReadWrite_InJavascript()
+        {
+            JSArrayBuffer buffer = JSArrayBuffer.CreateInJavascript((uint)payloadSize, (b) => 
+            {
+                b.WriteArray(0, payloadToJS, 0, payloadSize);
+            });
+            smoTest(buffer, "arrayBufferAdd");
+            buffer.Dispose();
         }
 
         [TestMethod]
@@ -113,6 +136,16 @@ namespace ChakraCore.NET.UnitTest
             {
                 Assert.AreEqual<byte>(2, item);
             }
+        }
+
+
+        private void smoTest<T>(T obj,string testMethod) where T:JSSharedMemoryObject
+        {
+            context.GlobalObject.WriteProperty<T>("buffer", obj);
+            var s=runScript("SMOTest");
+            context.GlobalObject.CallMethod<T>(testMethod,obj);
+            obj.Buffer.ReadArray<byte>(0, payloadFromJS, 0, payloadSize);
+            Assert.IsTrue(target.SequenceEqual(payloadFromJS));
         }
     }
 }
