@@ -9,9 +9,22 @@ namespace ChakraCore.NET
 {
     public static partial class JSValueConverterHelper
     {
-        public static void RegisterStructConverter<T>(this IJSValueConverterService service, toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue) where T : struct
+        public static void RegisterStructConverter<T>(this IJSValueConverterService service,Action<JSValue,T> toJSValue,Func<JSValue,T> fromJSValue) where T:struct
         {
-            service.RegisterConverter<T>(toJSValue, fromJSValue);
+            service.RegisterConverter<T>(
+                (node, value) =>
+                {
+                    JavaScriptValue jsObj = node.GetService<IJSValueService>().CreateObject();
+                    JSValue v = new JSValue(node, jsObj);
+                    toJSValue(v,value);
+                    return jsObj;
+                },
+                (node, value) =>
+                {
+                    JSValue v = new JSValue(node, value);
+                    return fromJSValue(v);
+                }
+                );
         }
 
         public static void RegisterProxyConverter<T>(this IJSValueConverterService service, Action<JSValueBinding, T,IServiceNode> createBinding) where T : class

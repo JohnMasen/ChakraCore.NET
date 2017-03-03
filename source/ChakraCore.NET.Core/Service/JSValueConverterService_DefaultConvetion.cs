@@ -27,7 +27,7 @@ namespace ChakraCore.NET
                 );
             this.RegisterArrayConverter<string>();
 
-            this.RegisterStructConverter<int>(
+            this.RegisterConverter<int>(
                 (node, value) =>
                 {
                     return node.WithContext<JavaScriptValue>(() =>
@@ -45,7 +45,7 @@ namespace ChakraCore.NET
                 );
             this.RegisterArrayConverter<int>();
 
-            this.RegisterStructConverter<double>(
+            this.RegisterConverter<double>(
                 (node, value) =>
                 {
                     return node.WithContext<JavaScriptValue>(() =>
@@ -63,7 +63,7 @@ namespace ChakraCore.NET
                 );
             this.RegisterArrayConverter<double>();
 
-            this.RegisterStructConverter<bool>(
+            this.RegisterConverter<bool>(
                 (node, value) =>
                 {
                     return node.WithContext<JavaScriptValue>(() =>
@@ -81,7 +81,7 @@ namespace ChakraCore.NET
                 );
             this.RegisterArrayConverter<bool>();
 
-            this.RegisterStructConverter<Single>(
+            this.RegisterConverter<Single>(
                 (node, value) =>
                 {
                     return node.WithContext<JavaScriptValue>(() =>
@@ -99,7 +99,7 @@ namespace ChakraCore.NET
                 );
             this.RegisterArrayConverter<Single>();
 
-            this.RegisterStructConverter<byte>(
+            this.RegisterConverter<byte>(
                 (node, value) =>
                 {
                     return node.WithContext<JavaScriptValue>(() =>
@@ -117,7 +117,7 @@ namespace ChakraCore.NET
                 );
             this.RegisterArrayConverter<byte>();
 
-            this.RegisterStructConverter<decimal>(
+            this.RegisterConverter<decimal>(
                 (node, value) =>
                 {
                     return node.WithContext<JavaScriptValue>(() =>
@@ -146,7 +146,7 @@ namespace ChakraCore.NET
                 );
 
             this.RegisterMethodConverter();
-            this.RegisterStructConverter<Guid>(
+            this.RegisterConverter<Guid>(
                 (node, value) =>
                 {
                     return node.WithContext<JavaScriptValue>(() =>
@@ -164,7 +164,7 @@ namespace ChakraCore.NET
                 );
 
             #region Special Convert
-            this.RegisterStructConverter<JavaScriptValue>(
+            this.RegisterConverter<JavaScriptValue>(
                 (node, value) =>
                 {
                     return value;
