@@ -8,15 +8,13 @@ namespace ChakraCore.NET
 {
     public partial class JSValueBinding : ServiceConsumerBase
     {
-        IJSValueConverterService converter;
-        IJSValueService valueService;
+        IJSValueConverterService converter => ServiceNode.GetService<IJSValueConverterService>();
+        IJSValueService valueService => ServiceNode.GetService<IJSValueService>();
         readonly JavaScriptValue jsValue;
-        public JSValueBinding(IServiceNode parentNode,JavaScriptValue value) : base(parentNode, "JSValueBinding")
+        public JSValueBinding(IServiceNode parentNode, JavaScriptValue value) : base(parentNode, "JSValueBinding")
         {
             jsValue = value;
             ServiceNode.PushService<INativeFunctionHolderService>(new NativeFunctionHolderService(false));
-            converter = ServiceNode.GetService<IJSValueConverterService>();
-            valueService = ServiceNode.GetService<IJSValueService>();
         }
 
 
