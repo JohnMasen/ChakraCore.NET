@@ -19,7 +19,7 @@ namespace ChakraCore.NET
         {
             this.runtime = runtime;
             SyncHandler = syncHandler;
-            runtimeService = new RuntimeService(runtime, SyncHandler);
+            runtimeService = new RuntimeService(runtime);
             //inject service
             ServiceNode.PushService(runtimeService);
             ServiceNode.PushService<IJSValueConverterService>(converter);

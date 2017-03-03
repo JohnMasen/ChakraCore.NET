@@ -12,7 +12,7 @@ namespace ChakraCore.NET
         JavaScriptRuntime runtime;
         JavaScriptContext context;
         public IContextSwitchService InternalContextSwitchService { get; private set; }
-        public RuntimeService(JavaScriptRuntime runtime,EventWaitHandle handle)
+        public RuntimeService(JavaScriptRuntime runtime)
         {
             this.runtime = runtime;
             context = runtime.CreateContext();
