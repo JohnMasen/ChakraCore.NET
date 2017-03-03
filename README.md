@@ -77,6 +77,14 @@ call js function with callback
 ```
 map a dotnet object instance to js
 ```
+    public class DebugEcho
+    {
+        public void Echo(String s)
+        {
+            Debug.WriteLine(s);
+        }
+    }
+
     context.ServiceNode.GetService<IJSValueConverterService>().RegisterProxyConverter<DebugEcho>( //register the object converter
         (binding, instance, serviceNode) =>
         {
