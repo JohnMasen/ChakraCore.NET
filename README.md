@@ -1,6 +1,3 @@
-## Due to some personal issue, I have to leave for a period. Hope this library can help you.
-
-
 # ChakraCore.NET
 A dotnet hosting library for chakracore (javascript) engine to provide 
 scripting capability to dotnet applications. The primary target is make it easy to learn and use.
