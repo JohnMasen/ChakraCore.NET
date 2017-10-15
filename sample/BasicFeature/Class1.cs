@@ -20,7 +20,7 @@ namespace BasicFeature
             //context.RunScript("function test(callback){callback('hello world')})");
             //context.ServiceNode.GetService<IJSValueConverterService>().RegisterMethodConverter<string>();
             //context.GlobalObject.CallMethod<Action<string>>("test", echo);
-
+            DebugEcho instance = new DebugEcho();
             //context.ServiceNode.GetService<IJSValueConverterService>().RegisterProxyConverter<DebugEcho>(
             //    (binding, instance, serviceNode) =>
             //    {
