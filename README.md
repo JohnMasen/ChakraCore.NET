@@ -1,3 +1,7 @@
+I'm back! the project is not dead!
+
+The next step is to add "Module" support, that will be the last piece of this library.
+
 # ChakraCore.NET
 A dotnet hosting library for chakracore (javascript) engine to provide 
 scripting capability to dotnet applications. The primary target is make it easy to learn and use.
