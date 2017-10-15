@@ -15,7 +15,7 @@ this package contains all features in one package.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ChakraCore" Version="1.4.1" />
+    <PackageReference Include="Microsoft.ChakraCore" Version="1.7.3" />
   </ItemGroup>
 
   <ItemGroup>
