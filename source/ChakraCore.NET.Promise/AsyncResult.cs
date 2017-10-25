@@ -19,7 +19,6 @@ namespace ChakraCore.NET.Promise
 
         protected void Release()
         {
-            CompletedSynchronously = true;
             IsCompleted = true;
             mre.Set();
         }
