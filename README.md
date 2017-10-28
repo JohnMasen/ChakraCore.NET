@@ -33,6 +33,7 @@ https://www.nuget.org/packages/ChakraCore.NET/
 
 ### Support ArrayBuffer,TypedArray,DataView
 ### Support Task <-> Promise convert
+### Support "require" feature
 
 ### Sample
 
@@ -95,5 +96,24 @@ map a dotnet object instance to js
         });
     DebugEcho obj = new DebugEcho();
     context.GlobalObject.WriteProperty<DebugEcho>("debugEcho", obj); //js: var debugEcho=[native object]
+
+```
+using "require"
+```
+c#	
+	JSRequireLoader.EnableRequire(context,"Script\\Require"); //enable require, set root folder to "Script\Require"
+	runScript("RequestTest"); 
+
+RequestTest.js
+
+	var p = require("TestLib");
+	var output = p.t1("abc");
+
+TestLib.js
+
+	function t1(source) {
+		return source + source;
+	}
+	exports.t1 = t1;
 
 ```
