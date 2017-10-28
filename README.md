@@ -7,7 +7,7 @@ This library is build with NetStandard 1.4 and Chakracore 1.7.3
 Support following platform:
 * .NET Framework 4.6.1
 * UWP (windows 10 , Windows 10 IoT , Windows 10 Mobile)
-* Net Core 1.0
+* Net Core 1.0 ,1.1 ,2.0
 * Mono/Xamarin
 
 As DotnetCore and Chakracore 1.7.3 supports cross platform, idealy you can use this library at any OS which supported by these 2 libraries.
