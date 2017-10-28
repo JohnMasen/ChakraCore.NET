@@ -10,7 +10,7 @@ Support following platform:
 * Net Core 1.0
 * Mono/Xamarin
 
-As DotnetCore and Chakracore 1.4.1 supports cross platform, idealy you can use this library at any OS which supported by these 2 libraries.
+As DotnetCore and Chakracore 1.7.3 supports cross platform, idealy you can use this library at any OS which supported by these 2 libraries.
 This library is created and tested on windows 10 platform. 
 If you're using it on other platform than Windows 10, feel free to send me a feed back.
 
