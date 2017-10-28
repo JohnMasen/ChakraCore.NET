@@ -65,8 +65,9 @@ namespace ChakraCore.NET
                 }
                 StartPromiseTaskLoop(promiseTaskCTS.Token);
 
+                
 
-                JSGlobalObject = JavaScriptValue.GlobalObject;
+            JSGlobalObject = JavaScriptValue.GlobalObject;
                 GlobalObject = new JSValue(ServiceNode, JSGlobalObject);
             Leave();
             
@@ -74,6 +75,7 @@ namespace ChakraCore.NET
             contextService = new ContextService();
             ServiceNode.PushService<IContextService>(contextService);
             GlobalObject.InitTimer();
+            
         }
 
 

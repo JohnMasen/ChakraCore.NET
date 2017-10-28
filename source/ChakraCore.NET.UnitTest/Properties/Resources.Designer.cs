@@ -10,7 +10,6 @@
 
 namespace ChakraCore.NET.UnitTest.Properties {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace ChakraCore.NET.UnitTest.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -40,7 +39,7 @@ namespace ChakraCore.NET.UnitTest.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ChakraCore.NET.UnitTest.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ChakraCore.NET.UnitTest.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,38 +61,27 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to var array = new Int8Array(buffer);
-        ///array.fill(0x0f);.
-        /// </summary>
-        internal static string ArrayBufferReadWrite {
-            get {
-                return ResourceManager.GetString("ArrayBufferReadWrite", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to function MultiTransfer() {
         ///    var result = &quot;&quot;;
         ///    for (var i = 0; i &lt; proxies.length; i++) {
         ///        result = result  +proxies[i].GetName()+&quot;,&quot;;
         ///    }
         ///    return result;
-        ///}.
+        ///}
+        ///
+        ///function callBackToProxy() {
+        ///    proxy.callBackToJs(function (v) {
+        ///        proxy.echo(v);
+        ///    });
+        ///}
+        ///
+        ///
+        ///
+        ///.
         /// </summary>
         internal static string ComplexProxy {
             get {
                 return ResourceManager.GetString("ComplexProxy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to var array = new Int8Array(buffer1);
-        ///array.fill(0x0f);
-        ///var buffer2 = buffer1;.
-        /// </summary>
-        internal static string JSArrayBufferSetGet {
-            get {
-                return ResourceManager.GetString("JSArrayBufferSetGet", resourceCulture);
             }
         }
         
@@ -112,33 +100,11 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to for (var i = 0; i &lt; dv1.byteLength; i++) {
-        ///    dv1.setInt8(i, dv1.getInt8(i) + 1)
-        ///}.
-        /// </summary>
-        internal static string JSDataViewReadWrite {
-            get {
-                return ResourceManager.GetString("JSDataViewReadWrite", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to var callProxyResult = myStub.echo(&apos;hi&apos;);.
         /// </summary>
         internal static string JSProxy {
             get {
                 return ResourceManager.GetString("JSProxy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to for (var i = 0; i &lt; array1.length; i++) {
-        ///    array1[i] = array1[i] + 1
-        ///};.
-        /// </summary>
-        internal static string JSTypedArrayReadWrite {
-            get {
-                return ResourceManager.GetString("JSTypedArrayReadWrite", resourceCulture);
             }
         }
         
@@ -152,12 +118,84 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to var hold = true;
+        ///var result;
+        ///function SimplePromise() {
+        ///    return new Promise(function (resolve, reject) {
+        ///        for (var i = 0; i &lt; 100000; i++) {
+        ///
+        ///        }
+        ///        timer.setTimeout(function () {
+        ///            test.echo(10);
+        ///            resolve(1);
+        ///        },1000);
+        ///    });
+        ///}
+        ///
+        ///
+        ///
+        ///function CallAsync() {
+        ///
+        ///    test.asyncFunction().then(function (x) {
+        ///        result = x;
+        ///        //test.echo(x);
+        ///        hold = false;
+        ///    });
+        ///}
+        ///
+        ///
+        ///function PromiseWrapper(executor) {
+        ///    return new Promi [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Promise {
+            get {
+                return ResourceManager.GetString("Promise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to var p = require(&quot;TestLib&quot;);
+        ///var output = p.t1(&quot;abc&quot;);.
+        /// </summary>
+        internal static string RequestTest {
+            get {
+                return ResourceManager.GetString("RequestTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to var a = &apos;test&apos;;
         ///a;.
         /// </summary>
         internal static string RunScript {
             get {
                 return ResourceManager.GetString("RunScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to function arrayBufferAdd(a) {
+        ///    let aa = new Int8Array(a);
+        ///    typedArrayAdd(aa);
+        ///}
+        ///
+        ///function typedArrayAdd(a) {
+        ///    for (var i = 0; i &lt; a.byteLength; i++) {
+        ///        a[i] += a[i];
+        ///    }
+        ///}
+        ///
+        ///function dataViewAdd(d) {
+        ///    for (var i = 0; i &lt; d.byteLength; i++) {
+        ///        d.setInt8(i,d.getInt8(i) * 2);
+        ///    }
+        ///}
+        ///
+        ///.
+        /// </summary>
+        internal static string SMOTest {
+            get {
+                return ResourceManager.GetString("SMOTest", resourceCulture);
             }
         }
     }
