@@ -2,7 +2,7 @@
 A dotnet hosting library for chakracore (javascript) engine to provide 
 scripting capability to dotnet applications. The primary target is make it easy to learn and use.
 ## Platform
-This library is build with NetStandard 1.4 and Chakracore 1.4.1 
+This library is build with NetStandard 1.4 and Chakracore 1.7.3 
 
 Support following platform:
 * .NET Framework 4.6.1
