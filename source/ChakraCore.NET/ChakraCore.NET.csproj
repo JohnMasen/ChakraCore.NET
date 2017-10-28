@@ -11,8 +11,8 @@ this package contains all features in one package.</Description>
     <PackageTags>chakracore,netcore</PackageTags>
     <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
-    <Version>1.0.3</Version>
-    <PackageReleaseNotes>Update with latest Promise implementation</PackageReleaseNotes>
+    <Version>1.0.4</Version>
+    <PackageReleaseNotes>Add "require" implementation (quick and dirty)</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
