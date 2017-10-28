@@ -118,6 +118,16 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to var lib2 = require(&quot;TestLib2&quot;);
+        ///var output = lib2.t2(&quot;abc&quot;);.
+        /// </summary>
+        internal static string NestedRequire {
+            get {
+                return ResourceManager.GetString("NestedRequire", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to var hold = true;
         ///var result;
         ///function SimplePromise() {

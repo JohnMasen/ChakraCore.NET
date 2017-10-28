@@ -20,5 +20,13 @@ namespace ChakraCore.NET.UnitTest
             string output = context.GlobalObject.ReadProperty<string>("output");
             Assert.AreEqual(output, "abcabc");
         }
+
+        [TestMethod]
+        public void NestedRequire()
+        {
+            runScript("NestedRequire");
+            string output = context.GlobalObject.ReadProperty<string>("output");
+            Assert.AreEqual(output, "lib2abcabc");
+        }
     }
 }
