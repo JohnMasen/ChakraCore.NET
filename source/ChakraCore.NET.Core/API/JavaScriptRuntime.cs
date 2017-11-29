@@ -140,6 +140,7 @@
         {
             if (IsValid)
             {
+                Native.ThrowIfError(Native.JsSetCurrentContext(JavaScriptContext.Invalid));
                 Native.ThrowIfError(Native.JsDisposeRuntime(this));
             }
 
