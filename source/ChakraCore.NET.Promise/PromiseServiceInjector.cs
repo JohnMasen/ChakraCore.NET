@@ -135,22 +135,22 @@ namespace ChakraCore.NET
         private static IAsyncResult BeginMethod(JavaScriptValue func, IServiceNode node, AsyncCallback callback, object state)
         {
             var conveter = node.GetService<IJSValueConverterService>();
-            var jsValueService = node.GetService<IJSValueService>();
-            AsyncResult result = new AsyncResult();
+            var result = new AsyncResult();
             Action fullfilledCallback = () =>
             {
                 callback(result);
             };
-            Action<string> rejectedCallback = (s) =>
+            Action<JavaScriptValue> rejectedCallback = (s) =>
             {
-                throw new PromiseRejectedException(s);
+                result.SetError(s);
+                callback(result);
             };
 
             Func<JSValue> promiseCall = conveter.FromJSValue<Func<JSValue>>(func);// the target function which returns a promise object
             JSValue promiseObject = promiseCall();//call the function,get the Promise object
             var service = promiseObject.ServiceNode.GetService<PromiseCallbackPairService>();//get the delegate interceptor
             service.Begin();//enable the interceptor
-            promiseObject.CallMethod<Action, Action<String>>("then", fullfilledCallback, rejectedCallback);
+            promiseObject.CallMethod("then", fullfilledCallback, rejectedCallback);
             System.Diagnostics.Debug.WriteLine("[Then] called");
             service.End();//disable the interceptor
             return result;
@@ -159,38 +159,39 @@ namespace ChakraCore.NET
         private static IAsyncResult BeginMethod<T>(JavaScriptValue func, IServiceNode node, AsyncCallback callback, object state)
         {
             var conveter = node.GetService<IJSValueConverterService>();
-            var jsValueService = node.GetService<IJSValueService>();
-            AsyncResult<T> result = new AsyncResult<T>();
+            var result = new AsyncResult<T>();
             Action<T> fullfilledCallback = (x) =>
             {
                 result.SetResult(x);
                 callback(result);
             };
-            Action<string> rejectedCallback = (s) =>
+            Action<JavaScriptValue> rejectedCallback = (s) =>
             {
-                result.SetResult(default(T));
-                throw new PromiseRejectedException(s);
+                result.SetError(s);
+                callback(result);
             };
 
             Func<JSValue> promiseCall = conveter.FromJSValue<Func<JSValue>>(func);// the target function which returns a promise object
             JSValue promiseObject = promiseCall();//call the function,get the Promise object
             var service=promiseObject.ServiceNode.GetService<PromiseCallbackPairService>();//get the delegate interceptor
             service.Begin();//enable the interceptor
-            promiseObject.CallMethod<Action<T>, Action<String>>("then", fullfilledCallback, rejectedCallback);
+            promiseObject.CallMethod("then", fullfilledCallback, rejectedCallback);
             System.Diagnostics.Debug.WriteLine("[Then] called");
             service.End();//disable the interceptor
             return result;
         }
 
-
         private static T EndMethod<T>(IAsyncResult result)
         {
-            return (result as AsyncResult<T>).Result;
+            var asyncResult = result as AsyncResult<T> ?? throw new ArgumentException("Result is of wrong type.");
+            if (asyncResult.Error.ValueType == JavaScriptValueType.Error) throw new PromiseRejectedException(asyncResult.Error);
+            return asyncResult.Result;
         }
 
         private static void EndMethod(IAsyncResult result)
         {
-            //do nothing
+            var asyncResult = result as AsyncResult ?? throw new ArgumentException("Result is of wrong type.");
+            if (asyncResult.Error.ValueType == JavaScriptValueType.Error) throw new PromiseRejectedException(asyncResult.Error);
         }
         
     }

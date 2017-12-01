@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using ChakraCore.NET.API;
 
 namespace ChakraCore.NET.Promise
 {
@@ -17,10 +18,18 @@ namespace ChakraCore.NET.Promise
 
         public object AsyncState => throw new NotImplementedException();
 
+        public JavaScriptValue Error { get; private set; }
+
         protected void Release()
         {
             IsCompleted = true;
             mre.Set();
+        }
+
+        public void SetError(JavaScriptValue error)
+        {
+            Error = error;
+            Release();
         }
     }
 
@@ -28,16 +37,14 @@ namespace ChakraCore.NET.Promise
     {
         public T Result { get; private set; }
 
-
         public void SetResult(T value)
         {
             Result = value;
             Release();
         }
-
     }
 
-    public class AsyncResult:AsyncResultBase
+    public class AsyncResult : AsyncResultBase
     {
         public void SetComplete()
         {
