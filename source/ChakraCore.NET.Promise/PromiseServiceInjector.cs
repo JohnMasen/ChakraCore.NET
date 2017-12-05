@@ -27,6 +27,7 @@ namespace ChakraCore.NET
             //register internal call back types
             target.RegisterMethodConverter<string>();
             target.RegisterFunctionConverter<JSValue>();
+            target.RegisterMethodConverter<JavaScriptValue>();
             target.RegisterMethodConverter<Action, Action<JavaScriptValue>>();
 
 
@@ -84,6 +85,7 @@ namespace ChakraCore.NET
             target.RegisterMethodConverter<TResult>();
             target.RegisterMethodConverter<string>();
             target.RegisterFunctionConverter<JSValue>();
+            target.RegisterMethodConverter<JavaScriptValue>();
             target.RegisterMethodConverter<Action<TResult>, Action<JavaScriptValue>>();
 
 
