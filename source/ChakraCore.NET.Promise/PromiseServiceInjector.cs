@@ -1,8 +1,6 @@
 ﻿using ChakraCore.NET.API;
 using ChakraCore.NET.Promise;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ChakraCore.NET
@@ -29,14 +27,14 @@ namespace ChakraCore.NET
             //register internal call back types
             target.RegisterMethodConverter<string>();
             target.RegisterFunctionConverter<JSValue>();
-            target.RegisterMethodConverter<Action, Action<string>>();
+            target.RegisterMethodConverter<Action, Action<JavaScriptValue>>();
 
 
             target.RegisterConverter<Task>(
                 (node, value) =>
                 {
                     //convert resolve, reject
-                    Action<Action, Action<string>> promiseBody = async (resolve, reject) =>
+                    Action<Action, Action<JavaScriptValue>> promiseBody = async (resolve, reject) =>
                     {
                         try
                         {
@@ -45,7 +43,7 @@ namespace ChakraCore.NET
                         }
                         catch (PromiseRejectedException ex)
                         {
-                            reject(ex.ToString());
+                            reject(ex.Error);
                         }
                         catch (Exception)
                         {
@@ -56,7 +54,7 @@ namespace ChakraCore.NET
                     var jsValueService = node.GetService<IJSValueService>();
                     var globalObject = jsValueService.JSGlobalObject;
                     var jsGlobalObject = new JSValue(node, globalObject);
-                    return jsGlobalObject.CallFunction<Action<Action, Action<string>>, JavaScriptValue>("Promise", promiseBody, true);
+                    return jsGlobalObject.CallFunction<Action<Action, Action<JavaScriptValue>>, JavaScriptValue>("Promise", promiseBody, true);
                 },
                 (node, value) =>
                 {
@@ -86,14 +84,14 @@ namespace ChakraCore.NET
             target.RegisterMethodConverter<TResult>();
             target.RegisterMethodConverter<string>();
             target.RegisterFunctionConverter<JSValue>();
-            target.RegisterMethodConverter<Action<TResult>, Action<string>>();
+            target.RegisterMethodConverter<Action<TResult>, Action<JavaScriptValue>>();
 
 
             target.RegisterConverter<Task<TResult>>(
                 (node, value) =>
                 {
                     //convert resolve, reject
-                    Action<Action<TResult>, Action<string>> promiseBody = async (resolve, reject) =>
+                    Action<Action<TResult>, Action<JavaScriptValue>> promiseBody = async (resolve, reject) =>
                        {
                            try
                            {
@@ -102,7 +100,7 @@ namespace ChakraCore.NET
                            }
                            catch (PromiseRejectedException ex)
                            {
-                               reject(ex.ToString());
+                               reject(ex.Error);
                            }
                            catch (Exception)
                            {
@@ -113,7 +111,7 @@ namespace ChakraCore.NET
                     var jsValueService = node.GetService<IJSValueService>();
                     var globalObject = jsValueService.JSGlobalObject;
                     var jsGlobalObject = new JSValue(node, globalObject);
-                    return jsGlobalObject.CallFunction<Action<Action<TResult>, Action<string>>, JavaScriptValue>("Promise", promiseBody, true);
+                    return jsGlobalObject.CallFunction<Action<Action<TResult>, Action<JavaScriptValue>>, JavaScriptValue>("Promise", promiseBody, true);
                 },
                 (node, value) =>
                 {
@@ -184,7 +182,7 @@ namespace ChakraCore.NET
         private static T EndMethod<T>(IAsyncResult result)
         {
             var asyncResult = result as AsyncResult<T> ?? throw new ArgumentException("Result is of wrong type.");
-            if (asyncResult.Error.ValueType == JavaScriptValueType.Error) throw new PromiseRejectedException(asyncResult.Error);
+            if (asyncResult.Error.IsValid) throw new PromiseRejectedException(asyncResult.Error);
             return asyncResult.Result;
         }
 
