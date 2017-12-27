@@ -869,5 +869,26 @@
 
             JavaScriptSerializedScriptUnloadCallback scriptUnloadCallback, byte[] buffer, JavaScriptSourceContext sourceContext, string sourceUrl, out JavaScriptValue result);
 
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsInitializeModuleRecord(JavaScriptModuleRecord parent, JavaScriptValue name, out JavaScriptModuleRecord result);
+
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsParseModuleSource(JavaScriptModuleRecord moduel, JavaScriptSourceContext sourceContext, byte[] script, uint scriptLength, JavaScriptParseModuleSourceFlags flags, out JavaScriptValue parseException);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsModuleEvaluation(JavaScriptModuleRecord moduel, out JavaScriptValue result);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsSetModuleHostInfo(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, object value);
+
+        [DllImport(DllName, EntryPoint = "JsSetModuleHostInfo")]
+        public static extern JavaScriptErrorCode JsSetModuleNotifyModuleReadyCallback(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, NotifyModuleReadyCallbackDelegate value);
+
+        [DllImport(DllName, EntryPoint = "JsSetModuleHostInfo")]
+        public static extern JavaScriptErrorCode JsFetchImportedModuleCallback(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, FetchImportedModuleDelegate value);
+
+        [DllImport(DllName, EntryPoint = "JsSetModuleHostInfo")]
+        public static extern JavaScriptErrorCode JsFetchImportedModuleFromScriptyCallback(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, FetchImportedModuleFromScriptDelegate value);
     }
 }
