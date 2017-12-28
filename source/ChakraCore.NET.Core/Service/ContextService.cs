@@ -7,7 +7,17 @@ namespace ChakraCore.NET
 {
     public class ContextService : ServiceBase, IContextService
     {
-        private Queue<Action> moduleParseQueue = new Queue<Action>();
+        private class moduleItem
+        {
+            public Action parse; // the action to parse the module 
+            public List<Delegate> items = new List<Delegate>(); //holds the callback delegates to ensure they're not recycled until script is parsed
+            public moduleItem(Action parseAction,params Delegate[] itemsToHold)
+            {
+                parse = parseAction;
+                items.AddRange(itemsToHold);
+            }
+        }
+        private Queue<moduleItem> moduleParseQueue = new Queue<moduleItem>();
         private Dictionary<string, JavaScriptModuleRecord> moduleCache = new Dictionary<string, JavaScriptModuleRecord>();
         public JavaScriptValue ParseScript(string script)
         {
@@ -26,9 +36,19 @@ namespace ChakraCore.NET
               });
         }
 
-        public JavaScriptValue RunModule(string script)
+        public JavaScriptValue RunModule(string script,Func<string,string> loadModuleCallback)
         {
-            var rootRecord = createModule(null, null, script);
+            var rootRecord = createModule(null, null, (name)=>
+            {
+                if (string.IsNullOrEmpty(name))
+                {
+                    return script;
+                }
+                else
+                {
+                    return loadModuleCallback(name);
+                }
+            });
             startModuleParseQueue();
             return JavaScriptModuleRecord.RunModule(rootRecord);
         }
@@ -37,69 +57,94 @@ namespace ChakraCore.NET
         {
             while (moduleParseQueue.Count > 0)
             {
-                moduleParseQueue.Dequeue().Invoke();
+                moduleParseQueue.Dequeue().parse();
             }
         }
 
-        private JavaScriptModuleRecord createModule(JavaScriptModuleRecord? parent, string name,string scriptContent=null)
+        private JavaScriptModuleRecord createModule(JavaScriptModuleRecord? parent, string name, Func<string, string> loadModuleCallback)
         {
-            bool isCreateFromSourceCode = !string.IsNullOrEmpty(scriptContent);
+            bool isCreateFromSourceCode = string.IsNullOrEmpty(name);
             
-            //if scriptContent is passed, parse directly with out query cache
+            //if module is cached, return cached value
             if (!isCreateFromSourceCode && moduleCache.ContainsKey(name))
             {
                 return moduleCache[name];
             }
-            var result = API.JavaScriptModuleRecord.Create(parent, name);
-            JavaScriptModuleRecord.SetFetchModuleCallback(result, FetchImportedModule);
-            JavaScriptModuleRecord.SetFetchModuleScriptCallback(result, FetchImportedModuleFromScript);
-            JavaScriptModuleRecord.SetNotifyReady(result, ModuleNotifyReady);
-            if (isCreateFromSourceCode) 
+
+
+            var result = JavaScriptModuleRecord.Create(parent, name);
+            #region init moudle callback delegates
+            FetchImportedModuleDelegate fetchImported = (JavaScriptModuleRecord reference, JavaScriptValue scriptName, out JavaScriptModuleRecord output) =>
             {
-                //script is directly passed in parameter, possible root application
-                moduleParseQueue.Enqueue(() =>
-                {
-                    JavaScriptModuleRecord.ParseScript(result, scriptContent);
-                    System.Diagnostics.Debug.WriteLine($"module {name} Parsed");
-                });
-                moduleCache.Add(name, result);
-            }
-            else 
+                output = createModule(reference, scriptName.ToString(), loadModuleCallback);
+                return JavaScriptErrorCode.NoError;
+            };
+
+            FetchImportedModuleFromScriptDelegate fetchImportedFromScript = (JavaScriptSourceContext sourceContext, JavaScriptValue scriptName, out JavaScriptModuleRecord output) =>
             {
-                //script should be load from external source
-                moduleParseQueue.Enqueue(() =>
+                output = createModule(null, scriptName.ToString(), loadModuleCallback);
+                return JavaScriptErrorCode.NoError;
+            };
+
+            NotifyModuleReadyCallbackDelegate notifyReady = (module, jsvalue) =>
+            {
+                if (jsvalue.IsValid)
                 {
-                    JavaScriptModuleRecord.ParseScript(result, serviceNode.GetService<ServiceInterface.IModuleLocatorService>().LoadModule(name));
-                    System.Diagnostics.Debug.WriteLine($"module {name} Parsed");
-                });
+                    throw new InvalidOperationException($"Module load failed. message={jsvalue.ToString()}");
+                }
+                return JavaScriptErrorCode.NoError;
+            };
+            #endregion
+
+
+            Action parseModule = () =>
+             {
+                 JavaScriptModuleRecord.ParseScript(result, loadModuleCallback(name));
+                 System.Diagnostics.Debug.WriteLine($"module {name} Parsed");
+             };
+
+            JavaScriptModuleRecord.SetFetchModuleCallback(result, fetchImported);
+            JavaScriptModuleRecord.SetFetchModuleScriptCallback(result, fetchImportedFromScript);
+            JavaScriptModuleRecord.SetNotifyReady(result, notifyReady);
+
+            moduleParseQueue.Enqueue(new moduleItem(
+                parseModule,
+                fetchImported,
+                fetchImportedFromScript, 
+                notifyReady));
+
+            if (!isCreateFromSourceCode)
+            {
+                moduleCache.Add(name, result);//cache the module if it's not directly from RunModule function
             }
+            
             
             System.Diagnostics.Debug.WriteLine($"{name} module created");
             return result;
         }
 
-        private JavaScriptErrorCode ModuleNotifyReady(JavaScriptModuleRecord module, JavaScriptValue value)
-        {
-            if (value.IsValid)
-            {
-                throw new InvalidOperationException($"Module load failed. message={value}");
-            }
-            //System.Diagnostics.Debug.WriteLine("ModuleNotifyReady start");
-            return JavaScriptErrorCode.NoError;
-        }
-        private JavaScriptErrorCode FetchImportedModule(JavaScriptModuleRecord reference, JavaScriptValue name, out JavaScriptModuleRecord result)
-        {
-            System.Diagnostics.Debug.WriteLine($"FetchImportedModule [{name.ToString()}]");
-            result = createModule(reference, name.ToString());
-            return JavaScriptErrorCode.NoError;
-        }
+        //private JavaScriptErrorCode ModuleNotifyReady(JavaScriptModuleRecord module, JavaScriptValue value)
+        //{
+        //    if (value.IsValid)
+        //    {
+        //        throw new InvalidOperationException($"Module load failed. message={value}");
+        //    }
+        //    //System.Diagnostics.Debug.WriteLine("ModuleNotifyReady start");
+        //    return JavaScriptErrorCode.NoError;
+        //}
+        //private JavaScriptErrorCode FetchImportedModule(JavaScriptModuleRecord reference, JavaScriptValue name, out JavaScriptModuleRecord result)
+        //{
+        //    System.Diagnostics.Debug.WriteLine($"FetchImportedModule [{name.ToString()}]");
+        //    result = createModule(reference, name.ToString());
+        //    return JavaScriptErrorCode.NoError;
+        //}
 
-        private JavaScriptErrorCode FetchImportedModuleFromScript(JavaScriptSourceContext sourceContext, JavaScriptValue name, out JavaScriptModuleRecord result)
-        {
-            System.Diagnostics.Debug.WriteLine($"FetchImportedModule from script [{name.ToString()}]");
-            result = createModule(null, name.ToString());
-            return JavaScriptErrorCode.NoError;
-        }
+        //private JavaScriptErrorCode FetchImportedModuleFromScript(JavaScriptSourceContext sourceContext, JavaScriptValue name, out JavaScriptModuleRecord result)
+        //{
+        //    System.Diagnostics.Debug.WriteLine($"FetchImportedModule from script [{name.ToString()}]");
+        //    result = createModule(null, name.ToString());
+        //    return JavaScriptErrorCode.NoError;
+        //}
 
     }
 }
