@@ -10,6 +10,6 @@ namespace ChakraCore.NET
     {
         string RunScript(string script);
         JavaScriptValue ParseScript(string script);
-
+        JavaScriptValue RunModule(string script, Func<string, string> loadModuleCallback);
     }
 }
