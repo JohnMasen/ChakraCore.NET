@@ -129,4 +129,12 @@ ES6 module (project exported class as global object)
             var result = value.CallFunction<int, int>("Test1", 1);//call the function on exported class
             Assert.AreEqual(3, result);
         }
+        
+BasicExport.js
+        export 
+    class TestClass {
+        Test1(v) {
+            return v + v;
+    }
+}
 ```
