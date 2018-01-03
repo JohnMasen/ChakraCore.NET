@@ -117,7 +117,7 @@ TestLib.js
 
 ES6 module (project exported class as global object)
 ```
-protected JSValue projectModuleClass(string moduleName,string className)
+        protected JSValue projectModuleClass(string moduleName,string className)
         {
             //setup local moudle callback, assume every script is embedded in resource without ".js" extension
             return context.ProjectModuleClass("__value", moduleName, className, (name) => Properties.Resources.ResourceManager.GetString(name));
