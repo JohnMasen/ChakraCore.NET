@@ -61,6 +61,33 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to export 
+        ///    class TestClass {
+        ///        Test1(v) {
+        ///            return v + v;
+        ///    }
+        ///}
+        ///.
+        /// </summary>
+        internal static string BasicExport {
+            get {
+                return ResourceManager.GetString("BasicExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to import * as imported from &quot;BasicExport.js&quot;;
+        ///var a = imported.Func1(1);
+        ///var b = new imported.TestClass();
+        ///var c = b.Test1(1);.
+        /// </summary>
+        internal static string BasicImport {
+            get {
+                return ResourceManager.GetString("BasicImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to function MultiTransfer() {
         ///    var result = &quot;&quot;;
         ///    for (var i = 0; i &lt; proxies.length; i++) {

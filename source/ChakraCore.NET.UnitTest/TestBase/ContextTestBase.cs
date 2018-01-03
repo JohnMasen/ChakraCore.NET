@@ -8,6 +8,7 @@ using System.Linq;
 using System.Resources;
 using System.Text;
 using ChakraCore.NET;
+using ChakraCore.NET.API;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -56,6 +57,16 @@ namespace ChakraCore.NET.UnitTest
         protected string runScript(string fileName)
         {
             return context.RunScript(Properties.Resources.ResourceManager.GetString(fileName));
+        }
+
+        protected void runModule(string fileName)
+        {
+            context.RunModule(Properties.Resources.ResourceManager.GetString(fileName), (name) => Properties.Resources.ResourceManager.GetString(name));
+        }
+
+        protected JSValue projectModuleClass(string moduleName,string className)
+        {
+            return context.ProjectModuleClass("__value", moduleName, className, (name) => Properties.Resources.ResourceManager.GetString(name));
         }
         protected  void Log(string text)
         {

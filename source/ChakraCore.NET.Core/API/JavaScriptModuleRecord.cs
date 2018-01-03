@@ -50,6 +50,10 @@ namespace ChakraCore.NET.API
 
         public static JavaScriptModuleRecord Create(JavaScriptModuleRecord? parent, string name)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Guid.NewGuid().ToString();//root module has no name, give it a unique name
+            }
             JavaScriptValue moduleName = JavaScriptValue.FromString(name);
             JavaScriptModuleRecord result;
             if (parent.HasValue)

@@ -36,21 +36,24 @@ namespace ChakraCore.NET
               });
         }
 
-        public JavaScriptValue RunModule(string script,Func<string,string> loadModuleCallback)
+        public void RunModule(string script,Func<string,string> loadModuleCallback)
         {
-            var rootRecord = createModule(null, null, (name)=>
-            {
-                if (string.IsNullOrEmpty(name))
+            contextSwitch.With(() => {
+                var rootRecord = createModule(null, null, (name) =>
                 {
-                    return script;
-                }
-                else
-                {
-                    return loadModuleCallback(name);
-                }
+                    if (string.IsNullOrEmpty(name))
+                    {
+                        return script;
+                    }
+                    else
+                    {
+                        return loadModuleCallback(name);
+                    }
+                });
+                startModuleParseQueue();
+                JavaScriptModuleRecord.RunModule(rootRecord);
             });
-            startModuleParseQueue();
-            return JavaScriptModuleRecord.RunModule(rootRecord);
+            
         }
 
         private void startModuleParseQueue()
@@ -76,7 +79,8 @@ namespace ChakraCore.NET
             #region init moudle callback delegates
             FetchImportedModuleDelegate fetchImported = (JavaScriptModuleRecord reference, JavaScriptValue scriptName, out JavaScriptModuleRecord output) =>
             {
-                output = createModule(reference, scriptName.ToString(), loadModuleCallback);
+                output= createModule(reference, scriptName.ToString(), loadModuleCallback);
+                
                 return JavaScriptErrorCode.NoError;
             };
 

@@ -145,4 +145,10 @@
   <data name="NestedRequire" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\script\require\nestedrequire.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="BasicExport" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\es6module\basicexport.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="BasicImport" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\es6module\basicimport.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

@@ -147,6 +147,20 @@ namespace ChakraCore.NET
         }
 
 
+        public void RunModule(string script,Func<string,string> loadModuleCallback)
+        {
+            ServiceNode.GetService<IContextService>().RunModule(script, loadModuleCallback);
+        }
+
+        public JSValue ProjectModuleClass(string projectTo, string moduleName, string className, Func<string, string> loadModuleCallback)
+        {
+            string script_setRootObject = $"var {projectTo}={{}}";
+            string script_importModule = $"import {{{className}}} from '{moduleName}'; {projectTo}=new {className}();";
+            RunScript(script_setRootObject);
+            RunModule(script_importModule, loadModuleCallback);
+            return GlobalObject.ReadProperty<JSValue>(projectTo);
+        }
+
         /// <summary>
         /// Parses a script and returns a function representing the script. 
         /// </summary>
