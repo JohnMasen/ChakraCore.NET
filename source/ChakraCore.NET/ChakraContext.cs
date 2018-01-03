@@ -146,12 +146,23 @@ namespace ChakraCore.NET
             return ServiceNode.GetService<IContextService>().RunScript(script);
         }
 
-
+        /// <summary>
+        /// Execute a ES6 module
+        /// </summary>
+        /// <param name="script">script content</param>
+        /// <param name="loadModuleCallback">callback to load imported script content</param>
         public void RunModule(string script,Func<string,string> loadModuleCallback)
         {
             ServiceNode.GetService<IContextService>().RunModule(script, loadModuleCallback);
         }
-
+        /// <summary>
+        /// Load a module script, create an instance of specified exported class and map it as a global variable
+        /// </summary>
+        /// <param name="projectTo">the global variable name mapped to</param>
+        /// <param name="moduleName">module name</param>
+        /// <param name="className">class name to create an instance</param>
+        /// <param name="loadModuleCallback">local module script by name callback </param>
+        /// <returns>the mapped value</returns>
         public JSValue ProjectModuleClass(string projectTo, string moduleName, string className, Func<string, string> loadModuleCallback)
         {
             string script_setRootObject = $"var {projectTo}={{}}";
