@@ -30,6 +30,7 @@ https://www.nuget.org/packages/ChakraCore.NET/
 ### Support ArrayBuffer,TypedArray,DataView
 ### Support Task <-> Promise convert
 ### Support "require" feature
+### Support ES6 Modules
 
 ### Sample
 
@@ -112,4 +113,20 @@ TestLib.js
 	}
 	exports.t1 = t1;
 
+```
+
+ES6 module (project exported class as global object)
+```
+protected JSValue projectModuleClass(string moduleName,string className)
+        {
+            //setup local moudle callback, assume every script is embedded in resource without ".js" extension
+            return context.ProjectModuleClass("__value", moduleName, className, (name) => Properties.Resources.ResourceManager.GetString(name));
+        }
+
+        public void ImportExport()
+        {
+            var value = projectModuleClass("BasicExport", "TestClass"); //load BasicImport.js module file, create an instance of exported class "TestClass" and map it to global scope . return the exported value
+            var result = value.CallFunction<int, int>("Test1", 1);//call the function on exported class
+            Assert.AreEqual(3, result);
+        }
 ```
