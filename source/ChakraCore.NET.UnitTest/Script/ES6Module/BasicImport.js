@@ -1,4 +1,9 @@
 ﻿import * as imported from "BasicExport";
-this.a = imported.Func1(1);
-//var b = new imported.TestClass();
-//this.c = b.Test1(1);
+export class TestClass2 {
+    constructor() {
+        this.a = new imported.TestClass();
+    }
+    Test2(v) {
+        return this.a.Test1(v) + v;
+    }
+}

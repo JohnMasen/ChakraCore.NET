@@ -67,6 +67,9 @@ namespace ChakraCore.NET.UnitTest.Properties {
         ///            return v + v;
         ///    }
         ///}
+        ///export function Func1(v) {
+        ///    return v + v;
+        ///}
         ///.
         /// </summary>
         internal static string BasicExport {
@@ -76,10 +79,15 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to import * as imported from &quot;BasicExport.js&quot;;
-        ///var a = imported.Func1(1);
-        ///var b = new imported.TestClass();
-        ///var c = b.Test1(1);.
+        ///   Looks up a localized string similar to import * as imported from &quot;BasicExport&quot;;
+        ///export class TestClass2 {
+        ///    constructor() {
+        ///        this.a = new imported.TestClass();
+        ///    }
+        ///    Test2(v) {
+        ///        return this.a.Test1(v) + v;
+        ///    }
+        ///}.
         /// </summary>
         internal static string BasicImport {
             get {
@@ -141,6 +149,32 @@ namespace ChakraCore.NET.UnitTest.Properties {
         internal static string JSValueTest {
             get {
                 return ResourceManager.GetString("JSValueTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to import foo  from &apos;NestedImport1&apos;;
+        ///export class Test {
+        ///    Test1(v) {
+        ///        return foo(v);
+        ///    }
+        ///}.
+        /// </summary>
+        internal static string NestedImport0 {
+            get {
+                return ResourceManager.GetString("NestedImport0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to import * as tmp from &apos;NestedImport0&apos;;
+        ///export function foo(v) {
+        ///    return v + v;
+        ///}.
+        /// </summary>
+        internal static string NestedImport1 {
+            get {
+                return ResourceManager.GetString("NestedImport1", resourceCulture);
             }
         }
         

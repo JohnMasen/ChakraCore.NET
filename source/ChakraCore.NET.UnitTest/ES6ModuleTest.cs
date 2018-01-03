@@ -12,19 +12,28 @@ namespace ChakraCore.NET.UnitTest
         {
         }
 
-        //[TestMethod]
-        //public void RunModuleTest()
-        //{
-        //    var result = runModule("RunScript");
-        //    Assert.AreEqual<string>(result.ToString(), "test");
-        //}
 
         [TestMethod]
         public void BasicClassProject()
         {
-            //var y=context.GlobalObject.CallFunction<int, int>("add", 1);
             var value = projectModuleClass("BasicExport", "TestClass");
             var result=value.CallFunction<int, int>("Test1", 1);
+            Assert.AreEqual(2, result);
+        }
+
+        [TestMethod]
+        public void ImportExport()
+        {
+            var value = projectModuleClass("BasicImport", "TestClass2");
+            var result = value.CallFunction<int, int>("Test2", 1);
+            Assert.AreEqual(3, result);
+        }
+
+        [TestMethod]
+        public void NestedImport()
+        {
+            var value = projectModuleClass("NestedImport0", "Test");
+            var result = value.CallFunction<int, int>("Test1", 1);
             Assert.AreEqual(2, result);
         }
     }
