@@ -2,7 +2,7 @@
 A dotnet hosting library for chakracore (javascript) engine to provide 
 scripting capability to dotnet applications. The primary target is make it easy to learn and use.
 
-Break changes warning:
+### Break changes warning:
 
 After version 1.0.6 , I'm planning to re-implement the GC sync part in next version. the following interface may be impacted:
 ```INativeFunctionHolderService, IProxyMapService``` . ideally this change only impacts if you're creating your own service node for chakracore.net. For library consumers, your code is safe.
