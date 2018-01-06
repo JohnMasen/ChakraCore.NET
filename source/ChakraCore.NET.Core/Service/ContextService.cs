@@ -129,28 +129,5 @@ namespace ChakraCore.NET
             return result;
         }
 
-        //private JavaScriptErrorCode ModuleNotifyReady(JavaScriptModuleRecord module, JavaScriptValue value)
-        //{
-        //    if (value.IsValid)
-        //    {
-        //        throw new InvalidOperationException($"Module load failed. message={value}");
-        //    }
-        //    //System.Diagnostics.Debug.WriteLine("ModuleNotifyReady start");
-        //    return JavaScriptErrorCode.NoError;
-        //}
-        //private JavaScriptErrorCode FetchImportedModule(JavaScriptModuleRecord reference, JavaScriptValue name, out JavaScriptModuleRecord result)
-        //{
-        //    System.Diagnostics.Debug.WriteLine($"FetchImportedModule [{name.ToString()}]");
-        //    result = createModule(reference, name.ToString());
-        //    return JavaScriptErrorCode.NoError;
-        //}
-
-        //private JavaScriptErrorCode FetchImportedModuleFromScript(JavaScriptSourceContext sourceContext, JavaScriptValue name, out JavaScriptModuleRecord result)
-        //{
-        //    System.Diagnostics.Debug.WriteLine($"FetchImportedModule from script [{name.ToString()}]");
-        //    result = createModule(null, name.ToString());
-        //    return JavaScriptErrorCode.NoError;
-        //}
-
     }
 }
