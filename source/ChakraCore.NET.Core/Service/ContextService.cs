@@ -52,6 +52,7 @@ namespace ChakraCore.NET
                 });
                 startModuleParseQueue();
                 JavaScriptModuleRecord.RunModule(rootRecord);
+                startModuleParseQueue();//for dynamic import during module run
             });
             
         }
