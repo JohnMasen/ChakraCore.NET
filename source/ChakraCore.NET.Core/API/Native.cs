@@ -890,5 +890,8 @@
 
         [DllImport(DllName, EntryPoint = "JsSetModuleHostInfo")]
         public static extern JavaScriptErrorCode JsFetchImportedModuleFromScriptyCallback(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, FetchImportedModuleFromScriptDelegate value);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsRun(JavaScriptValue script, JavaScriptSourceContext sourceContext, JavaScriptValue sourceUrl, JavaScriptParseScriptAttributes parseAttributes, out JavaScriptValue result);
     }
 }
