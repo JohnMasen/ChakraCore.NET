@@ -127,7 +127,7 @@ ES6 module (project exported class as global object)
         {
             var value = projectModuleClass("BasicExport", "TestClass"); //load BasicImport.js module file, create an instance of exported class "TestClass" and map it to global scope . return the exported value
             var result = value.CallFunction<int, int>("Test1", 1);//call the function on exported class
-            Assert.AreEqual(3, result);
+            Assert.AreEqual(2, result);
         }
         
 BasicExport.js
