@@ -53,6 +53,7 @@ namespace ChakraCore.NET
                 startModuleParseQueue();
                 JavaScriptModuleRecord.RunModule(rootRecord);
                 startModuleParseQueue();//for dynamic import during module run
+                //this pattern is not consistent to promise loop pattern, should change it?
             });
             
         }
