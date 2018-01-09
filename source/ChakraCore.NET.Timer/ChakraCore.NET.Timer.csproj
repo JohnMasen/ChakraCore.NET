@@ -11,6 +11,9 @@
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.
 this package contains a lightweight timer which implements setTimeout and setInterval feature for host</Description>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <PackageReleaseNotes>update implementation with latest GC sync pattern</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

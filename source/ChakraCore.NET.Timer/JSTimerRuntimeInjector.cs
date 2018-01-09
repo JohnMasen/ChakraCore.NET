@@ -13,14 +13,16 @@ namespace ChakraCore.NET
             target.GetService<IJSValueConverterService>().RegisterProxyConverter<JSTimer>((binding, value, node) =>
             {
                 binding.SetMethod<Action, int>("setTimeout", value.SetTimeout);
-                binding.SetFunction<JavaScriptValue, int, Guid>("setInterval", value.SetInterval);
+                binding.SetFunction<Action, int, Guid>("setInterval", value.SetInterval);
                 binding.SetMethod<Guid>("clearInterval", value.ClearInterval);
             });
         }
 
-        public static void InitTimer(this JSValue globalObject)
+        public static JSTimer InitTimer(this JSValue globalObject)
         {
-            globalObject.WriteProperty<JSTimer>("timer", new JSTimer(globalObject.ServiceNode));
+            JSTimer result = new JSTimer(globalObject.ServiceNode);
+            globalObject.WriteProperty<JSTimer>("timer", result);
+            return result;
         }
     }
 }

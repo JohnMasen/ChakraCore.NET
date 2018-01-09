@@ -7,7 +7,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using ChakraCore.NET.API;
-
+using ChakraCore.NET.Timer;
 
 namespace ChakraCore.NET
 {
@@ -26,6 +26,7 @@ namespace ChakraCore.NET
         private JavaScriptValue JSGlobalObject;
         private ContextService contextService;
         private ContextSwitchService contextSwitch;
+        private JSTimer timerService;
 
         /// <summary>
         /// The global object of a context, it is the root of everything inside the context
@@ -74,7 +75,7 @@ namespace ChakraCore.NET
             
             contextService = new ContextService();
             ServiceNode.PushService<IContextService>(contextService);
-            GlobalObject.InitTimer();
+            timerService=GlobalObject.InitTimer();
             
         }
 
@@ -194,6 +195,7 @@ namespace ChakraCore.NET
                 if (disposing)
                 {
                     promiseTaskCTS.Cancel();
+                    timerService.ReleaseAll();
                     contextSwitch.Dispose();
                     jsContext.Release();
                 }

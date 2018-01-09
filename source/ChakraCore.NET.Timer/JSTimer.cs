@@ -9,20 +9,15 @@ namespace ChakraCore.NET.Timer
 {
     public class JSTimer :ServiceConsumerBase
     {
-        SortedDictionary<Guid, Tuple<JavaScriptValue, CancellationTokenSource>> list = new SortedDictionary<Guid, Tuple<JavaScriptValue, CancellationTokenSource>>();
+        SortedDictionary<Guid, Tuple<Action, CancellationTokenSource>> list = new SortedDictionary<Guid, Tuple<Action, CancellationTokenSource>>();
         public JSTimer(IServiceNode parentNode) : base(parentNode, "JSTimer")
         {
         }
 
-        public Guid SetInterval(JavaScriptValue callback,int delay)
+        public Guid SetInterval(Action callback,int delay)
         {
-            if (callback.ValueType!=JavaScriptValueType.Function)
-            {
-                throw new ArgumentException("SetInterval only accepts javascript function");
-            }
             CancellationTokenSource source = new CancellationTokenSource();
             Guid id = addCallback(callback, source);
-            Action a = ServiceNode.GetService<IJSValueConverterService>().FromJSValue<Action>(callback);
             Task.Factory.StartNew(async() =>
             {
                 while (true)
@@ -30,7 +25,7 @@ namespace ChakraCore.NET.Timer
                     try
                     {
                         await Task.Delay(delay, source.Token);
-                        a();
+                        callback();
                     }
                     catch (OperationCanceledException)
                     {
@@ -66,25 +61,23 @@ namespace ChakraCore.NET.Timer
             {
                 return;//ignore the request if id does not exists
             }
-            ServiceNode.WithContext(() =>
-            {
-                list[id].Item1.Release();//release the callback function reference
-            });
             list[id].Item2.Cancel();//cancel the interval loop
             list.Remove(id);
         }
 
-        private Guid addCallback(JavaScriptValue value, CancellationTokenSource source)
+        private Guid addCallback(Action value, CancellationTokenSource source)
         {
             Guid result = Guid.NewGuid();
-            ServiceNode.WithContext(() =>
-            {
-                value.AddRef();//hold the callback function
-            });
-            list.Add(result, new Tuple<JavaScriptValue, CancellationTokenSource>(value, source));
+            list.Add(result, new Tuple<Action, CancellationTokenSource>(value, source));
             return result;
         }
-
+        public void ReleaseAll()
+        {
+            foreach (var item in list)
+            {
+                item.Value.Item2.Cancel();
+            }
+        }
 
     }
 }
