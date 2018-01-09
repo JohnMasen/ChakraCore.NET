@@ -11,8 +11,8 @@
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.
 this package contains dotnet Task &lt;-&gt; JS Promise convertion part</Description>
-    <Version>1.0.1</Version>
-    <PackageReleaseNotes>bug fixes</PackageReleaseNotes>
+    <Version>1.0.2</Version>
+    <PackageReleaseNotes>improved GC sync</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

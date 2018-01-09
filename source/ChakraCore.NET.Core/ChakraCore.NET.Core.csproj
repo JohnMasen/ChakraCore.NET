@@ -12,9 +12,10 @@ this package contains all core features</Description>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <PackageTags>chakracore,netcore</PackageTags>
-    <Version>1.0.4</Version>
-    <PackageReleaseNotes>Fixed import() function does not work
-change JSRunScript to JSRun to support cross platform</PackageReleaseNotes>
+    <Version>1.0.5</Version>
+    <PackageReleaseNotes>improved GC sync</PackageReleaseNotes>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <FileVersion>1.0.5.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
