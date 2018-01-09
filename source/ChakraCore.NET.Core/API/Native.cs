@@ -893,5 +893,8 @@
 
         [DllImport(DllName)]
         public static extern JavaScriptErrorCode JsRun(JavaScriptValue script, JavaScriptSourceContext sourceContext, JavaScriptValue sourceUrl, JavaScriptParseScriptAttributes parseAttributes, out JavaScriptValue result);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsCreatePromise(out JavaScriptValue promise, out JavaScriptValue resolve, out JavaScriptValue reject);
     }
 }

@@ -8,16 +8,7 @@ namespace ChakraCore.NET
     public static class PromiseServiceInjector
     {
 
-        public static void InjectTaskService(this IServiceNode target)
-        {
-            if (target.CanGetService<PromiseCallbackPairService>())
-            {
-                return;
-            }
-            PromiseCallbackPairService service = new PromiseCallbackPairService();
-            target.PushService(service);
-        }
-
+        
         public static void RegisterTask(this IJSValueConverterService target)
         {
             if (target.CanConvert<Task>())
@@ -28,35 +19,42 @@ namespace ChakraCore.NET
             target.RegisterMethodConverter<string>();
             target.RegisterFunctionConverter<JSValue>();
             target.RegisterMethodConverter<JavaScriptValue>();
-            target.RegisterMethodConverter<Action, Action<JavaScriptValue>>();
 
 
             target.RegisterConverter<Task>(
                 (node, value) =>
                 {
-                    //convert resolve, reject
-                    Action<Action, Action<JavaScriptValue>> promiseBody = async (resolve, reject) =>
+                    var jsValueService = node.GetService<IJSValueService>();
+                    var globalObject = jsValueService.JSGlobalObject;
+                    var converter = node.GetService<IJSValueConverterService>();
+                    var tmp = node.WithContext(() =>
+                      {
+                          JavaScriptValue.CreatePromise(out var result, out var resolve, out var reject);
+                          return Tuple.Create(result, resolve, reject);
+                      });
+                    //start the task on new thread
+                    Task.Factory.StartNew(async() =>
                     {
                         try
                         {
                             await value;
-                            resolve();
+                            jsValueService.CallFunction(tmp.Item2, globalObject);
                         }
                         catch (PromiseRejectedException ex)
                         {
-                            reject(ex.Error);
+                            var message=converter.ToJSValue(ex.ToString());
+                            jsValueService.CallFunction(tmp.Item3, globalObject, message);
                         }
                         catch (Exception)
                         {
+
                             throw;
                         }
-
-                    };
-                    var jsValueService = node.GetService<IJSValueService>();
-                    var globalObject = jsValueService.JSGlobalObject;
-                    var jsGlobalObject = new JSValue(node, globalObject);
-                    return jsGlobalObject.CallFunction<Action<Action, Action<JavaScriptValue>>, JavaScriptValue>("Promise", promiseBody, true);
+                    });
+                    //return the promise without wait task complete
+                    return tmp.Item1;
                 },
+
                 (node, value) =>
                 {
                     //from a promise 
@@ -86,46 +84,53 @@ namespace ChakraCore.NET
             target.RegisterMethodConverter<string>();
             target.RegisterFunctionConverter<JSValue>();
             target.RegisterMethodConverter<JavaScriptValue>();
-            target.RegisterMethodConverter<Action<TResult>, Action<JavaScriptValue>>();
 
 
             target.RegisterConverter<Task<TResult>>(
                 (node, value) =>
                 {
-                    //convert resolve, reject
-                    Action<Action<TResult>, Action<JavaScriptValue>> promiseBody = async (resolve, reject) =>
-                       {
-                           try
-                           {
-                               var result = await value;
-                               resolve(result);
-                           }
-                           catch (PromiseRejectedException ex)
-                           {
-                               reject(ex.Error);
-                           }
-                           catch (Exception)
-                           {
-                               throw;
-                           }
-                           
-                       };
                     var jsValueService = node.GetService<IJSValueService>();
                     var globalObject = jsValueService.JSGlobalObject;
-                    var jsGlobalObject = new JSValue(node, globalObject);
-                    return jsGlobalObject.CallFunction<Action<Action<TResult>, Action<JavaScriptValue>>, JavaScriptValue>("Promise", promiseBody, true);
+                    var converter = node.GetService<IJSValueConverterService>();
+                    var tmp = node.WithContext(() =>
+                    {
+                        JavaScriptValue.CreatePromise(out var result, out var resolve, out var reject);
+                        return Tuple.Create(result, resolve, reject);
+                    });
+                    //start the task on new thread
+                    Task.Factory.StartNew(async () =>
+                    {
+                        try
+                        {
+                            var r=await value;
+                            jsValueService.CallFunction(tmp.Item2, globalObject, converter.ToJSValue(r));
+                        }
+                        catch (PromiseRejectedException ex)
+                        {
+                            var message = converter.ToJSValue(ex.ToString());
+                            jsValueService.CallFunction(tmp.Item3, globalObject, message);
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
+                        }
+                    });
+
+                    //return the promise without wait task complete
+                    return tmp.Item1;
                 },
                 (node, value) =>
                 {
-                    //from a promise 
-                    return Task.Factory.FromAsync(
+            //from a promise 
+            return Task.Factory.FromAsync(
 
-                        (callback, state) =>
-                        {
+        (callback, state) =>
+        {
                             return BeginMethod<TResult>(value, node, callback, state);
                         }
-                        , EndMethod<TResult>, null
-                        );
+        , EndMethod<TResult>, null
+        );
 
 
                 }, false
@@ -142,17 +147,15 @@ namespace ChakraCore.NET
             };
             Action<JavaScriptValue> rejectedCallback = (s) =>
             {
-                result.SetError(s);
+                result.SetError(s.ToString());
                 callback(result);
             };
 
             Func<JSValue> promiseCall = conveter.FromJSValue<Func<JSValue>>(func);// the target function which returns a promise object
-            JSValue promiseObject = promiseCall();//call the function,get the Promise object
-            var service = promiseObject.ServiceNode.GetService<PromiseCallbackPairService>();//get the delegate interceptor
-            service.Begin();//enable the interceptor
+            JSValue promiseObject = promiseCall();
+            //call the function,get the Promise object
             promiseObject.CallMethod("then", fullfilledCallback, rejectedCallback);
             System.Diagnostics.Debug.WriteLine("[Then] called");
-            service.End();//disable the interceptor
             return result;
         }
 
@@ -167,32 +170,35 @@ namespace ChakraCore.NET
             };
             Action<JavaScriptValue> rejectedCallback = (s) =>
             {
-                result.SetError(s);
+                result.SetError(s.ToString());
                 callback(result);
             };
 
             Func<JSValue> promiseCall = conveter.FromJSValue<Func<JSValue>>(func);// the target function which returns a promise object
             JSValue promiseObject = promiseCall();//call the function,get the Promise object
-            var service=promiseObject.ServiceNode.GetService<PromiseCallbackPairService>();//get the delegate interceptor
-            service.Begin();//enable the interceptor
             promiseObject.CallMethod("then", fullfilledCallback, rejectedCallback);
             System.Diagnostics.Debug.WriteLine("[Then] called");
-            service.End();//disable the interceptor
             return result;
         }
 
         private static T EndMethod<T>(IAsyncResult result)
         {
             var asyncResult = result as AsyncResult<T> ?? throw new ArgumentException("Result is of wrong type.");
-            if (asyncResult.Error.IsValid) throw new PromiseRejectedException(asyncResult.Error);
+            if (asyncResult.HasError)
+            {
+                throw new PromiseRejectedException(asyncResult.Error.ToString());
+            }
             return asyncResult.Result;
         }
 
         private static void EndMethod(IAsyncResult result)
         {
             var asyncResult = result as AsyncResult ?? throw new ArgumentException("Result is of wrong type.");
-            if (asyncResult.Error.ValueType == JavaScriptValueType.Error) throw new PromiseRejectedException(asyncResult.Error);
+            if (asyncResult.HasError)
+            {
+                throw new PromiseRejectedException(asyncResult.Error.ToString());
+            }
         }
-        
+
     }
 }

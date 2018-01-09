@@ -31,12 +31,6 @@ namespace ChakraCore.NET.UnitTest
             }
             context.GlobalObject.WriteProperty<IEnumerable<TestProxy>>("proxies", items);
 
-            var items_back=context.GlobalObject.ReadProperty<IEnumerable<TestProxy>>("proxies").ToArray();
-            Assert.AreEqual(items_back.Length, items.Length);
-            for (int i = 0; i < items.Length; i++)
-            {
-                Assert.AreSame(items[i], items_back[i]);
-            }
             string result=context.GlobalObject.CallFunction<string>("MultiTransfer");
             Assert.AreEqual<string>(target, result);
         }

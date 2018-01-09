@@ -929,5 +929,10 @@
             Native.ThrowIfError(Native.JsConstructObject(this, arguments, (ushort)arguments.Length, out returnReference));
             return returnReference;
         }
+
+        public static void CreatePromise(out JavaScriptValue promise,out JavaScriptValue resolve,out JavaScriptValue reject)
+        {
+            Native.ThrowIfError(Native.JsCreatePromise(out promise, out resolve, out reject));
+        }
     }
 }

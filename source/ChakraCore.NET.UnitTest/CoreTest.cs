@@ -95,7 +95,7 @@ namespace ChakraCore.NET.UnitTest
             Assert.AreEqual("hihi", s);
         }
 
-        [TestMethod]
+        [TestMethod][ExpectedException(typeof(NotSupportedException))]
         public void ProxyTransferback()
         {
             TestProxy stub = new TestProxy();
@@ -105,7 +105,7 @@ namespace ChakraCore.NET.UnitTest
             Assert.IsTrue(object.ReferenceEquals(stub, b));
         }
 
-        
+
 
 
 

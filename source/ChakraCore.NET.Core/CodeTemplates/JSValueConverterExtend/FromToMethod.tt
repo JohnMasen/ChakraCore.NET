@@ -30,6 +30,7 @@
         private static Action<#=genCode(i,"T{1}")#> fromJSMethod<#=genCode(i,"T{1}")#>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<#=genCode(i,"T{1}")#> result = (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
               {
 
@@ -43,6 +44,7 @@
                       value.CallFunction(caller<#=genCode(i,",p{1}",false,"","{0}")#>);
                       <#=genCode(i,"p{1}.Release();",false,Environment.NewLine,"{0}")#>
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }

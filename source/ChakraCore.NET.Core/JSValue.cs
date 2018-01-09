@@ -21,9 +21,6 @@ namespace ChakraCore.NET
             //inject service
             Binding = new JSValueBinding(ServiceNode,value);//binding will create a branch of current service node to persistent hold all delegates created by binding function
             
-            //add my own one time delegate handler for method/function call
-            ServiceNode.PushService<INativeFunctionHolderService>(new NativeFunctionHolderService(true));
-            
         }
 
         public T ReadProperty<T>(JavaScriptPropertyId id)

@@ -11,7 +11,6 @@ namespace ChakraCore.NET
     public class ChakraRuntime: ServiceConsumerBase,IDisposable
     {
         JavaScriptRuntime runtime;
-        IProxyMapService mapService = new ProxyMapService();
         JSValueConverterService converter= new JSValueConverterService();
         IRuntimeService runtimeService;
         EventWaitHandle SyncHandler;
@@ -23,10 +22,8 @@ namespace ChakraCore.NET
             //inject service
             ServiceNode.PushService(runtimeService);
             ServiceNode.PushService<IJSValueConverterService>(converter);
-            ServiceNode.PushService<IProxyMapService>(mapService);
             ServiceNode.PushService<IJSValueService>(new JSValueService());
             ServiceNode.InjectShareMemoryObjects();
-            ServiceNode.InjectTaskService();
             ServiceNode.InjecTimerService();
         }
 
@@ -104,7 +101,6 @@ namespace ChakraCore.NET
             {
                 if (disposing)
                 {
-                    mapService.Dispose();
                     runtime.Dispose();
                 }
                 disposedValue = true;

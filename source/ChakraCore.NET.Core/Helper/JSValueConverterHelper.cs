@@ -32,14 +32,19 @@ namespace ChakraCore.NET
             
             toJSValueDelegate<T> tojs = (IServiceNode node, T value) =>
             {
-                var mapService = node.GetService<IProxyMapService>();
-                return mapService.Map<T>(value,createBinding);
+                return node.GetService<IContextSwitchService>().With(() =>
+                {
+                    var result= JavaScriptValue.CreateObject();
+                    JSValueBinding binding = new JSValueBinding(node, result);
+                    node.GetService<IGCSyncService>().SyncWithJsValue(value, result);
+                    createBinding?.Invoke(binding, value, node);
+                    return result;
+                });
                 
             };
             fromJSValueDelegate<T> fromjs = (IServiceNode node, JavaScriptValue value) =>
             {
-                var mapService = node.GetService<IProxyMapService>();
-                return mapService.Get<T>(value);
+                throw new NotSupportedException("Convert from jsValue to proxy object is no longer supported");
             };
             service.RegisterConverter<T>(tojs, fromjs);
         }

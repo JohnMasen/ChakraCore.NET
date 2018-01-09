@@ -1,7 +1,8 @@
 ﻿
-using ChakraCore.NET.API;
+
 using System;
 using System.Collections.Generic;
+using ChakraCore.NET.API;
 namespace ChakraCore.NET
 {
 public static partial class JSValueConverterHelper
@@ -32,6 +33,7 @@ public static partial class JSValueConverterHelper
         private static Action fromJSMethod(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action result = () =>
               {
 
@@ -45,6 +47,7 @@ public static partial class JSValueConverterHelper
                       value.CallFunction(caller);
                       
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }
@@ -76,6 +79,7 @@ public static partial class JSValueConverterHelper
         private static Action<T1> fromJSMethod<T1>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<T1> result = (T1 para1) =>
               {
 
@@ -89,6 +93,7 @@ public static partial class JSValueConverterHelper
                       value.CallFunction(caller,p1);
                       p1.Release();
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }
@@ -123,6 +128,7 @@ arguments[2].Release();
         private static Action<T1,T2> fromJSMethod<T1,T2>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<T1,T2> result = (T1 para1,T2 para2) =>
               {
 
@@ -139,6 +145,7 @@ p2.AddRef();
                       p1.Release();
 p2.Release();
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }
@@ -176,6 +183,7 @@ arguments[3].Release();
         private static Action<T1,T2,T3> fromJSMethod<T1,T2,T3>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<T1,T2,T3> result = (T1 para1,T2 para2,T3 para3) =>
               {
 
@@ -195,6 +203,7 @@ p3.AddRef();
 p2.Release();
 p3.Release();
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }
@@ -235,6 +244,7 @@ arguments[4].Release();
         private static Action<T1,T2,T3,T4> fromJSMethod<T1,T2,T3,T4>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<T1,T2,T3,T4> result = (T1 para1,T2 para2,T3 para3,T4 para4) =>
               {
 
@@ -257,6 +267,7 @@ p2.Release();
 p3.Release();
 p4.Release();
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }
@@ -300,6 +311,7 @@ arguments[5].Release();
         private static Action<T1,T2,T3,T4,T5> fromJSMethod<T1,T2,T3,T4,T5>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<T1,T2,T3,T4,T5> result = (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5) =>
               {
 
@@ -325,6 +337,7 @@ p3.Release();
 p4.Release();
 p5.Release();
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }
@@ -371,6 +384,7 @@ arguments[6].Release();
         private static Action<T1,T2,T3,T4,T5,T6> fromJSMethod<T1,T2,T3,T4,T5,T6>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<T1,T2,T3,T4,T5,T6> result = (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6) =>
               {
 
@@ -399,6 +413,7 @@ p4.Release();
 p5.Release();
 p6.Release();
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }
@@ -448,6 +463,7 @@ arguments[7].Release();
         private static Action<T1,T2,T3,T4,T5,T6,T7> fromJSMethod<T1,T2,T3,T4,T5,T6,T7>(IServiceNode node,JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Action<T1,T2,T3,T4,T5,T6,T7> result = (T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7) =>
               {
 
@@ -479,6 +495,7 @@ p5.Release();
 p6.Release();
 p7.Release();
                   });
+				  GC.KeepAlive(stub);//keep referenced javascript value alive
               };
             return result;
         }

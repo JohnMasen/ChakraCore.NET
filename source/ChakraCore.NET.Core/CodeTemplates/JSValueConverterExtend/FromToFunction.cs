@@ -1,7 +1,8 @@
 ﻿
-using ChakraCore.NET.API;
+
 using System;
 using System.Collections.Generic;
+using ChakraCore.NET.API;
 namespace ChakraCore.NET
 {
 public static partial class JSValueConverterHelper
@@ -34,6 +35,7 @@ public static partial class JSValueConverterHelper
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,TResult> result = (bool isConstruct) =>
             {
                 
@@ -51,7 +53,8 @@ public static partial class JSValueConverterHelper
                         resultValue= jsValueService.CallFunction(value,callContext.Caller);
                     }
                 
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };
@@ -87,6 +90,7 @@ public static partial class JSValueConverterHelper
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,T1,TResult> result = (bool isConstruct,T1 para1) =>
             {
                 JavaScriptValue p1 = converter.ToJSValue<T1>(para1);
@@ -104,7 +108,8 @@ public static partial class JSValueConverterHelper
                         resultValue= jsValueService.CallFunction(value,callContext.Caller,p1);
                     }
                 p1.Release();
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };
@@ -143,6 +148,7 @@ arguments[2].Release();
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,T1,T2,TResult> result = (bool isConstruct,T1 para1,T2 para2) =>
             {
                 JavaScriptValue p1 = converter.ToJSValue<T1>(para1);
@@ -163,7 +169,8 @@ p2.AddRef();
                     }
                 p1.Release();
 p2.Release();
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };
@@ -205,6 +212,7 @@ arguments[3].Release();
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,T1,T2,T3,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3) =>
             {
                 JavaScriptValue p1 = converter.ToJSValue<T1>(para1);
@@ -228,7 +236,8 @@ p3.AddRef();
                 p1.Release();
 p2.Release();
 p3.Release();
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };
@@ -273,6 +282,7 @@ arguments[4].Release();
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,T1,T2,T3,T4,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4) =>
             {
                 JavaScriptValue p1 = converter.ToJSValue<T1>(para1);
@@ -299,7 +309,8 @@ p4.AddRef();
 p2.Release();
 p3.Release();
 p4.Release();
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };
@@ -347,6 +358,7 @@ arguments[5].Release();
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,T1,T2,T3,T4,T5,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5) =>
             {
                 JavaScriptValue p1 = converter.ToJSValue<T1>(para1);
@@ -376,7 +388,8 @@ p2.Release();
 p3.Release();
 p4.Release();
 p5.Release();
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };
@@ -427,6 +440,7 @@ arguments[6].Release();
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,T1,T2,T3,T4,T5,T6,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6) =>
             {
                 JavaScriptValue p1 = converter.ToJSValue<T1>(para1);
@@ -459,7 +473,8 @@ p3.Release();
 p4.Release();
 p5.Release();
 p6.Release();
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };
@@ -513,6 +528,7 @@ arguments[7].Release();
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             var callContext = node.GetService<ICallContextService>();
+			IDisposable stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
             Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> result = (bool isConstruct,T1 para1,T2 para2,T3 para3,T4 para4,T5 para5,T6 para6,T7 para7) =>
             {
                 JavaScriptValue p1 = converter.ToJSValue<T1>(para1);
@@ -548,7 +564,8 @@ p4.Release();
 p5.Release();
 p6.Release();
 p7.Release();
-                    return resultValue;
+                    GC.KeepAlive(stub);//keep referenced javascript value alive
+					return resultValue;
                 });
                 return converter.FromJSValue<TResult>(r);
             };

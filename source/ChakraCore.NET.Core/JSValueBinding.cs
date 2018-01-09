@@ -14,7 +14,6 @@ namespace ChakraCore.NET
         public JSValueBinding(IServiceNode parentNode, JavaScriptValue value) : base(parentNode, "JSValueBinding")
         {
             jsValue = value;
-            ServiceNode.PushService<INativeFunctionHolderService>(new NativeFunctionHolderService(false));
         }
 
 

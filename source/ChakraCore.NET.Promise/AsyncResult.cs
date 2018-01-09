@@ -18,7 +18,8 @@ namespace ChakraCore.NET.Promise
 
         public object AsyncState => throw new NotImplementedException();
 
-        public JavaScriptValue Error { get; private set; }
+        public string Error { get; private set; }
+        public bool HasError { get; private set; } = false;
 
         protected void Release()
         {
@@ -26,9 +27,10 @@ namespace ChakraCore.NET.Promise
             mre.Set();
         }
 
-        public void SetError(JavaScriptValue error)
+        public void SetError(string error)
         {
             Error = error;
+            HasError = true;
             Release();
         }
     }

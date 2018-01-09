@@ -80,8 +80,9 @@ namespace ChakraCore.NET
         {
             return contextSwitch.With<JavaScriptValue>(() =>
             {
-                var f = serviceNode.GetService<INativeFunctionHolderService>().HoldFunction(function);
-                return JavaScriptValue.CreateFunction(function, callbackData);
+                var result= JavaScriptValue.CreateFunction(function, callbackData);
+                serviceNode.GetService<IGCSyncService>().SyncWithJsValue(function,result);//keep delegate alive until related javascript value is released
+                return result;
             });
 
         }

@@ -52,7 +52,7 @@ namespace ChakraCore.NET
             isDebug = enableDebug;
             contextSwitch = new ContextSwitchService(jsContext, syncHandle);
             ServiceNode.PushService<IContextSwitchService>(contextSwitch);
-
+            ServiceNode.PushService<IGCSyncService>(new GCSyncService());
             Enter();
                 promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
                 {

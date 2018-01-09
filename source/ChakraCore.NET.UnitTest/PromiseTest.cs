@@ -34,7 +34,8 @@ namespace ChakraCore.NET.UnitTest
         public void PromiseCallFromJS()
         {
             context.GlobalObject.CallMethod("CallAsync");
-            while (true)
+            var n = DateTime.Now;
+            while ((DateTime.Now -n).Seconds<5)
             {
                 bool isHold = context.GlobalObject.ReadProperty<bool>("hold");
                 if (!isHold)
@@ -43,7 +44,9 @@ namespace ChakraCore.NET.UnitTest
                     Assert.AreEqual(1, result);
                     return;
                 }
+                Task.Delay(500).Wait();
             }
+            throw new TimeoutException("wait for promise callback timedout");
         }
     }
 }
