@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET", "ChakraCore.NET\ChakraCore.NET.csproj", "{0F1318AA-A49F-4829-A072-6863BF3A63C4}"
 EndProject
@@ -14,6 +14,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET.Promise", "ChakraCore.NET.Promise\ChakraCore.NET.Promise.csproj", "{A57605B7-5C8D-4854-9E30-A1C5409EDDE8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET.Timer", "ChakraCore.NET.Timer\ChakraCore.NET.Timer.csproj", "{EE80A64B-6B02-45C7-B700-CC8B3DD3A345}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{D6A837FB-16B8-4DF3-953F-8CD0B14C9197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunScript", "RunScript\RunScript.csproj", "{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,9 +127,28 @@ Global
 		{EE80A64B-6B02-45C7-B700-CC8B3DD3A345}.Release|x64.Build.0 = Release|Any CPU
 		{EE80A64B-6B02-45C7-B700-CC8B3DD3A345}.Release|x86.ActiveCfg = Release|Any CPU
 		{EE80A64B-6B02-45C7-B700-CC8B3DD3A345}.Release|x86.Build.0 = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|ARM.Build.0 = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|x64.Build.0 = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Debug|x86.Build.0 = Debug|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|ARM.Build.0 = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|x64.ActiveCfg = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|x64.Build.0 = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|x86.ActiveCfg = Release|Any CPU
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1} = {D6A837FB-16B8-4DF3-953F-8CD0B14C9197}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9866644-699C-4DCC-B947-E172EA716659}

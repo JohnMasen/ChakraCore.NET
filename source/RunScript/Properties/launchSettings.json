@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "RunScript": {
+      "commandName": "Project"
+    },
+    "TestConfig": {
+      "commandName": "Project",
+      "commandLineArgs": "/file:Scripts\\HelloworldModule\\hello.js /module"
+    }
+  }
+}
