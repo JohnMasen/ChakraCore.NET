@@ -40,5 +40,6 @@ namespace RunScript
             var installer = container.GetInstance<PluginInstaller>();
             installer.Install(context);
         }
+        
     }
 }

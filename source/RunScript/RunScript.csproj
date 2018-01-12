@@ -15,10 +15,48 @@
 
   <ItemGroup>
     <Folder Include="Plugins\EchoProvider\" />
+    <Folder Include="Plugins\ImageSharpProvider\" />
+    <Folder Include="Plugins\TestProvider\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\EchoProvider\bin\Debug\netcoreapp2.0\EchoProvider.dll" Link="Plugins\EchoProvider\EchoProvider.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ImageSharpProvider\bin\Debug\netstandard2.0\ImageSharpProvider.dll" Link="Plugins\ImageSharpProvider\ImageSharpProvider.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestProvider1\bin\Debug\netstandard1.4\TestLibrary1.dll" Link="Plugins\TestProvider\TestLibrary1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestProvider1\bin\Debug\netstandard1.4\TestProvider1.dll" Link="Plugins\TestProvider\TestProvider1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Plugins\ImageSharpProvider\SixLabors.Core.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\ImageSharpProvider\SixLabors.Fonts.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\ImageSharpProvider\SixLabors.ImageSharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\ImageSharpProvider\SixLabors.ImageSharp.Drawing.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\ImageSharpProvider\SixLabors.Shapes.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\ImageSharpProvider\SixLabors.Shapes.Text.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\ImageSharpProvider\System.Memory.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\ImageSharpProvider\System.Runtime.CompilerServices.Unsafe.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
