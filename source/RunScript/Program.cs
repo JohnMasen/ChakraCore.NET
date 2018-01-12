@@ -29,13 +29,13 @@ namespace RunScript
                     Console.Read();
                     return;
                 }
-
                 var context = prepareContext();
                 if (!string.IsNullOrEmpty(config.PluginRootFolder))
                 {
                     PluginInstaller.InstallPlugins(config.PluginRootFolder, context);
                 }
                 string script = System.IO.File.ReadAllText(config.File);
+                Console.WriteLine("---Script Start---");
                 if (config.IsModule)
                 {
                     var jsClass = context.ProjectModuleClass(config.FileName, config.ModuleClass, config.RootFolder);
