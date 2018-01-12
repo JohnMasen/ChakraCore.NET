@@ -10,7 +10,7 @@ namespace RunScript
     class ScriptConfig
     {
         private string filePath;
-        [ConfigKey("Module")]
+        [ConfigKey("Module",true)]
         public bool IsModule { get; set; }
         [ConfigKey("File")]
         public string File
@@ -72,6 +72,10 @@ namespace RunScript
                 ConfigKeyAttribute configKey = item.GetCustomAttributes(typeof(ConfigKeyAttribute), false).FirstOrDefault() as ConfigKeyAttribute;
                 if (string.Compare(configKey?.Key, propertyKey, true) == 0)
                 {
+                    if (configKey.IsBoolean && value.GetType()!=typeof(Boolean))
+                    {
+                        throw new ArgumentException($"{propertyKey} switch cannot assign value");
+                    }
                     item.SetValue(target, value);
                     return;
                 }

@@ -5,7 +5,7 @@
     },
     "TestConfig": {
       "commandName": "Project",
-      "commandLineArgs": "/file:Scripts\\HelloworldModule\\hello.js /module"
+      "commandLineArgs": "/file:Scripts\\HelloworldModule\\hello.js /module /PluginFolder:Plugins"
     }
   }
 }

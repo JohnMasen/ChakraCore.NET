@@ -6,7 +6,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Plugins\EchoProvider\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\EchoProvider\bin\Debug\netcoreapp2.0\EchoProvider.dll" Link="Plugins\EchoProvider\EchoProvider.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
