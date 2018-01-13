@@ -22,7 +22,7 @@ namespace ChakraCore.NET.Plugin
             }
         }
         public List<IPluginLoader> Loaders { get; private set; } 
-        public void Init(ChakraContext context)
+        public void Init()
         {
             context.GlobalObject.Binding.SetFunction<string, JavaScriptValue>("RequireNative", installPlugin);
             var jsvalue=context.ServiceNode.GetService<IJSValueService>().CreateObject();

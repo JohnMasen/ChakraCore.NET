@@ -32,14 +32,10 @@ namespace RunScript
                 var context = prepareContext();
                 if (!string.IsNullOrEmpty(config.RootFolder))
                 {
-                    FileSystemLoader loader = new FileSystemLoader(Path.Combine(@"D:\MyGitHub\My Repro\ChakraCore.NET\source\RunScript\bin\Debug\netcoreapp2.0", config.PluginRootFolder));
-                    PluginManager manager = new PluginManager(context);
-                    manager.Loaders.Add(loader);
-                    manager.Init(context);
-                    //PluginInstaller.InstallPlugins(config.PluginRootFolder, context);
-                    //PluginInstaller installer = new PluginInstaller(Path.Combine(@"D:\MyGitHub\My Repro\ChakraCore.NET\source\RunScript\bin\Debug\netcoreapp2.0", config.PluginRootFolder),context);
-                    //installer.RequireNative("ImageSharpProvider");
-                    
+                    string root=Path.Combine(@"D:\MyGitHub\My Repro\ChakraCore.NET\source\RunScript\bin\Debug\netcoreapp2.0", config.PluginRootFolder);
+                    context
+                        .EnablePluginManager()
+                        .SetPluginRootFolder(root);
                 }
                 string script = System.IO.File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");

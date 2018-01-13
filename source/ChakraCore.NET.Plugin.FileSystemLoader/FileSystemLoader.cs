@@ -18,7 +18,7 @@ namespace ChakraCore.NET.Plugin
         private Assembly Default_Resolving(AssemblyLoadContext arg1, AssemblyName arg2)
         {
             string fileName = Path.Combine(currentPluginFolder, $"{arg2.Name}.dll");
-            return Assembly.LoadFile(fileName);
+            return arg1.LoadFromAssemblyPath(fileName);
         }
 
         public INativePlugin Load(string name)
