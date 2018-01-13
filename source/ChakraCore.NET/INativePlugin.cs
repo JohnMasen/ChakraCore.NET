@@ -13,6 +13,6 @@ namespace ChakraCore.NET
         /// install the user function to javascript context
         /// </summary>
         /// <param name="context">target context</param>
-        void Install(ChakraContext context);
+        void Install(JSValue stub);
     }
 }

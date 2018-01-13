@@ -1,7 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using ChakraCore.NET;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace RunScript
 {
@@ -30,9 +30,11 @@ namespace RunScript
                     return;
                 }
                 var context = prepareContext();
-                if (!string.IsNullOrEmpty(config.PluginRootFolder))
+                if (!string.IsNullOrEmpty(config.RootFolder))
                 {
-                    PluginInstaller.InstallPlugins(config.PluginRootFolder, context);
+                    //PluginInstaller.InstallPlugins(config.PluginRootFolder, context);
+                    PluginInstaller installer = new PluginInstaller(Path.Combine(@"D:\MyGitHub\My Repro\ChakraCore.NET\source\RunScript\bin\Debug\netcoreapp2.0", config.PluginRootFolder),context);
+                    //installer.RequireNative("ImageSharpProvider");
                 }
                 string script = System.IO.File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");
@@ -56,7 +58,6 @@ namespace RunScript
         {
             ChakraRuntime runtime = ChakraRuntime.Create();
             ChakraContext result = runtime.CreateContext(false);
-            //result.GlobalObject.Binding.SetMethod<string>("echo", s => { Console.WriteLine(s); });
             return result;
         }
 

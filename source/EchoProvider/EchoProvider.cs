@@ -5,9 +5,9 @@ namespace EchoProvider
 {
     public class EchoProvider : INativePlugin
     {
-        public void Install(ChakraContext context)
+        public void Install(JSValue stub)
         {
-            context.GlobalObject.Binding.SetMethod<string>("echo",s=>Console.WriteLine(s));
+            stub.Binding.SetMethod<string>("echo",s=>Console.WriteLine(s));
         }
     }
 }

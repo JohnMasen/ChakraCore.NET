@@ -6,17 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="1.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Plugins\EchoProvider\" />
     <Folder Include="Plugins\ImageSharpProvider\" />
-    <Folder Include="Plugins\TestProvider\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,12 +19,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\ImageSharpProvider\bin\Debug\netstandard2.0\ImageSharpProvider.dll" Link="Plugins\ImageSharpProvider\ImageSharpProvider.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestProvider1\bin\Debug\netstandard1.4\TestLibrary1.dll" Link="Plugins\TestProvider\TestLibrary1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestProvider1\bin\Debug\netstandard1.4\TestProvider1.dll" Link="Plugins\TestProvider\TestProvider1.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

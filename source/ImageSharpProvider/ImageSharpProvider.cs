@@ -6,7 +6,7 @@ namespace ImageSharpProvider
 {
     public class ImageSharpProvider : INativePlugin
     {
-        public void Install(ChakraContext context)
+        public void Install(JSValue context)
         {
             Image<Argb32> image = new Image<Argb32>(100,100);
         }

@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 
 namespace RunScript
 {
@@ -39,9 +40,7 @@ namespace RunScript
         [ConfigKey("RootFolder")]
         public string RootFolder { get; set; }
         [ConfigKey("PluginFolder")]
-        public string PluginRootFolder { get; set; } = string.Empty;
-        [ConfigKey("PluginConfig")]
-        public string PluginConfig { get; set; }
+        public string PluginRootFolder { get; set; } = new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName+"\\Plugins";
         public static ScriptConfig Parse(string[] args)
         {
             ScriptConfig result = new ScriptConfig();
