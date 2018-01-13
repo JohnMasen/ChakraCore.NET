@@ -1,4 +1,5 @@
 ﻿using ChakraCore.NET;
+using ChakraCore.NET.Plugin;
 using System;
 
 namespace EchoProvider

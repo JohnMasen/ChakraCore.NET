@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ChakraCore.NET.Plugin.FileSystemLoader\ChakraCore.NET.Plugin.FileSystemLoader.csproj" />
+    <ProjectReference Include="..\ChakraCore.NET.Plugin\ChakraCore.NET.Plugin.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 

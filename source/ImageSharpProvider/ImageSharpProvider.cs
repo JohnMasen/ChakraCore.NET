@@ -1,5 +1,6 @@
 ﻿using System;
 using ChakraCore.NET;
+using ChakraCore.NET.Plugin;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 namespace ImageSharpProvider

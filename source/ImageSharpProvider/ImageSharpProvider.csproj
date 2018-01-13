@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
+    <ProjectReference Include="..\ChakraCore.NET.Plugin\ChakraCore.NET.Plugin.csproj" />
   </ItemGroup>
 
 </Project>
