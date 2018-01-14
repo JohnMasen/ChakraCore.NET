@@ -3,7 +3,7 @@
     "RunScript": {
       "commandName": "Project"
     },
-    "TestConfig": {
+    "HelloWorldModule": {
       "commandName": "Project",
       "commandLineArgs": "/file:Scripts\\HelloworldModule\\hello.js /module "
     }
