@@ -14,6 +14,7 @@ namespace RunScript
                 {
                     value.WriteProperty<string>("CommandArguments", obj.CommandArguments);
                     value.WriteProperty("Is64BitProcess", obj.Is64BitProcess);
+                    value.WriteProperty("CurrentPath", obj.CurrentPath);
                 },
                 (value) =>
                 {
@@ -28,15 +29,12 @@ namespace RunScript
     {
         public string CommandArguments;
         public bool Is64BitProcess;
-        //private SysInfoPlugin(string args,bool is64)
-        //{
-        //    CommandArguments = args;
-        //    Is64BitProcess = is64;
-        //}
+        public string CurrentPath;
         public static SysInfoPlugin Default = new SysInfoPlugin()
         {
             CommandArguments = string.Join(" ", Environment.GetCommandLineArgs()),
-            Is64BitProcess = Environment.Is64BitProcess
+            Is64BitProcess = Environment.Is64BitProcess,
+            CurrentPath=Environment.CurrentDirectory
         };
     }
 

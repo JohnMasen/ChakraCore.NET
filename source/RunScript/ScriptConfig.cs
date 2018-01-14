@@ -11,7 +11,7 @@ namespace RunScript
     class ScriptConfig
     {
         private string filePath;
-        [ConfigKey("Module",true)]
+        [ConfigKey("Module",true)][ConfigKey("M",true)]
         public bool IsModule { get; set; }
         [ConfigKey("File")]
         public string File
@@ -37,10 +37,8 @@ namespace RunScript
         public string ModuleClass { get; set; } = "app";
         [ConfigKey("EntryPoint")]
         public string ModuleEntryPoint { get; set; } = "main";
-        [ConfigKey("RootFolder")]
         public string RootFolder { get; set; }
-        [ConfigKey("PluginFolder")]
-        public string PluginRootFolder { get; set; } = new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName+"\\Plugins";
+        public string PluginRootFolder { get; set; } = new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName + "\\Plugins";
         public static ScriptConfig Parse(string[] args)
         {
             ScriptConfig result = new ScriptConfig();
@@ -50,7 +48,15 @@ namespace RunScript
                 switch (values.Length)
                 {
                     case 1:
-                        setConfigValueByKey(result, values[0], true);
+                        if (values[0].StartsWith('/'))
+                        {
+                            setConfigValueByKey(result, values[0], true);
+                        }
+                        else
+                        {
+                            result.File = values[0];
+                        }
+                        
                         break;
                     case 2:
                         setConfigValueByKey(result, values[0], values[1]);
@@ -68,15 +74,17 @@ namespace RunScript
             var properties = target.GetType().GetProperties();
             foreach (var item in properties)
             {
-                ConfigKeyAttribute configKey = item.GetCustomAttributes(typeof(ConfigKeyAttribute), false).FirstOrDefault() as ConfigKeyAttribute;
-                if (string.Compare(configKey?.Key, propertyKey, true) == 0)
+                foreach (ConfigKeyAttribute configKey in item.GetCustomAttributes(typeof(ConfigKeyAttribute), false))
                 {
-                    if (configKey.IsBoolean && value.GetType()!=typeof(Boolean))
+                    if (string.Compare(configKey?.Key, propertyKey, true) == 0)
                     {
-                        throw new ArgumentException($"{propertyKey} switch cannot assign value");
+                        if (configKey.IsBoolean && value.GetType() != typeof(Boolean))
+                        {
+                            throw new ArgumentException($"{propertyKey} switch cannot assign value");
+                        }
+                        item.SetValue(target, value);
+                        return;
                     }
-                    item.SetValue(target, value);
-                    return;
                 }
             }
         }

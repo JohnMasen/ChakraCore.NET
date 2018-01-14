@@ -4,6 +4,7 @@ using System.Text;
 
 namespace RunScript
 {
+    [AttributeUsage(AttributeTargets.Property,AllowMultiple = true)]
     class ConfigKeyAttribute:Attribute
     {
         public string Key { get; private set; }

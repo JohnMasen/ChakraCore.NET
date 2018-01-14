@@ -5,7 +5,7 @@
     },
     "HelloWorldModule": {
       "commandName": "Project",
-      "commandLineArgs": "/file:Scripts\\HelloworldModule\\hello.js /module "
+      "commandLineArgs": "Scripts\\HelloworldModule\\hello.js /m"
     }
   }
 }

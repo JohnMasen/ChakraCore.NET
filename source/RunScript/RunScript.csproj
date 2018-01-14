@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Scripts\HelloworldModule\Plugins\**" />
+    <EmbeddedResource Remove="Scripts\HelloworldModule\Plugins\**" />
+    <None Remove="Scripts\HelloworldModule\Plugins\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ChakraCore.NET.Plugin.FileSystemLoader\ChakraCore.NET.Plugin.FileSystemLoader.csproj" />
     <ProjectReference Include="..\ChakraCore.NET.Plugin\ChakraCore.NET.Plugin.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
@@ -48,6 +54,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Plugins\ImageSharpProvider\System.Runtime.CompilerServices.Unsafe.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\HelloworldModule\echo.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\HelloworldModule\hello.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\HelloworldModule\info.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\HelloworldModule\world.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\Helloworld\hello.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
