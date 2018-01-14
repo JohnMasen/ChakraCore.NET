@@ -21,7 +21,7 @@ namespace ChakraCore.NET.Plugin
             return arg1.LoadFromAssemblyPath(fileName);
         }
 
-        public INativePlugin Load(string name)
+        public INativePluginInstaller Load(string name)
         {
             currentPluginFolder = Path.Combine(PluginRootFolder, name);
             if (!Directory.Exists(currentPluginFolder))
@@ -31,7 +31,7 @@ namespace ChakraCore.NET.Plugin
             string dllName = Path.Combine(currentPluginFolder, $"{name}.dll");
             var dll=Assembly.LoadFile(dllName);
             string typeName = $"{name}.{name}";
-            var result= dll.CreateInstance(typeName) as INativePlugin;
+            var result= dll.CreateInstance(typeName) as INativePluginInstaller;
             return result;
         }
 

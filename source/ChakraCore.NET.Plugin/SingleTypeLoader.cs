@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChakraCore.NET.Plugin
 {
-    public class SingleTypeLoader<T> : IPluginLoader where T:INativePlugin,new()
+    public class SingleTypeLoader<T> : IPluginLoader where T:INativePluginInstaller,new()
     {
         public string Name { get; private set; }
         public SingleTypeLoader(string name)
@@ -12,7 +12,7 @@ namespace ChakraCore.NET.Plugin
             Name = name;
         }
         private T instance;
-        public INativePlugin Load(string name)
+        public INativePluginInstaller Load(string name)
         {
             if (name!=Name)
             {

@@ -5,7 +5,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 namespace ImageSharpProvider
 {
-    public class ImageSharpProvider : INativePlugin
+    public class ImageSharpProvider : INativePluginInstaller
     {
         public void Install(JSValue context)
         {

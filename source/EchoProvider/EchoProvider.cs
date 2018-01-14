@@ -4,7 +4,7 @@ using System;
 
 namespace EchoProvider
 {
-    public class EchoProvider : INativePlugin
+    public class EchoProvider : INativePluginInstaller
     {
         public void Install(JSValue stub)
         {

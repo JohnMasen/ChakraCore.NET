@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChakraCore.NET.Plugin
 {
-    public interface INativePlugin
+    public interface INativePluginInstaller
     {
         void Install(JSValue stub);
     }

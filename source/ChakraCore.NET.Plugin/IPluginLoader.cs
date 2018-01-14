@@ -6,6 +6,6 @@ namespace ChakraCore.NET.Plugin
 {
     public interface IPluginLoader
     {
-        INativePlugin Load(string name);
+        INativePluginInstaller Load(string name);
     }
 }

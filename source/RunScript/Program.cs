@@ -35,6 +35,7 @@ namespace RunScript
                     string root=Path.Combine(@"D:\MyGitHub\My Repro\ChakraCore.NET\source\RunScript\bin\Debug\netcoreapp2.0", config.PluginRootFolder);
                     context
                         .EnablePluginManager()
+                        .AddPlugin<SysInfoPluginInstaller>("SysInfo")
                         .SetPluginRootFolder(root);
                 }
                 string script = System.IO.File.ReadAllText(config.File);

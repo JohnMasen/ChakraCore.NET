@@ -12,7 +12,7 @@ namespace ChakraCore.NET.Plugin
             result.Init();
             return result;
         }
-        public static PluginManager AddPlugin<T>(this PluginManager manager,string name) where T:INativePlugin,new()
+        public static PluginManager AddPlugin<T>(this PluginManager manager,string name) where T:INativePluginInstaller,new()
         {
             manager.Loaders.Add(new SingleTypeLoader<T>(name));
             return manager;
