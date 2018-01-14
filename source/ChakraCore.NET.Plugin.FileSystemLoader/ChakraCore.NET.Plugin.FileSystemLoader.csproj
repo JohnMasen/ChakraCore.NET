@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Authors>QianFan Jiang (John Masen)</Authors>
+    <Company>QianFan Jiang (John Masen)</Company>
+    <Product>ChakraCore.NET</Product>
+    <Description>File system plugin loader</Description>
+    <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
+    <PackageTags>chakracore,netcore</PackageTags>
+    <PackageReleaseNotes>Initial release, see Tools\RunScript at project url for quick start</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
