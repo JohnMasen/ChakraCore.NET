@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using ChakraCore.NET.API;
 
@@ -7,8 +8,6 @@ namespace ChakraCore.NET
 {
     public class GCSyncService : ServiceBase, IGCSyncService
     {
-        private Dictionary<long, object> objectPool = new Dictionary<long, object>();
-        private long id = 0;
         private JavaScriptObjectBeforeCollectCallback callback;
         public GCSyncService()
         {
@@ -73,29 +72,22 @@ namespace ChakraCore.NET
             return new JsValueHolder(contextSwitch, jsValue);
         }
 
-        public void SyncWithJsValue(object obj, JavaScriptValue jsValue)
+        public GCHandle SyncWithJsValue(object obj, JavaScriptValue jsValue)
         {
+            GCHandle handle = GCHandle.Alloc(obj);
+            IntPtr p = GCHandle.ToIntPtr(handle);
             contextSwitch.With(() =>
             {
-                var currentID = id++;
-                JavaScriptContext.SetObjectBeforeCollectCallback(jsValue, new IntPtr(currentID), callback);
-                objectPool.Add(currentID, obj);
+                JavaScriptContext.SetObjectBeforeCollectCallback(jsValue, p, callback);
+                
             });
+            return handle;
         }
 
         private  void JsValueCollectCallback(JavaScriptValue reference, IntPtr callbackState)
         {
-            long objID = callbackState.ToInt64();
-            if (objectPool.ContainsKey(objID))
-            {
-                objectPool.Remove(objID);
-                return;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Failed to release managed object, invalid object id");
-            }
-
+            GCHandle handle = GCHandle.FromIntPtr(callbackState);
+            handle.Free();
         }
     }
 }

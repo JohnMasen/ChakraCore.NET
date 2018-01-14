@@ -1,6 +1,7 @@
 ﻿using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace ChakraCore.NET
@@ -12,7 +13,7 @@ namespace ChakraCore.NET
         /// </summary>
         /// <param name="obj">managed object to hold</param>
         /// <param name="jsValue">javascript value to monitor</param>
-        void SyncWithJsValue(object obj, JavaScriptValue jsValue);
+        GCHandle SyncWithJsValue(object obj, JavaScriptValue jsValue);
 
         /// <summary>
         /// Create an disposable object which references to a specified javascript value
