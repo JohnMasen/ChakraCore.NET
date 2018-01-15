@@ -40,13 +40,12 @@ namespace ChakraCore.NET.UnitTest
 
 
         [TestMethod]
-        public void ModulePromise()
+        public async Task ModulePromiseAsync()
         {
             context.ServiceNode.GetService<IJSValueConverterService>().RegisterTask<int>();
             var c=projectModuleClass("ModulePromise", "test");
-            var tt = c.ReadProperty<Task<int>>("test1");
-            tt.Wait(5000);
-            Assert.AreEqual(2, tt.Result);
+            var tt = await c.CallFunction<int, Task<int>>("test1",1);
+            Assert.AreEqual(2, tt);
         }
     }
 }

@@ -137,9 +137,9 @@ namespace ChakraCore.NET
                 );
         }
 
-        private static IAsyncResult BeginMethod(JavaScriptValue func, IServiceNode node, AsyncCallback callback, object state)
+        private static IAsyncResult BeginMethod(JavaScriptValue promiseObject, IServiceNode node, AsyncCallback callback, object state)
         {
-            var conveter = node.GetService<IJSValueConverterService>();
+            var converter = node.GetService<IJSValueConverterService>();
             var result = new AsyncResult();
             Action fullfilledCallback = () =>
             {
@@ -151,17 +151,15 @@ namespace ChakraCore.NET
                 callback(result);
             };
 
-            Func<JSValue> promiseCall = conveter.FromJSValue<Func<JSValue>>(func);// the target function which returns a promise object
-            JSValue promiseObject = promiseCall();
-            //call the function,get the Promise object
-            promiseObject.CallMethod("then", fullfilledCallback, rejectedCallback);
+            var pObj = converter.FromJSValue<JSValue>(promiseObject);
+            pObj.CallMethod("then", fullfilledCallback, rejectedCallback);
             System.Diagnostics.Debug.WriteLine("[Then] called");
             return result;
         }
 
-        private static IAsyncResult BeginMethod<T>(JavaScriptValue func, IServiceNode node, AsyncCallback callback, object state)
+        private static IAsyncResult BeginMethod<T>(JavaScriptValue promiseObject, IServiceNode node, AsyncCallback callback, object state)
         {
-            var conveter = node.GetService<IJSValueConverterService>();
+            var converter = node.GetService<IJSValueConverterService>();
             var result = new AsyncResult<T>();
             Action<T> fullfilledCallback = (x) =>
             {
@@ -174,9 +172,8 @@ namespace ChakraCore.NET
                 callback(result);
             };
 
-            Func<JSValue> promiseCall = conveter.FromJSValue<Func<JSValue>>(func);// the target function which returns a promise object
-            JSValue promiseObject = promiseCall();//call the function,get the Promise object
-            promiseObject.CallMethod("then", fullfilledCallback, rejectedCallback);
+            var pObj = converter.FromJSValue<JSValue>(promiseObject);
+            pObj.CallMethod("then", fullfilledCallback, rejectedCallback);
             System.Diagnostics.Debug.WriteLine("[Then] called");
             return result;
         }
