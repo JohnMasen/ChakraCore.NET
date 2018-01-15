@@ -22,8 +22,7 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public async Task CallPromiseTest()
         {
-            //Task<int> t = context.GlobalObject.ReadProperty<Task<int>>("SimplePromise");
-            int result = await context.GlobalObject.CallFunction<Task<int>>("SimplePromise");
+            int result = await context.GlobalObject.CallFunctionAsync<int>("SimplePromise");
             Assert.AreEqual(1, result);
         }
 

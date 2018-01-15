@@ -1,0 +1,21 @@
+﻿<#@ include file="..\Template_Header.t4" #>
+<#= Header("public static class JSValueAsyncExtend") #>
+<#
+    for (int i = startFrom; i <= totalItems; i++)
+    {
+      #>
+        public static Task CallMethodAsync<#=genCode(i,"T{1}",false,",")#>(this JSValue value, string name <#=genCode(i,",T{1} para{1}",false,"","{0}")#>)
+        {
+            return value.CallFunction<<#=genCode(i,"T{1}",false,",","{0},")#>Task>(name<#=genCode(i,",para{1}",false,"","{0}")#>);
+        }
+
+        public static Task<TResult> CallFunctionAsync<#=genCode(i,"T{1}",true)#>(this JSValue value,string name <#=genCode(i,",T{1} para{1}",false,"","{0}")#>)
+        {
+            return value.CallFunction<<#=genCode(i,"T{1}",false,",","{0},")#>Task<TResult>>(name<#=genCode(i,",para{1}",false,"","{0}")#>);
+        }
+
+
+
+<#    }#>
+
+<#@ include file="..\Template_Footer.t4"#>

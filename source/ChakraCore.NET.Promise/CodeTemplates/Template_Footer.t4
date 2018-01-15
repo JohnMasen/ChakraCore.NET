@@ -1,0 +1,42 @@
+﻿    }
+}
+<#+
+    string header=""+Environment.NewLine+
+"using System;"+Environment.NewLine+
+"using System.Collections.Generic;"+Environment.NewLine+
+"using ChakraCore.NET.API;"+Environment.NewLine+
+"using System.Threading.Tasks;"+Environment.NewLine+
+"namespace ChakraCore.NET"+Environment.NewLine+
+"{"+Environment.NewLine+
+"{0}"+Environment.NewLine+
+"{";
+private string genCode(int currentIndex,string pattern,bool genTResult=false,string joinWith=",",string outputPattern="<{0}>")
+{
+    StringBuilder sb=new StringBuilder();
+    if (currentIndex==0 && !genTResult)
+    {
+        return "";
+    }
+    for (int i = 0; i < currentIndex; i++)
+    {
+
+        sb.AppendFormat(pattern,i,i+1); 
+
+        sb.Append(joinWith);
+    }
+    if (genTResult)
+    {
+        sb.Append("TResult");
+        sb.Append(joinWith);
+    }
+    if (sb.Length>1)
+    {
+        sb.Length-=joinWith.Length;
+    }
+    return string.Format(outputPattern,sb.ToString()) ;
+}
+private string Header(string name)
+    {
+        return header.Replace("{0}",name);
+    }
+#>

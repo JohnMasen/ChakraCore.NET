@@ -19,4 +19,23 @@ this package contains dotnet Task &lt;-&gt; JS Promise convertion part</Descript
     <ProjectReference Include="..\ChakraCore.NET.Core\ChakraCore.NET.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CodeTemplates\JSValueAsyncExtend\CallMethodAndFunctionAsync.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CallMethodAndFunctionAsync.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CodeTemplates\JSValueAsyncExtend\CallMethodAndFunctionAsync.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CallMethodAndFunctionAsync.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
 </Project>
