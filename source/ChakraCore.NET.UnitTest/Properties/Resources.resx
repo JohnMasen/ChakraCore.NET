@@ -157,4 +157,7 @@
   <data name="NestedImport1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\script\es6module\nestedimport1.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="ModulePromise" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\script\es6module\modulepromise.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

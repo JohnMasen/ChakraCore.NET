@@ -96,7 +96,17 @@ namespace ChakraCore.NET
             {
                 if (jsvalue.IsValid)
                 {
-                    throw new InvalidOperationException($"Module load failed. message={jsvalue.ToString()}");
+                    if (jsvalue.ValueType==JavaScriptValueType.Error)
+                    {
+                        var valueService = CurrentNode.GetService<IJSValueService>();
+                        var d=valueService.ReadProperty<string>(jsvalue, "description");
+                        throw new InvalidOperationException($"Module load failed. message={d}");
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Module load failed.");
+                    }
+                    
                 }
                 return JavaScriptErrorCode.NoError;
             };

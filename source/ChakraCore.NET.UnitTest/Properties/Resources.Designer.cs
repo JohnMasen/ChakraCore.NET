@@ -153,7 +153,22 @@ namespace ChakraCore.NET.UnitTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to import foo  from &apos;NestedImport1&apos;;
+        ///   Looks up a localized string similar to export class test {
+        ///    test1(a) {
+        ///        return new Promise((resolve, reject) =&gt; {
+        ///            resolve(a + a);
+        ///        });
+        ///    }
+        ///}.
+        /// </summary>
+        internal static string ModulePromise {
+            get {
+                return ResourceManager.GetString("ModulePromise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to import { foo }  from &apos;NestedImport1&apos;;
         ///export class Test {
         ///    Test1(v) {
         ///        return foo(v);
