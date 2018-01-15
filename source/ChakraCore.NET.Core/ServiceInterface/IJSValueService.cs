@@ -133,5 +133,12 @@ namespace ChakraCore.NET
         /// <param name="size">array size</param>
         /// <returns>a javascript array</returns>
         JavaScriptValue CreateArray(uint size);
+
+
+        /// <summary>
+        /// Throw an exception if the specified value is an javascript error object
+        /// </summary>
+        /// <param name="value">javascript error object</param>
+        void ThrowIfErrorValue(JavaScriptValue value);
     }
 }

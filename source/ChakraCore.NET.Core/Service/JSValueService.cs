@@ -143,5 +143,14 @@ namespace ChakraCore.NET
                 return target.HasProperty(JavaScriptPropertyId.FromString(id));
             });
         }
+
+        public void ThrowIfErrorValue(JavaScriptValue value)
+        {
+            if (value.IsValid && value.ValueType==JavaScriptValueType.Error)
+            {
+                string message = ReadProperty<string>(value, "description");
+                throw new JavaScriptFatalException(JavaScriptErrorCode.Fatal, message);
+            }
+        }
     }
 }
