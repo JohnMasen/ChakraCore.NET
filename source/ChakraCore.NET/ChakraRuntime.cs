@@ -25,6 +25,7 @@ namespace ChakraCore.NET
             ServiceNode.PushService<IJSValueService>(new JSValueService());
             ServiceNode.InjectShareMemoryObjects();
             ServiceNode.InjecTimerService();
+            converter.RegisterTask();
         }
 
         /// <summary>

@@ -11,6 +11,7 @@
 
         public static Task<TResult> CallFunctionAsync<#=genCode(i,"T{1}",true)#>(this JSValue value,string name <#=genCode(i,",T{1} para{1}",false,"","{0}")#>)
         {
+			value.ServiceNode.GetService<IJSValueConverterService>().RegisterTask<TResult>();
             return value.CallFunction<<#=genCode(i,"T{1}",false,",","{0},")#>Task<TResult>>(name<#=genCode(i,",para{1}",false,"","{0}")#>);
         }
 

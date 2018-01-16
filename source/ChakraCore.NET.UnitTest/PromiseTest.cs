@@ -47,5 +47,18 @@ namespace ChakraCore.NET.UnitTest
             }
             throw new TimeoutException("wait for promise callback timedout");
         }
+
+
+        [TestMethod,ExpectedException(typeof(Promise.PromiseRejectedException))]
+        public async Task PromiseReject()
+        {
+            await context.GlobalObject.CallMethodAsync("PromiseReject");
+        }
+
+        [TestMethod, ExpectedException(typeof(Promise.PromiseRejectedException))]
+        public async Task PromiseThrowError()
+        {
+            await context.GlobalObject.CallMethodAsync("PromiseThrowError");
+        }
     }
 }

@@ -141,13 +141,31 @@ namespace ChakraCore.NET
         {
             var converter = node.GetService<IJSValueConverterService>();
             var result = new AsyncResult();
+            var valueService = node.GetService<IJSValueService>();
             Action fullfilledCallback = () =>
             {
                 callback(result);
             };
             Action<JavaScriptValue> rejectedCallback = (s) =>
             {
-                result.SetError(s.ToString());
+                try
+                {
+                    valueService.ThrowIfErrorValue(s);
+                }
+                catch (JavaScriptFatalException ex)
+                {
+
+                    result.SetError(ex.Message);
+                }
+
+                if (s.ValueType == JavaScriptValueType.String)
+                {
+                    result.SetError(s.ToString());
+                }
+                else
+                {
+                    result.SetError(string.Empty);
+                }
                 callback(result);
             };
 
@@ -160,6 +178,7 @@ namespace ChakraCore.NET
         private static IAsyncResult BeginMethod<T>(JavaScriptValue promiseObject, IServiceNode node, AsyncCallback callback, object state)
         {
             var converter = node.GetService<IJSValueConverterService>();
+            var valueService = node.GetService<IJSValueService>();
             var result = new AsyncResult<T>();
             Action<T> fullfilledCallback = (x) =>
             {
@@ -168,7 +187,24 @@ namespace ChakraCore.NET
             };
             Action<JavaScriptValue> rejectedCallback = (s) =>
             {
-                result.SetError(s.ToString());
+                try
+                {
+                    valueService.ThrowIfErrorValue(s);
+                }
+                catch (JavaScriptFatalException ex)
+                {
+
+                    result.SetError(ex.Message);
+                }
+                
+                if (s.ValueType==JavaScriptValueType.String)
+                {
+                    result.SetError(s.ToString());
+                }
+                else
+                {
+                    result.SetError(string.Empty);
+                }
                 callback(result);
             };
 

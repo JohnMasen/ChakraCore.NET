@@ -24,9 +24,15 @@ function CallAsync() {
 }
 
 
-function PromiseWrapper(executor) {
-    return new Promise(function (resolve, reject) {
-        executor((value) => { resolve(value) }, (reason) => { reject(reason) })
+function PromiseReject() {
+    return new Promise((resolve, reject) => {
+        reject("rejected");
+    });
+}
+
+function PromiseThrowError() {
+    return new Promise((resolve, reject) => {
+        throw new Error('error');
     });
 }
 
