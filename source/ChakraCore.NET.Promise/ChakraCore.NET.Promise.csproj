@@ -11,8 +11,12 @@
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.
 this package contains dotnet Task &lt;-&gt; JS Promise convertion part</Description>
-    <Version>1.0.2</Version>
-    <PackageReleaseNotes>improved GC sync</PackageReleaseNotes>
+    <Version>1.1.1</Version>
+    <PackageReleaseNotes>Add Asyc helper to JSValue
+Fixed promise converter cannot convert promise function with parameter
+add throw javascript error object in promise</PackageReleaseNotes>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
