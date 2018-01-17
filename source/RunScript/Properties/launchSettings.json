@@ -6,6 +6,10 @@
     "HelloWorldModule": {
       "commandName": "Project",
       "commandLineArgs": "Scripts\\HelloworldModule\\hello.js /m"
+    },
+    "Hosting": {
+      "commandName": "Project",
+      "commandLineArgs": "Scripts\\Hosting/App.js /m"
     }
   }
 }

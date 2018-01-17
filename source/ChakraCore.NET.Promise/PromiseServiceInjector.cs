@@ -110,10 +110,10 @@ namespace ChakraCore.NET
                             var message = converter.ToJSValue(ex.ToString());
                             jsValueService.CallFunction(tmp.Item3, globalObject, message);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
 
-                            throw;
+                            throw new InvalidOperationException("Promise call failed", ex);
                         }
                     });
 

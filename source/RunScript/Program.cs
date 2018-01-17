@@ -30,9 +30,12 @@ namespace RunScript
                     return;
                 }
                 var context = prepareContext();
+                HostingInstaller.PluginFolder = config.PluginRootFolder;
+                HostingInstaller.RootFolder = config.RootFolder;
                 context
                     .EnablePluginManager()
                     .AddPlugin<SysInfoPluginInstaller>("SysInfo")
+                    .AddPlugin<HostingInstaller>("Hosting")
                     .SetPluginRootFolder(config.PluginRootFolder);
                 string script = File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");

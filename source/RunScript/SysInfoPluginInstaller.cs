@@ -15,6 +15,7 @@ namespace RunScript
                     value.WriteProperty<string>("CommandArguments", obj.CommandArguments);
                     value.WriteProperty("Is64BitProcess", obj.Is64BitProcess);
                     value.WriteProperty("CurrentPath", obj.CurrentPath);
+                    value.Binding.SetFunction("CurrentThread", () => { return System.Threading.Thread.CurrentThread.ManagedThreadId; });
                 },
                 (value) =>
                 {

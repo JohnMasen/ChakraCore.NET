@@ -9,5 +9,6 @@ export class app {
         echo('CommandArguments: "' + info.CommandArguments + '"');
         echo("Is64BitCPU: " + info.Is64BitProcess);
         echo("CurrentPath: " + info.CurrentPath);
+        echo("CurrentThread: " + info.GetCurrentThread());
     }
 }
