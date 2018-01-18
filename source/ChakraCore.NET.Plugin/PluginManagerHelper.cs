@@ -23,5 +23,11 @@ namespace ChakraCore.NET.Plugin
             manager.Loaders.Add(loader);
             return manager;
         }
+
+        public static PluginManager AddLoader(this PluginManager manager,string name,Func<INativePluginInstaller> createInstallerCallback)
+        {
+            manager.Loaders.Add(new DynamicLoader(name, createInstallerCallback));
+            return manager;
+        }
     }
 }

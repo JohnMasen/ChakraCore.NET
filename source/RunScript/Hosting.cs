@@ -8,8 +8,13 @@ namespace RunScript
 {
     public class HostingInstaller : INativePluginInstaller
     {
-        public static string PluginFolder;
-        public static string RootFolder;
+        private string rootFolder;
+        private Action<ChakraContext> initContext;
+        internal HostingInstaller(string rootFolder,Action<ChakraContext> initContext)
+        {
+            this.rootFolder = rootFolder;
+            this.initContext = initContext;
+        }
         public void Install(JSValue stub)
         {
             var converter = stub.ServiceNode.GetService<IJSValueConverterService>();
@@ -32,21 +37,42 @@ namespace RunScript
             converter.RegisterTask<string>();
         }
 
-        public static Task<HostingProxy> CreateHosting(string moduleName, string className)
+        public Task<HostingProxy> CreateHosting(string moduleName, string className)
         {
             return Task.Factory.StartNew(() =>
             {
                 var runtime = ChakraRuntime.Create();
                 var context = runtime.CreateContext(false);
-                context
-                    .EnablePluginManager()
-                    .AddPlugin<SysInfoPluginInstaller>("SysInfo")
-                    .SetPluginRootFolder(PluginFolder);
+                initContext?.Invoke(context);
                 var converter = context.ServiceNode.GetService<IJSValueConverterService>();
                 registerProxy(converter);
-                var value = context.ProjectModuleClass(moduleName, className, RootFolder);
+                var value = projectProxyClass(context, moduleName, className);
                 return new HostingProxy(value);
             });
+        }
+
+        public JSValue projectProxyClass(ChakraContext context, string moduleName,string className)
+        {
+            string projectTo = "__Proxy__";
+            string script_setRootObject = $"var {projectTo}={{}};";
+            string script_importModule = Properties.Resources.ResourceManager.GetString("JSProxy")
+                .Replace("{className}", className)
+                .Replace("{moduleName}", moduleName)
+                .Replace("{exportClass}", "proxy")
+                .Replace("{exportValue}", projectTo);
+            ModuleLocator locator = new ModuleLocator(rootFolder);
+            context.RunScript(script_setRootObject);
+            context.RunModule(script_importModule, locator.LoadModule);
+            return context.GlobalObject.ReadProperty<JSValue>(projectTo);
+        }
+    }
+
+    public static class HostingInstallerHelper
+    {
+        public static PluginManager EnableHosting(this PluginManager manager,string rootFolder,Action<ChakraContext> initContextCallback)
+        {
+            manager.AddLoader("Hosting", () => { return new HostingInstaller(rootFolder, initContextCallback); });
+            return manager;
         }
     }
 
@@ -61,7 +87,7 @@ namespace RunScript
         {
             return Task.Factory.StartNew(() =>
             {
-                var x = reference.CallFunction<string, string, string>("Dispatch", functionName, JSONparameter);
+                var x = reference.CallFunction<string, string, string>("__Dispatch__", functionName, JSONparameter);
                 return x;
             });
 
