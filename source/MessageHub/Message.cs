@@ -8,8 +8,20 @@ namespace MessageHub
     {
         public string Body { get; set; }
         public string From { get; set; }
-        public string To { get; set; }
-        public string Title { get; set; }
+        public Stack<string> To { get; private set; } = new Stack<string>();
+        public string Type { get; set; }
         public Session Session { get; set; }
+        public StringBuilder Route { get; private set; } = new StringBuilder();
+        private Action resultCallback;
+        public void Next()
+        {
+            if (To.Count==0)
+            {
+                resultCallback?.Invoke();
+                return;
+            }
+            From = To.Peek();
+            Route.Append($"/{From}");
+        }
     }
 }

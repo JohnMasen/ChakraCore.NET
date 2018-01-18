@@ -1,19 +1,36 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MessageHub
 {
-    public static class MessageHub
+    public class MessageHub:IMessageHub
     {
-        //private ConcurrentDictionary<string,BlockingCollection<Message>>
-        public static void SendMessage(Message msg)
+        BlockingCollection<Message> queue = new BlockingCollection<Message>();
+
+        public MessageHub()
+        {
+            Task.Factory.StartNew(processQueue);
+        }
+        public void AddConsumer(IMessageConsumer consumer)
+        {
+            
+        }
+
+        public void SendMessage(Message msg)
         {
 
         }
 
-        public static void Subscribe(string channelName,Action<Message> callback)
+        private void processQueue()
         {
+            foreach (var item in queue.GetConsumingEnumerable())
+            {
 
+            }
         }
+        
     }
 }
