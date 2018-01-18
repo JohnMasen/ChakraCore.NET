@@ -9,20 +9,10 @@ namespace RunScript
     {
         public void Install(JSValue stub)
         {
-            stub.ServiceNode.GetService<IJSValueConverterService>().RegisterStructConverter<SysInfoPlugin>(
-                (value, obj) =>
-                {
-                    value.WriteProperty<string>("CommandArguments", obj.CommandArguments);
-                    value.WriteProperty("Is64BitProcess", obj.Is64BitProcess);
-                    value.WriteProperty("CurrentPath", obj.CurrentPath);
-                    value.Binding.SetFunction("CurrentThread", () => { return System.Threading.Thread.CurrentThread.ManagedThreadId; });
-                },
-                (value) =>
-                {
-                    throw new NotImplementedException();
-                });
-            stub.WriteProperty("value", SysInfoPlugin.Default);
-
+            stub.WriteProperty<string>("CommandArguments", SysInfoPlugin.Default.CommandArguments);
+            stub.WriteProperty("Is64BitProcess", SysInfoPlugin.Default.Is64BitProcess);
+            stub.WriteProperty("CurrentPath", SysInfoPlugin.Default.CurrentPath);
+            stub.Binding.SetFunction("CurrentThread", () => { return System.Threading.Thread.CurrentThread.ManagedThreadId; });
         }
     }
 

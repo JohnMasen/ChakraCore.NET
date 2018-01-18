@@ -12,14 +12,10 @@ export class app {
     }
     test1(remoteModule) {
         let para = { name: "ddd" };
-        remoteModule.Dispatch("Hello", JSON.stringify(para)).then(result => {
-            let resultObj = undefined;
-            if (result != "") {
-                resultObj = JSON.parse(result);
-            }
-            echo("Result=" + result);
-            echo("ResultObj=" + resultObj);
-        });
+        remoteModule.Call("Hello", para)
+            .then(result => {
+                echo("Result=" + String(result));
+                });
         //remoteModule.DispatchAsync("HelloAsync", JSON.stringify(para)).then(result => {
         //    echo("AsyncResult=" + result);
             //let resultObj = undefined;
