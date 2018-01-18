@@ -11,19 +11,9 @@ export class app {
         });
     }
     test1(remoteModule) {
-        //let para = { name: "ddd" };
-        remoteModule.Call("Hello", 1)
+        remoteModule.Call("Hello", 1,2)
             .then(result => {
                 echo("Result=" + JSON.stringify(result));
                 });
-        //remoteModule.DispatchAsync("HelloAsync", JSON.stringify(para)).then(result => {
-        //    echo("AsyncResult=" + result);
-            //let resultObj = undefined;
-            //if (result != "") {
-            //    resultObj = JSON.parse(result);
-            //}
-            //echo("Result=" + result);
-            //echo("ResultObj=" + resultObj);
-        //});
     }
 }

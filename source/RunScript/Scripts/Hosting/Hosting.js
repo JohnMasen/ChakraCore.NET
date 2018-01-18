@@ -1,5 +1,4 @@
-﻿import { echo } from 'echo.js';
-var api = RequireNative('Hosting');
+﻿var api = RequireNative('Hosting');
 export function CreateHosting(moduleName, className) {
     return api.CreateHosting(moduleName, className)
         .then(result => {
@@ -13,7 +12,6 @@ export class RemoteProxy {
     }
     Call(name, ...args) {
         let para = JSON.stringify(args);
-        echo("para=" + para);
         return this.proxy.Dispatch(name, para)
             .then(result => {
                     return JSON.parse(result);
