@@ -1,10 +1,11 @@
 ﻿import { echo } from 'echo.js';
 export class Test {
-    Hello() {
-        echo("Hello run hosted");
+    Hello(value) {
+        echo("Hello run hosted, value="+String(value));
         return {
             tag1: "This is object result",
-            message:"This is message"
+            message: "This is message",
+            value: value + 1
         };
     }
     //HelloAsync() {
@@ -15,20 +16,13 @@ export class Test {
     //}
     Dispatch(name, para) {
         let result;
-        echo("name=" + name);
-        echo("para = " + para);
-        switch (name) {
-            case "Hello":
-                result = this.Hello();
-                echo("Hello=" + result);
-                break;
-            default:
-        }
+        let args = JSON.parse(para);
+        result = this[name].apply(this,args);
         if (result) {
             return JSON.stringify(result);
         }
         else {
-            return "";
+            return "null";
         }
     }
     //DispatchAsync(name, para) {

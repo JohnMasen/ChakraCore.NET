@@ -20,14 +20,10 @@
   <ItemGroup>
     <Folder Include="Plugins\EchoProvider\" />
     <Folder Include="Plugins\ImageSharpProvider\" />
-    <Folder Include="Plugins\HostingProvider\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\EchoProvider\bin\Debug\netcoreapp2.0\EchoProvider.dll" Link="Plugins\EchoProvider\EchoProvider.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\HostingProvider\bin\Debug\netstandard1.4\HostingProvider.dll" Link="Plugins\HostingProvider\HostingProvider.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\ImageSharpProvider\bin\Debug\netstandard1.4\ImageSharpProvider.dll" Link="Plugins\ImageSharpProvider\ImageSharpProvider.dll">

@@ -1,4 +1,5 @@
-﻿var api = RequireNative('Hosting');
+﻿import { echo } from 'echo.js';
+var api = RequireNative('Hosting');
 export function CreateHosting(moduleName, className) {
     return api.CreateHosting(moduleName, className)
         .then(result => {
@@ -10,15 +11,13 @@ export class RemoteProxy {
     constructor(value) {
         this.proxy = value;
     }
-    Call(name, para) {
-        return this.proxy.Dispatch(name, JSON.stringify(para))
+    Call(name, ...args) {
+        let para = JSON.stringify(args);
+        echo("para=" + para);
+        return this.proxy.Dispatch(name, para)
             .then(result => {
-                if (result != "") {
                     return JSON.parse(result);
                 }
-                else {
-                    return undefined;
-                }
-            });
+            );
     }
 }

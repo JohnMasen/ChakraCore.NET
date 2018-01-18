@@ -11,10 +11,10 @@ export class app {
         });
     }
     test1(remoteModule) {
-        let para = { name: "ddd" };
-        remoteModule.Call("Hello", para)
+        //let para = { name: "ddd" };
+        remoteModule.Call("Hello", 1)
             .then(result => {
-                echo("Result=" + String(result));
+                echo("Result=" + JSON.stringify(result));
                 });
         //remoteModule.DispatchAsync("HelloAsync", JSON.stringify(para)).then(result => {
         //    echo("AsyncResult=" + result);
