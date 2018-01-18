@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET", "ChakraCore.NET\ChakraCore.NET.csproj", "{0F1318AA-A49F-4829-A072-6863BF3A63C4}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET.Plugin", "ChakraCore.NET.Plugin\ChakraCore.NET.Plugin.csproj", "{D46BC4CB-F716-440E-A8E5-FC821ABE0092}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET.Plugin.FileSystemLoader", "ChakraCore.NET.Plugin.FileSystemLoader\ChakraCore.NET.Plugin.FileSystemLoader.csproj", "{82C26526-9B5B-440C-B856-3D6F265F734B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuntimeHosting", "RuntimeHosting\RuntimeHosting.csproj", "{1273D261-0D78-4A16-B7D7-DA384070ABC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -219,6 +221,22 @@ Global
 		{82C26526-9B5B-440C-B856-3D6F265F734B}.Release|x64.Build.0 = Release|Any CPU
 		{82C26526-9B5B-440C-B856-3D6F265F734B}.Release|x86.ActiveCfg = Release|Any CPU
 		{82C26526-9B5B-440C-B856-3D6F265F734B}.Release|x86.Build.0 = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|ARM.Build.0 = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|x64.Build.0 = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Debug|x86.Build.0 = Debug|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|ARM.ActiveCfg = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|ARM.Build.0 = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|x64.ActiveCfg = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|x64.Build.0 = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|x86.ActiveCfg = Release|Any CPU
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,6 +245,7 @@ Global
 		{C5301EA3-37CA-4E8E-BF1C-BA2E36B3B7B1} = {D6A837FB-16B8-4DF3-953F-8CD0B14C9197}
 		{BE5D8DCE-DA06-4033-B92C-6B5207E0D972} = {D6A837FB-16B8-4DF3-953F-8CD0B14C9197}
 		{9FA80090-92D9-45B7-9EA4-939E3BD6D9D6} = {D6A837FB-16B8-4DF3-953F-8CD0B14C9197}
+		{1273D261-0D78-4A16-B7D7-DA384070ABC3} = {D6A837FB-16B8-4DF3-953F-8CD0B14C9197}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9866644-699C-4DCC-B947-E172EA716659}

@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ChakraCore.NET;
+﻿using ChakraCore.NET;
 using ChakraCore.NET.Plugin;
-namespace RunScript
+using System;
+using System.Threading.Tasks;
+
+namespace RuntimeHosting
 {
     public class HostingInstaller : INativePluginInstaller
     {
         private string rootFolder;
         private Action<ChakraContext> initContext;
         private const string proxyScript = "import{{className}}from'{moduleName}';class{exportClass}extends{className}{__Dispatch__(name,para){let result;let args=JSON.parse(para);result=this[name].apply(this,args);if(result){return JSON.stringify(result)}else{return 'null' }}}{exportValue}=new{exportClass}();";
-        internal HostingInstaller(string rootFolder,Action<ChakraContext> initContext)
+        internal HostingInstaller(string rootFolder, Action<ChakraContext> initContext)
         {
             this.rootFolder = rootFolder;
             this.initContext = initContext;
@@ -52,7 +51,7 @@ namespace RunScript
             });
         }
 
-        public JSValue projectProxyClass(ChakraContext context, string moduleName,string className)
+        public JSValue projectProxyClass(ChakraContext context, string moduleName, string className)
         {
             string projectTo = "__Proxy__";
             string script_setRootObject = $"var {projectTo}={{}};";
@@ -67,51 +66,4 @@ namespace RunScript
             return context.GlobalObject.ReadProperty<JSValue>(projectTo);
         }
     }
-
-    public static class HostingInstallerHelper
-    {
-        public static PluginManager EnableHosting(this PluginManager manager,string rootFolder,Action<ChakraContext> initContextCallback)
-        {
-            manager.AddLoader("Hosting", () => { return new HostingInstaller(rootFolder, initContextCallback); });
-            return manager;
-        }
-    }
-
-    public class HostingProxy
-    {
-        JSValue reference;
-        public HostingProxy(JSValue value)
-        {
-            reference = value;
-        }
-        public Task<string> Dispatch(string functionName, string JSONparameter)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                var x = reference.CallFunction<string, string, string>("__Dispatch__", functionName, JSONparameter);
-                return x;
-            });
-
-        }
-
-        /// <summary>
-        /// Do not use, still have potencial thread conflict issue, may cause application crash
-        /// </summary>
-        /// <param name="functionName"></param>
-        /// <param name="JSONparameter"></param>
-        /// <returns></returns>
-        public Task<string> DispatchAsync(string functionName, string JSONparameter)
-        {
-            //
-            var t = Task.Factory.StartNew(() =>
-              {
-                  var x = reference.CallFunctionAsync<string, string, string>("DispatchAsync", functionName, JSONparameter);
-                  x.Wait(); //force wait on caller thread, otherwise may cause chakracontext thread confilict
-                  return x.Result;
-              });
-            return t;
-        }
-    }
-
-
 }

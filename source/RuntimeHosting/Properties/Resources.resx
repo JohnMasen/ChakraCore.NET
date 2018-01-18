@@ -117,4 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="JSProxy" xml:space="preserve">
+    <value>import { {className} } from '{moduleName}';
+class {exportClass} extends {className} {
+    __Dispatch__(name, para) {
+        let result;
+        let args = JSON.parse(para);
+        result = this[name].apply(this, args);
+        if (result) {
+            return JSON.stringify(result);
+        }
+        else {
+            return "null";
+        }
+    }
+}
+{exportValue}=new {exportClass}();</value>
+  </data>
 </root>
