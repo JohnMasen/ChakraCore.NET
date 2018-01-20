@@ -13,6 +13,7 @@ namespace ChakraCore.NET
             context.RunModule(script, locator.LoadModule);
         }
 
+        [Obsolete("Please use hosting namespace for replacement")]
         public static JSValue ProjectModuleClass(this ChakraContext context,string moduleName,string className,string rootFolder="",params string[] addtionalSearchPattern)
         {
             ModuleLocator locator = new ModuleLocator(rootFolder);
