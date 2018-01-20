@@ -66,7 +66,7 @@ namespace ChakraCore.NET.UnitTest
 
         protected JSValue projectModuleClass(string moduleName,string className)
         {
-            return context.ProjectModuleClass("__value", moduleName, className, (name) => Properties.Resources.ResourceManager.GetString(name));
+            return context.ProjectModuleClass(moduleName, className, (name) => Properties.Resources.ResourceManager.GetString(name));
         }
         protected  void Log(string text)
         {

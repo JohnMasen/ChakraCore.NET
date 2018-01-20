@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using ChakraCore.NET;
-using ChakraCore.NET.Plugin;
+using ChakraCore.NET.Hosting;
 namespace RunScript
 {
     class Program
@@ -29,29 +28,26 @@ namespace RunScript
                     Console.Read();
                     return;
                 }
-                var context = prepareContext();
-
-                context
-                    .EnablePluginManager()
+                JavaScriptHostingConfig hostingConfig = new JavaScriptHostingConfig();
+                hostingConfig
+                    .AddPluginFolder(config.PluginRootFolder)
                     .AddPlugin<SysInfoPluginInstaller>("SysInfo")
-                    .SetPluginRootFolder(config.PluginRootFolder)
-                    .EnableHosting(config.RootFolder, (c) =>
-                     {
-                         c.EnablePluginManager()
-                         .AddPlugin<SysInfoPluginInstaller>("SysInfo")
-                         .SetPluginRootFolder(config.PluginRootFolder);
-                     });
+                    .AddModuleFolder(config.RootFolder)
+                    .EnableHosting((moduleName) => { return hostingConfig; });
+                    
+                
                     
                 string script = File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");
                 if (config.IsModule)
                 {
-                    var jsClass = context.ProjectModuleClass(config.FileName, config.ModuleClass, config.RootFolder);
-                    jsClass.CallMethod(config.ModuleEntryPoint);
+                    var app=JavaScriptHosting.Default.GetModuleClass<JSApp>(config.FileName, config.ModuleClass, hostingConfig);
+                    app.EntryPoint = config.ModuleEntryPoint;
+                    app.Run();
                 }
                 else
                 {
-                    context.RunScript(script);
+                    JavaScriptHosting.Default.RunScript(script, hostingConfig);
                 }
             }
 
@@ -60,12 +56,7 @@ namespace RunScript
         }
         
 
-        static ChakraContext prepareContext()
-        {
-            ChakraRuntime runtime = ChakraRuntime.Create();
-            ChakraContext result = runtime.CreateContext(false);
-            return result;
-        }
+        
 
         static void showUsage()
         {

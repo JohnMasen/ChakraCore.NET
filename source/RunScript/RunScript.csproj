@@ -16,10 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChakraCore.NET.Plugin.FileSystemLoader\ChakraCore.NET.Plugin.FileSystemLoader.csproj" />
-    <ProjectReference Include="..\ChakraCore.NET.Plugin\ChakraCore.NET.Plugin.csproj" />
+    <ProjectReference Include="..\ChakraCore.NET.PluginLoader.DirectoryLoader\ChakraCore.NET.PluginLoader.DirectoryLoader.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
-    <ProjectReference Include="..\RuntimeHosting\RuntimeHosting.csproj" />
+    <ProjectReference Include="..\Plugins\Chakracore.NET.Plugins.ModuleHosting\ChakraCore.NET.Plugin.ModuleHosting.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,9 +70,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\HelloworldModule\world.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Helloworld\hello.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\Hosting\echo.js">

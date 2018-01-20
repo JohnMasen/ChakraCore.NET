@@ -2,14 +2,15 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using ChakraCore.NET.Hosting;
 
-namespace ChakraCore.NET.Plugin
+namespace ChakraCore.NET.PluginLoader.DirectoryLoader
 {
-    public class FileSystemLoader : IPluginLoader
+    public class DirectoryLoader
     {
         public string PluginRootFolder { get; private set; }
         string currentPluginFolder;
-        public FileSystemLoader(string pluginRootFolder)
+        public DirectoryLoader(string pluginRootFolder)
         {
             PluginRootFolder = pluginRootFolder;
             AssemblyLoadContext.Default.Resolving += Default_Resolving;
@@ -21,7 +22,7 @@ namespace ChakraCore.NET.Plugin
             return arg1.LoadFromAssemblyPath(fileName);
         }
 
-        public INativePluginInstaller Load(string name)
+        public IPluginInstaller Load(string name)
         {
             currentPluginFolder = Path.Combine(PluginRootFolder, name);
             if (!Directory.Exists(currentPluginFolder))
@@ -29,13 +30,10 @@ namespace ChakraCore.NET.Plugin
                 return null;
             }
             string dllName = Path.Combine(currentPluginFolder, $"{name}.dll");
-            var dll=Assembly.LoadFile(dllName);
+            var dll = Assembly.LoadFile(dllName);
             string typeName = $"{name}.{name}";
-            var result= dll.CreateInstance(typeName) as INativePluginInstaller;
+            var result = dll.CreateInstance(typeName) as IPluginInstaller;
             return result;
         }
-
-        
     }
 }
-

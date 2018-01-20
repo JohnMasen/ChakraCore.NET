@@ -10,14 +10,7 @@ namespace ChakraCore.NET.Hosting
 
     public class JavaScriptHosting
     {
-        Lazy<ChakraContext> defaultContext;
-        JavaScriptHostingConfig config;
-        public static readonly JavaScriptHosting Default = new JavaScriptHosting(new JavaScriptHostingConfig());
-        public JavaScriptHosting(JavaScriptHostingConfig config)
-        {
-            this.config = config;
-            defaultContext = new Lazy<ChakraContext>(() => { return getContext(true); }, true);
-        }
+        public static readonly JavaScriptHosting Default = new JavaScriptHosting();
         protected virtual ChakraRuntime createRuntime()
         {
             return ChakraRuntime.Create();
@@ -28,45 +21,70 @@ namespace ChakraCore.NET.Hosting
             return runtime.CreateContext(false);
         }
 
-        private ChakraContext getContext(bool useNewRunTime)
+        protected virtual void initContext(ChakraContext context,JavaScriptHostingConfig config)
         {
-            if (useNewRunTime)
-            {
-                return createContext(createRuntime());
-            }
-            else
-            {
-                return defaultContext.Value;
-            }
-        }
-        public virtual void RunScript(string script,bool useNewRuntime=true)
-        {
-            getContext(useNewRuntime).RunScript(script);
+            PluginManager pluginManager = new PluginManager(context, config.LoadPlugin);
         }
 
-        public JSValue GetModuleClass(string moduleName,string className,bool useNewRunTime=true)
+
+        public ChakraContext CreateContext(JavaScriptHostingConfig config)
         {
-            var context = getContext(useNewRunTime);
-            string projectTo = Guid.NewGuid().ToString().Replace('-', '_');
-            return context.ProjectModuleClass(projectTo, moduleName, className, config.LoadModule);
+            var result = createContext(createRuntime());
+            initContext(result, config);
+            return result;
         }
 
-        public  Task<JSValue> GetModuleClassAsync(string moduleName, string className)
+        public virtual void RunScript(string script,JavaScriptHostingConfig config)
         {
-            return Task.Factory.StartNew(()=>{ return GetModuleClass(moduleName, className, true); });
+            CreateContext(config).RunScript(script);
         }
 
-        public TResult GetModuleClass<TResult>(string moduleName, string className, bool useNewRunTime = true) where TResult:IJSValueWrapper,new()
+        public JSValue GetModuleClass(string moduleName,string className, JavaScriptHostingConfig config)
         {
-            var jsvalue = GetModuleClass(moduleName, className, useNewRunTime);
+            var context = CreateContext(config);
+            return context.ProjectModuleClass(moduleName, className, config.LoadModule);
+        }
+
+        public JSValue GetModuleClass(string proxyTemplate, string moduleName, string className, JavaScriptHostingConfig config)
+        {
+            var context = CreateContext(config);
+            string projectTo = "X"+Guid.NewGuid().ToString().Replace('-', '_');
+            return context.ProjectModuleClass(proxyTemplate, moduleName, className, config.LoadModule);
+        }
+
+        public  Task<JSValue> GetModuleClassAsync(string moduleName, string className, JavaScriptHostingConfig config)
+        {
+            return Task.Factory.StartNew(()=>{ return GetModuleClass(moduleName, className, config); });
+        }
+
+        public Task<JSValue> GetModuleClassAsync(string proxyTemplate, string moduleName, string className, JavaScriptHostingConfig config)
+        {
+            return Task.Factory.StartNew(() => { return GetModuleClass(proxyTemplate, moduleName, className, config); });
+        }
+
+        public TResult GetModuleClass<TResult>(string moduleName, string className, JavaScriptHostingConfig config) where TResult:IJSValueWrapper,new()
+        {
+            var jsvalue = GetModuleClass(moduleName, className, config);
             TResult result = new TResult();
             result.SetValue(jsvalue);
             return result;
         }
 
-        public Task<TResult> GetModuleClassAsync<TResult>(string moduleName, string className) where TResult : IJSValueWrapper, new()
+        public TResult GetModuleClass<TResult>(string proxyTemplate, string moduleName, string className, JavaScriptHostingConfig config) where TResult : IJSValueWrapper, new()
         {
-            return Task.Factory.StartNew(() => { return GetModuleClass<TResult>(moduleName, className, true); });
+            var jsvalue = GetModuleClass(proxyTemplate, moduleName, className, config);
+            TResult result = new TResult();
+            result.SetValue(jsvalue);
+            return result;
+        }
+
+        public Task<TResult> GetModuleClassAsync<TResult>(string moduleName, string className, JavaScriptHostingConfig config) where TResult : IJSValueWrapper, new()
+        {
+            return Task.Factory.StartNew(() => { return GetModuleClass<TResult>(moduleName, className, config); });
+        }
+        public Task<TResult> GetModuleClassAsync<TResult>(string proxyTemplate, string moduleName, string className, JavaScriptHostingConfig config) where TResult : IJSValueWrapper, new()
+        {
+            return Task.Factory.StartNew(() => { return GetModuleClass<TResult>(proxyTemplate,moduleName, className, config); });
         }
 
     }

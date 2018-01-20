@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using ChakraCore.NET;
-using ChakraCore.NET.Plugin;
+using ChakraCore.NET.Hosting;
 namespace RunScript
 {
-    class SysInfoPluginInstaller : INativePluginInstaller
+    class SysInfoPluginInstaller : IPluginInstaller
     {
         public void Install(JSValue stub)
         {

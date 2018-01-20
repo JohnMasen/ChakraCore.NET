@@ -119,7 +119,7 @@
   </resheader>
   <data name="JSProxy" xml:space="preserve">
     <value>import { {className} } from '{moduleName}';
-class {exportClass} extends {className} {
+class proxy extends {className} {
     __Dispatch__(name, para) {
         let result;
         let args = JSON.parse(para);
@@ -132,6 +132,6 @@ class {exportClass} extends {className} {
         }
     }
 }
-{exportValue}=new {exportClass}();</value>
+{projectTo}=new proxy();</value>
   </data>
 </root>

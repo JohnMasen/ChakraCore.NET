@@ -4,7 +4,12 @@ using System.Text;
 
 namespace ChakraCore.NET.Hosting
 {
-    
+    //public struct ModuleExportInfo
+    //{
+    //    public string ModuleName;
+    //    public string ClassName;
+    //    public string EntryPointName;
+    //}
     public class JavaScriptHostingConfig
     {
 

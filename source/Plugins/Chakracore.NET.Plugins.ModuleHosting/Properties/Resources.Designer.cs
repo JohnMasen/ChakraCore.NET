@@ -8,9 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RuntimeHosting.Properties {
+namespace ChakraCore.NET.Plugin.ModuleHosting.Properties {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -40,7 +39,7 @@ namespace RuntimeHosting.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RuntimeHosting.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ChakraCore.NET.Plugin.ModuleHosting.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,7 +62,7 @@ namespace RuntimeHosting.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to import { {className} } from &apos;{moduleName}&apos;;
-        ///class {exportClass} extends {className} {
+        ///class proxy extends {className} {
         ///    __Dispatch__(name, para) {
         ///        let result;
         ///        let args = JSON.parse(para);
@@ -76,7 +75,7 @@ namespace RuntimeHosting.Properties {
         ///        }
         ///    }
         ///}
-        ///{exportValue}=new {exportClass}();.
+        ///{projectTo}=new proxy();.
         /// </summary>
         internal static string JSProxy {
             get {

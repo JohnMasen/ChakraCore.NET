@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>ChakraCore.NET.Plugin.ModuleHosting</AssemblyName>
+    <RootNamespace>ChakraCore.NET.Plugin.ModuleHosting</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChakraCore.NET.Plugin\ChakraCore.NET.Plugin.csproj" />
-    <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
+    <ProjectReference Include="..\..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 
   <ItemGroup>

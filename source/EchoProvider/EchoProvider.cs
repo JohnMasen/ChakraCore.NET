@@ -1,10 +1,10 @@
 ﻿using ChakraCore.NET;
-using ChakraCore.NET.Plugin;
+using ChakraCore.NET.Hosting;
 using System;
 
 namespace EchoProvider
 {
-    public class EchoProvider : INativePluginInstaller
+    public class EchoProvider : IPluginInstaller
     {
         public void Install(JSValue stub)
         {

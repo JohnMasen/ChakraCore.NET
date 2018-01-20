@@ -3,21 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace RuntimeHosting
+using ChakraCore.NET.Hosting;
+namespace ChakraCore.NET.Plugin.ModuleHosting
 {
-    public class HostingProxy
+    public class HostingProxy:JSClassWrapperBase
     {
-        JSValue reference;
-        public HostingProxy(JSValue value)
-        {
-            reference = value;
-        }
         public Task<string> Dispatch(string functionName, string JSONparameter)
         {
             return Task.Factory.StartNew(() =>
             {
-                var x = reference.CallFunction<string, string, string>("__Dispatch__", functionName, JSONparameter);
+                var x = Reference.CallFunction<string, string, string>("__Dispatch__", functionName, JSONparameter);
                 return x;
             });
 
@@ -34,7 +29,7 @@ namespace RuntimeHosting
             //
             var t = Task.Factory.StartNew(() =>
             {
-                var x = reference.CallFunctionAsync<string, string, string>("DispatchAsync", functionName, JSONparameter);
+                var x = Reference.CallFunctionAsync<string, string, string>("DispatchAsync", functionName, JSONparameter);
                 x.Wait(); //force wait on caller thread, otherwise may cause chakracontext thread confilict
                 return x.Result;
             });

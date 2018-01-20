@@ -18,6 +18,7 @@ namespace ChakraCore.NET
             
         }
 
+        [Obsolete("Requires is notlonger supported. for moduling system, please use the ES6 module")]
         public static void EnableRequire(ChakraContext context,string rootPath=null)
         {
             JSRequireLoader loader = new JSRequireLoader() { RootPath = rootPath };
