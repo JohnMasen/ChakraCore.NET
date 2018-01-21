@@ -51,7 +51,7 @@ namespace RunScript
                 }
             }
 
-            Console.WriteLine("Press any key to exit");
+            Console.WriteLine("Press Enter to exit");
             Console.Read();
         }
         
