@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using ChakraCore.NET.Hosting;
 namespace RunScript
@@ -28,14 +29,15 @@ namespace RunScript
                     Console.Read();
                     return;
                 }
-                JavaScriptHostingConfig hostingConfig = new JavaScriptHostingConfig();
+                JavaScriptHostingConfig hostingConfig = new JavaScriptHostingConfig(false);
                 hostingConfig
-                    .AddPluginFolder(config.PluginRootFolder)
                     .AddPlugin<SysInfoPluginInstaller>("SysInfo")
                     .AddModuleFolder(config.RootFolder)
-                    .EnableHosting((moduleName) => { return hostingConfig; });
+                    .AddModuleFolderFromCurrentAssembly()
+                    .EnableHosting((moduleName) => { return hostingConfig; })
+                    .AddPluginLoader(JavaScriptHostingConfig.DefaultPluginInstaller)
+                    ;
                     
-                
                     
                 string script = File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");

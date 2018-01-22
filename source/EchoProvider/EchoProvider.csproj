@@ -8,4 +8,10 @@
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="echo.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -27,11 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoProvider", "EchoProvide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageSharpProvider", "ImageSharpProvider\ImageSharpProvider.csproj", "{9FA80090-92D9-45B7-9EA4-939E3BD6D9D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChakraCore.NET.PluginLoader.DirectoryLoader", "ChakraCore.NET.PluginLoader.DirectoryLoader\ChakraCore.NET.PluginLoader.DirectoryLoader.csproj", "{063FE879-2C8A-4C1F-A98C-A5436F7333A5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{D37DBE6E-6034-40D2-BE90-40E78616CA0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChakraCore.NET.Plugin.ModuleHosting", "Plugins\Chakracore.NET.Plugins.ModuleHosting\ChakraCore.NET.Plugin.ModuleHosting.csproj", "{C6443206-4100-4FE1-9870-34D0D664BB21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET.Plugin.ModuleHosting", "Plugins\Chakracore.NET.Plugins.ModuleHosting\ChakraCore.NET.Plugin.ModuleHosting.csproj", "{C6443206-4100-4FE1-9870-34D0D664BB21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,22 +187,6 @@ Global
 		{9FA80090-92D9-45B7-9EA4-939E3BD6D9D6}.Release|x64.Build.0 = Release|Any CPU
 		{9FA80090-92D9-45B7-9EA4-939E3BD6D9D6}.Release|x86.ActiveCfg = Release|Any CPU
 		{9FA80090-92D9-45B7-9EA4-939E3BD6D9D6}.Release|x86.Build.0 = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|ARM.Build.0 = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|x64.Build.0 = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Debug|x86.Build.0 = Debug|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|ARM.ActiveCfg = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|ARM.Build.0 = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|x64.ActiveCfg = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|x64.Build.0 = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|x86.ActiveCfg = Release|Any CPU
-		{063FE879-2C8A-4C1F-A98C-A5436F7333A5}.Release|x86.Build.0 = Release|Any CPU
 		{C6443206-4100-4FE1-9870-34D0D664BB21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6443206-4100-4FE1-9870-34D0D664BB21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6443206-4100-4FE1-9870-34D0D664BB21}.Debug|ARM.ActiveCfg = Debug|Any CPU

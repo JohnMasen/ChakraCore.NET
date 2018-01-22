@@ -61,5 +61,12 @@ namespace ChakraCore.NET.Hosting
         {
             return new JavaScriptHostingConfig(config);
         }
+#if NETSTANDARD2_0
+        public static JavaScriptHostingConfig AddModuleFolderFromCurrentAssembly(this JavaScriptHostingConfig config)
+        {
+            string folder = new System.IO.FileInfo(System.Reflection.Assembly.GetCallingAssembly().Location).DirectoryName;
+            return config.AddModuleFolder(folder);
+        }
+#endif
     }
 }

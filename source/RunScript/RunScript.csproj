@@ -16,66 +16,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChakraCore.NET.PluginLoader.DirectoryLoader\ChakraCore.NET.PluginLoader.DirectoryLoader.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
+    <ProjectReference Include="..\EchoProvider\EchoProvider.csproj" />
     <ProjectReference Include="..\Plugins\Chakracore.NET.Plugins.ModuleHosting\ChakraCore.NET.Plugin.ModuleHosting.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Plugins\EchoProvider\" />
-    <Folder Include="Plugins\ImageSharpProvider\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\EchoProvider\bin\Debug\netcoreapp2.0\EchoProvider.dll" Link="Plugins\EchoProvider\EchoProvider.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\ImageSharpProvider\bin\Debug\netstandard1.4\ImageSharpProvider.dll" Link="Plugins\ImageSharpProvider\ImageSharpProvider.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Plugins\ImageSharpProvider\SixLabors.Core.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\ImageSharpProvider\SixLabors.Fonts.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\ImageSharpProvider\SixLabors.ImageSharp.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\ImageSharpProvider\SixLabors.ImageSharp.Drawing.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\ImageSharpProvider\SixLabors.Shapes.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\ImageSharpProvider\SixLabors.Shapes.Text.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\ImageSharpProvider\System.Memory.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugins\ImageSharpProvider\System.Runtime.CompilerServices.Unsafe.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\HelloworldModule\echo.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Scripts\HelloworldModule\hello.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Scripts\HelloworldModule\info.js">
+    <None Update="info.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\HelloworldModule\world.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Scripts\Hosting\echo.js">
+    <None Update="Scripts\Hosting\App.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\Hosting\Hosting.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\Hosting\info.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\Hosting\Module1.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

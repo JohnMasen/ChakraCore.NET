@@ -31,13 +31,7 @@ namespace ChakraCore.NET
                 {
                     try
                     {
-                        using (var stream = info.OpenRead())
-                        {
-                            using (var reader = new StreamReader(stream))
-                            {
-                                return reader.ReadToEnd();
-                            }
-                        }
+                        return File.ReadAllText(info.FullName);
                     }
                     catch (Exception ex)
                     {
@@ -46,14 +40,16 @@ namespace ChakraCore.NET
                     }
                 }
             }
-            //no match, throw exception
+            //no match, save info to debug
+            
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Cannot found module [{name}] at following location");
             foreach (var item in SearchPatterns)
             {
                 sb.AppendLine(getModuleFileName(item, name,rootFolder));
             }
-            throw new FileNotFoundException(sb.ToString());
+            System.Diagnostics.Debug.Write(sb);
+            return null;
         }
         private string getModuleFileName(string source,string moduleName,string folder)
         {

@@ -15,14 +15,30 @@ namespace ChakraCore.NET.Hosting
 
         public List<LoadPluginInstallerFunction> PluginLoaders { get; private set; } = new List<LoadPluginInstallerFunction>();
         public List<LoadModuleFunction> ModuleLoaders { get; private set; } = new List<LoadModuleFunction>();
-        public JavaScriptHostingConfig()
+        public static IPluginInstaller DefaultPluginInstaller(string pluginTypeName)
         {
-
+            Type pluginType = Type.GetType(pluginTypeName, false);
+            if (pluginType != null)
+            {
+                return Activator.CreateInstance(pluginType) as IPluginInstaller;
+            }
+            return null;
         }
+
+        public JavaScriptHostingConfig(bool enableDefaultPluginInstaller=true)
+        {
+            if (enableDefaultPluginInstaller)
+            {
+                PluginLoaders.Add(DefaultPluginInstaller);
+            }
+        }
+        
+
         public JavaScriptHostingConfig(JavaScriptHostingConfig source)
         {
             PluginLoaders.AddRange(source.PluginLoaders);
             ModuleLoaders.AddRange(source.ModuleLoaders);
+            
         }
 
         public string LoadModule(string name)
@@ -43,7 +59,7 @@ namespace ChakraCore.NET.Hosting
             foreach (var item in PluginLoaders)
             {
                 var result = item(name);
-                if (result!=null)
+                if (result != null)
                 {
                     return result;
                 }
