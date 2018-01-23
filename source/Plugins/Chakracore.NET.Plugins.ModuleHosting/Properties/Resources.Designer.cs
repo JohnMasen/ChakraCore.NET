@@ -61,6 +61,31 @@ namespace ChakraCore.NET.Plugin.ModuleHosting.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to let api = RequireNative(&apos;Hosting&apos;);
+        ///export function CreateHosting(moduleName, className) {
+        ///    return api.CreateHosting(moduleName, className)
+        ///        .then(result =&gt; {
+        ///        return new RemoteProxy(result);
+        ///    });
+        ///}
+        ///export class RemoteProxy {
+        ///    constructor(value) {
+        ///        this.proxy = value;
+        ///    }
+        ///    Call(name, ...args) {
+        ///        let para = JSON.stringify(args);
+        ///        return this.proxy.Dispatch(name, para)
+        ///            .then(result =&gt; {
+        ///            return JSON.parse(result);
+        ///         [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Hosting {
+            get {
+                return ResourceManager.GetString("Hosting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to import { {className} } from &apos;{moduleName}&apos;;
         ///class proxy extends {className} {
         ///    __Dispatch__(name, para) {

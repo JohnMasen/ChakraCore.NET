@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChakraCore.NET.Hosting
 {
-    public class PluginInstallerNotFoundException:Exception
+    public class PluginInstallerNotFoundException: HostingException
     {
         public PluginInstallerNotFoundException(string pluginName):base($"Can not found installer for plugin [{pluginName}]")
         {

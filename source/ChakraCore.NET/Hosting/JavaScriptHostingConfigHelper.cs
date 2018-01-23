@@ -6,15 +6,15 @@ namespace ChakraCore.NET.Hosting
 {
     public static class JavaScriptHostingConfigHelper
     {
-        public static JavaScriptHostingConfig AddModuleLoader(this JavaScriptHostingConfig config, LoadModuleFunction func)
+        public static JavaScriptHostingConfig AddModuleFileLoader(this JavaScriptHostingConfig config, LoadModuleFunction loadCallback)
         {
-            config.ModuleLoaders.Add(func);
+            config.AddModuleLoader(JavaScriptHostingConfig.MODULE_LOADER_PROTOCOL_FILE, loadCallback);
             return config;
         }
 
         public static JavaScriptHostingConfig AddModuleScript<T>(this JavaScriptHostingConfig config,string name,string script) 
         {
-            config.AddModuleLoader((n)=> 
+            config.AddModuleFileLoader((n)=> 
             {
                 if (n==name)
                 {
@@ -28,7 +28,7 @@ namespace ChakraCore.NET.Hosting
         public static JavaScriptHostingConfig AddModuleFolder(this JavaScriptHostingConfig config,string scriptRootFolder)
         {
             ModuleLocator locator = new ModuleLocator(scriptRootFolder);
-            config.AddModuleLoader(locator.LoadModule);
+            config.AddModuleFileLoader(locator.LoadModule);
             return config;
         }
 

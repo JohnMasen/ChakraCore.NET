@@ -8,8 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RunScript.Properties {
+namespace ChakraCore.NET.Plugin.Common.Properties {
     using System;
+    using System.Reflection;
     
     
     /// <summary>
@@ -39,7 +40,7 @@ namespace RunScript.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RunScript.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ChakraCore.NET.Plugin.Common.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +58,19 @@ namespace RunScript.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to let api = RequireNative(&apos;ChakraCore.NET.Plugin.Common.EchoProvider,ChakraCore.NET.Plugin.Common&apos;);
+        ///export function echo(message) {
+        ///    api.echo(message);
+        ///}
+        /////# sourceMappingURL=echo.js.map.
+        /// </summary>
+        internal static string echo {
+            get {
+                return ResourceManager.GetString("echo", resourceCulture);
             }
         }
     }

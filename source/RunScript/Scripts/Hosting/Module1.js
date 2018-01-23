@@ -1,4 +1,4 @@
-﻿import { echo } from 'echo.js';
+﻿import { echo } from 'sdk@ChakraCore.NET.Plugin.Common.EchoProvider,ChakraCore.NET.Plugin.Common';
 import * as info from 'info.js';
 
 export class Test  {

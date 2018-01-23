@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <None Update="Hosting.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
