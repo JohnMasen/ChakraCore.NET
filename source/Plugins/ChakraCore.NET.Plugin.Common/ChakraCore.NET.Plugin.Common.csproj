@@ -6,13 +6,14 @@
     <Authors>QianFan Jiang (John Masen)</Authors>
     <Company>QianFan Jiang (John Masen)</Company>
     <Product>ChakraCore.NET</Product>
-    <Description>common features used in hosting javascript</Description>
+    <Description>common features used in hosting javascript，Contains following features:
+Echo</Description>
     <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <PackageTags>chakracore,netcore</PackageTags>
-    <PackageReleaseNotes>Contains following features:
-Echo</PackageReleaseNotes>
+    <PackageReleaseNotes>add support to module resolve protocol "sdk"</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

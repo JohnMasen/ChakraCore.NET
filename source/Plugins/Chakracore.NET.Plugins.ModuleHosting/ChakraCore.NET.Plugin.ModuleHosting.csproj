@@ -12,8 +12,8 @@
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <PackageTags>chakracore,netcore</PackageTags>
-    <PackageReleaseNotes>initial release
-</PackageReleaseNotes>
+    <PackageReleaseNotes>add support to module resolve protocol "sdk"</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
