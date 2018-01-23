@@ -1,4 +1,10 @@
-﻿var api = RequireNative('Hosting');
+﻿declare function RequireNative(typeName: string);
+let api = RequireNative('Hosting');
+
+interface IDispatch {
+    Dispatch(name: string, parameters: string);
+}
+
 export function CreateHosting(moduleName, className) {
     return api.CreateHosting(moduleName, className)
         .then(result => {
@@ -7,15 +13,16 @@ export function CreateHosting(moduleName, className) {
 }
 
 export class RemoteProxy {
-    constructor(value) {
+    proxy: IDispatch;
+    constructor(value:IDispatch) {
         this.proxy = value;
     }
     Call(name, ...args) {
         let para = JSON.stringify(args);
         return this.proxy.Dispatch(name, para)
             .then(result => {
-                    return JSON.parse(result);
-                }
+                return JSON.parse(result);
+            }
             );
     }
 }

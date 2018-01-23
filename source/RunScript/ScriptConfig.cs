@@ -13,7 +13,7 @@ namespace RunScript
         private string filePath;
         [ConfigKey("Module",true)][ConfigKey("M",true)]
         public bool IsModule { get; set; }
-        [ConfigKey("File")]
+        [ConfigKey("File"),ConfigKey("F")]
         public string File
         {
             get
@@ -33,9 +33,9 @@ namespace RunScript
         }
 
         public string FileName { get; private set; }
-        [ConfigKey("Class")]
+        [ConfigKey("Class"), ConfigKey("C")]
         public string ModuleClass { get; set; } = "app";
-        [ConfigKey("EntryPoint")]
+        [ConfigKey("EntryPoint"), ConfigKey("E")]
         public string ModuleEntryPoint { get; set; } = "main";
         public string RootFolder { get; set; }
         public string PluginRootFolder { get; set; } = new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName + "\\Plugins";

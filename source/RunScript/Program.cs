@@ -37,7 +37,7 @@ namespace RunScript
                     .EnableHosting((moduleName) => { return hostingConfig; })
                     .AddPluginLoader(JavaScriptHostingConfig.DefaultPluginInstaller)
                     ;
-                    
+                ChakraCore.NET.Plugin.Common.EchoProvider.OnEcho = (msg) => { Console.WriteLine(msg); };
                     
                 string script = File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");

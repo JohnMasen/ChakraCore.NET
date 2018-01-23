@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ChakraCore.NET.Plugin.Common\ChakraCore.NET.Plugin.Common.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
-    <ProjectReference Include="..\EchoProvider\EchoProvider.csproj" />
     <ProjectReference Include="..\Plugins\Chakracore.NET.Plugins.ModuleHosting\ChakraCore.NET.Plugin.ModuleHosting.csproj" />
   </ItemGroup>
 
@@ -32,9 +32,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\Hosting\App.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Hosting\Hosting.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\Hosting\info.js">
