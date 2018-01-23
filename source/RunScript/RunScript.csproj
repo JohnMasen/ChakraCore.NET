@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChakraCore.NET.Plugin.Common\ChakraCore.NET.Plugin.Common.csproj" />
     <ProjectReference Include="..\ChakraCore.NET\ChakraCore.NET.csproj" />
+    <ProjectReference Include="..\Plugins\ChakraCore.NET.Plugin.Common\ChakraCore.NET.Plugin.Common.csproj" />
     <ProjectReference Include="..\Plugins\Chakracore.NET.Plugins.ModuleHosting\ChakraCore.NET.Plugin.ModuleHosting.csproj" />
   </ItemGroup>
 

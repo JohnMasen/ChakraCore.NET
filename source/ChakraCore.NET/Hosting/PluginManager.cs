@@ -7,10 +7,8 @@ namespace ChakraCore.NET.Hosting
 {
     class PluginManager
     {
-        private ChakraContext context;
         private const string API_OBJECT_NAME = "__API__";
         private JSValue apiContainer;
-        private List<Func<string, IPluginInstaller>> Loaders;
         public PluginManager(ChakraContext context,LoadPluginInstallerFunction loadPluginInstallerCallback)
         {
             context.GlobalObject.Binding.SetFunction<string, JavaScriptValue>("RequireNative", (name)=>

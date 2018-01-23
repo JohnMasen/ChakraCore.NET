@@ -4,6 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>ChakraCore.NET.Plugin.ModuleHosting</AssemblyName>
     <RootNamespace>ChakraCore.NET.Plugin.ModuleHosting</RootNamespace>
+    <Authors>QianFan Jiang (John Masen)</Authors>
+    <Company>QianFan Jiang (John Masen)</Company>
+    <Product>ChakraCore.NET</Product>
+    <Description>Create and communicate a specified javascript module in a new chakracore runtime</Description>
+    <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
+    <PackageTags>chakracore,netcore</PackageTags>
+    <PackageReleaseNotes>initial release
+</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
