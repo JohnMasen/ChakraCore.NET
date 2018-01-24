@@ -10,7 +10,7 @@ namespace ChakraCore.NET.Hosting
         public static JavaScriptHostingConfig EnableHosting(this JavaScriptHostingConfig config,ResolveConfigFunction resolve)
         {
             ModuleHosting hosting= new ModuleHosting(resolve);
-            return config.AddPlugin("Hosting", () => { return hosting; });
+            return config.AddPlugin(hosting);
         }
     }
 }

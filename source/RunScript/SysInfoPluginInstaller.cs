@@ -7,6 +7,13 @@ namespace RunScript
 {
     class SysInfoPluginInstaller : IPluginInstaller
     {
+        public string Name => "SysInfo";
+
+        public string GetSDK()
+        {
+            return Properties.Resources.info;
+        }
+
         public void Install(JSValue stub)
         {
             stub.WriteProperty<string>("CommandArguments", SysInfoPlugin.Default.CommandArguments);

@@ -12,12 +12,29 @@
     <ProjectReference Include="..\Plugins\Chakracore.NET.Plugins.ModuleHosting\ChakraCore.NET.Plugin.ModuleHosting.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="Scripts\HelloworldModule\hello.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="info.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\HelloworldModule\world.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

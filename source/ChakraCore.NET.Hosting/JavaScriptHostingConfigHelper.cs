@@ -6,15 +6,9 @@ namespace ChakraCore.NET.Hosting
 {
     public static class JavaScriptHostingConfigHelper
     {
-        public static JavaScriptHostingConfig AddModuleFileLoader(this JavaScriptHostingConfig config, LoadModuleFunction loadCallback)
-        {
-            config.AddModuleLoader(JavaScriptHostingConfig.MODULE_LOADER_PROTOCOL_FILE, loadCallback);
-            return config;
-        }
-
         public static JavaScriptHostingConfig AddModuleScript<T>(this JavaScriptHostingConfig config,string name,string script) 
         {
-            config.AddModuleFileLoader((n)=> 
+            config.ModuleFileLoaders.Add((n)=> 
             {
                 if (n==name)
                 {
@@ -28,35 +22,32 @@ namespace ChakraCore.NET.Hosting
         public static JavaScriptHostingConfig AddModuleFolder(this JavaScriptHostingConfig config,string scriptRootFolder)
         {
             ModuleLocator locator = new ModuleLocator(scriptRootFolder);
-            config.AddModuleFileLoader(locator.LoadModule);
+            config.ModuleFileLoaders.Add(locator.LoadModule);
             return config;
         }
 
-
-        public static JavaScriptHostingConfig AddPluginLoader(this JavaScriptHostingConfig config,LoadPluginInstallerFunction func)
+        public static JavaScriptHostingConfig AddPlugin(this JavaScriptHostingConfig config, LoadPluginInstallerFunction loadCallback)
         {
-            config.PluginLoaders.Add(func);
+            config.PluginLoaders.Add(loadCallback);
             return config;
         }
-        public static JavaScriptHostingConfig AddPlugin<T>(this JavaScriptHostingConfig config,string pluginName, Func<T> creationCallback) where T:IPluginInstaller
+        public static JavaScriptHostingConfig AddPlugin(this JavaScriptHostingConfig config,IPluginInstaller plugin)
         {
-            return config.AddPluginLoader((name) =>
+            return config.AddPlugin((name)=>
             {
-                if (name == pluginName)
+                if (plugin.Name==name)
                 {
-                    return creationCallback();
+                    return plugin;
                 }
-                else
-                {
-                    return null;
-                }
+                return null;
             });
         }
 
-        public static JavaScriptHostingConfig AddPlugin<T>(this JavaScriptHostingConfig config, string pluginName) where T:IPluginInstaller,new()
+        public static JavaScriptHostingConfig AddPlugin<T>(this JavaScriptHostingConfig config) where T:IPluginInstaller,new()
         {
-            return AddPlugin<T>(config, pluginName, () => { return new T(); });
+            return config.AddPlugin(new T());
         }
+
         public static JavaScriptHostingConfig Clone(this JavaScriptHostingConfig config)
         {
             return new JavaScriptHostingConfig(config);

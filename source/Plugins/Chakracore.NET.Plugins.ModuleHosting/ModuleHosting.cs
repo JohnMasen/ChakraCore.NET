@@ -8,8 +8,10 @@ namespace ChakraCore.NET.Plugin.ModuleHosting
     public delegate JavaScriptHostingConfig ResolveConfigFunction(string moduleName);
     public class ModuleHosting : IPluginInstaller
     {
-        private Action<ChakraContext> initContext;
         private ResolveConfigFunction resolveConfig;
+
+        public string Name => "Hosting";
+
         public ModuleHosting(ResolveConfigFunction resolve)
         {
             this.resolveConfig = resolve;
@@ -39,19 +41,7 @@ namespace ChakraCore.NET.Plugin.ModuleHosting
             return JavaScriptHosting.Default.GetModuleClassAsync<HostingProxy>(Resources.JSProxy, moduleName, className, config);
         }
 
-        //public JSValue projectProxyClass(ChakraContext context, string moduleName, string className)
-        //{
-        //    string projectTo = "__Proxy__";
-        //    string script_setRootObject = $"var {projectTo}={{}};";
-        //    string script_importModule = Resources.JSProxy
-        //        .Replace("{className}", className)
-        //        .Replace("{moduleName}", moduleName)
-        //        .Replace("{exportClass}", "proxy")
-        //        .Replace("{exportValue}", projectTo);
-        //    ModuleLocator locator = new ModuleLocator(rootFolder);
-        //    context.RunScript(script_setRootObject);
-        //    context.RunModule(script_importModule, locator.LoadModule);
-        //    return context.GlobalObject.ReadProperty<JSValue>(projectTo);
-        //}
+        public string GetSDK()=> Resources.Hosting;
+        
     }
 }

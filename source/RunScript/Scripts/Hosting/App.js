@@ -1,6 +1,6 @@
-﻿import { echo } from 'sdk@ChakraCore.NET.Plugin.Common.EchoProvider,ChakraCore.NET.Plugin.Common';
-import * as info from 'info.js';
-import { CreateHosting } from 'sdk@ChakraCore.NET.Plugin.ModuleHosting.HostingSDK,ChakraCore.NET.Plugin.ModuleHosting';
+﻿import { echo } from 'sdk@Echo';
+import * as info from 'sdk@SysInfo';
+import { CreateHosting } from 'sdk@Hosting';
 export class app {
     main() {
         echo("[" + info.GetCurrentThread()+"]"+"start");

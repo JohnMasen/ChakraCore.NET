@@ -47,8 +47,4 @@ this package contains all features in one package.</Description>
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Hosting\" />
-  </ItemGroup>
-
 </Project>

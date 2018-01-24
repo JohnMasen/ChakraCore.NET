@@ -1,6 +1,6 @@
 ﻿import { s } from 'world.js';
-import { echo } from 'sdk@ChakraCore.NET.Plugin.Common.EchoProvider,ChakraCore.NET.Plugin.Common';
-import * as info from 'info.js';
+import { echo } from 'sdk@Echo';
+import * as info from 'sdk@SysInfo';
 //RequireNative('ImageSharpProvider');//Test provider references to other dlls
 
 export class app {

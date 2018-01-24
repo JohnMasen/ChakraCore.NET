@@ -1,4 +1,4 @@
-let api = RequireNative('ChakraCore.NET.Plugin.Common.EchoProvider,ChakraCore.NET.Plugin.Common');
+let api = RequireNative('instance@Echo');
 export function echo(message) {
     api.echo(message);
 }

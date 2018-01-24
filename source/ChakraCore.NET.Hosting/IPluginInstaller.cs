@@ -7,5 +7,7 @@ namespace ChakraCore.NET.Hosting
     public interface IPluginInstaller
     {
         void Install(JSValue target);
+        string Name { get; }
+        string GetSDK();
     }
 }
