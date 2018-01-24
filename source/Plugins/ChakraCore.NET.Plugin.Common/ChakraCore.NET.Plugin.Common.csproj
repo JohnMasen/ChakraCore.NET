@@ -17,7 +17,7 @@ Echo</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ChakraCore.NET\ChakraCore.NET.csproj" />
+    <ProjectReference Include="..\..\ChakraCore.NET.Hosting\ChakraCore.NET.Hosting.csproj" />
   </ItemGroup>
 
   <ItemGroup>

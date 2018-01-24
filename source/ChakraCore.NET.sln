@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET.Plugin.Modul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChakraCore.NET.Plugin.Common", "Plugins\ChakraCore.NET.Plugin.Common\ChakraCore.NET.Plugin.Common.csproj", "{AC7EE6C3-426B-40E3-920A-9DB2C0477830}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChakraCore.NET.Hosting", "ChakraCore.NET.Hosting\ChakraCore.NET.Hosting.csproj", "{6F8AD272-1670-4086-9C5B-43B50CA83D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +183,22 @@ Global
 		{AC7EE6C3-426B-40E3-920A-9DB2C0477830}.Release|x64.Build.0 = Release|Any CPU
 		{AC7EE6C3-426B-40E3-920A-9DB2C0477830}.Release|x86.ActiveCfg = Release|Any CPU
 		{AC7EE6C3-426B-40E3-920A-9DB2C0477830}.Release|x86.Build.0 = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|x64.Build.0 = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Debug|x86.Build.0 = Debug|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|ARM.Build.0 = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|x64.ActiveCfg = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|x64.Build.0 = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|x86.ActiveCfg = Release|Any CPU
+		{6F8AD272-1670-4086-9C5B-43B50CA83D16}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
