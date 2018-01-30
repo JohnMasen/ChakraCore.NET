@@ -12,8 +12,8 @@ Echo</Description>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <PackageTags>chakracore,netcore</PackageTags>
-    <PackageReleaseNotes>add support to module resolve protocol "sdk"</PackageReleaseNotes>
-    <Version>1.0.1</Version>
+    <PackageReleaseNotes>update to latest sdk</PackageReleaseNotes>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
