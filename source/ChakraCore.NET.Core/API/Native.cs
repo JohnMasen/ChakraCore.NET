@@ -147,24 +147,12 @@
                     case JavaScriptErrorCode.ScriptException:
 
                         {
-
-                            JavaScriptValue errorObject;
-
-                            JavaScriptErrorCode innerError = JsGetAndClearException(out errorObject);
+                            string msg = extractErrorObject(out var errorObject);
+                            
 
 
 
-                            if (innerError != JavaScriptErrorCode.NoError)
-
-                            {
-
-                                throw new JavaScriptFatalException(innerError);
-
-                            }
-
-
-
-                            throw new JavaScriptScriptException(error, errorObject, "Script threw an exception.");
+                            throw new JavaScriptScriptException(error, errorObject, $"Script threw an exception. {msg}");
 
                         }
 
@@ -174,23 +162,9 @@
 
                         {
 
-                            JavaScriptValue errorObject;
+                            string msg = extractErrorObject(out var errorObject);
 
-                            JavaScriptErrorCode innerError = JsGetAndClearException(out errorObject);
-
-
-
-                            if (innerError != JavaScriptErrorCode.NoError)
-
-                            {
-
-                                throw new JavaScriptFatalException(innerError);
-
-                            }
-
-
-
-                            throw new JavaScriptScriptException(error, errorObject, "Compile error.");
+                            throw new JavaScriptScriptException(error, errorObject, $"Compile error. {msg}");
 
                         }
 
@@ -224,7 +198,40 @@
 
         }
 
+        private static string extractErrorObject(out JavaScriptValue errorObject)
+        {
+            JavaScriptErrorCode result;
+            result = JsGetAndClearException(out errorObject);
+            if (result!=JavaScriptErrorCode.NoError)
+            {
+                throw new JavaScriptFatalException(result, "failed to get and clear exception");
+            }
 
+            
+            JavaScriptPropertyId messageName;
+            result = Native.JsGetPropertyIdFromName("message",
+                out messageName);
+            if ( result!= JavaScriptErrorCode.NoError)
+            {
+                throw new JavaScriptFatalException(result, "failed to get error message id");
+            }
+
+            JavaScriptValue messageValue;
+            result = JsGetProperty(errorObject, messageName, out messageValue);
+            if (result!=JavaScriptErrorCode.NoError)
+            {
+                throw new JavaScriptFatalException(result, "failed to get error message");
+            }
+            
+            IntPtr message;
+            UIntPtr length;
+            result = JsStringToPointer(messageValue, out message, out length);
+            if (result!=JavaScriptErrorCode.NoError)
+            {
+                throw new JavaScriptFatalException(result, "failed to convert error message");
+            }
+            return Marshal.PtrToStringUni(message);
+        }
 
         const string DllName = "ChakraCore.dll";
 
