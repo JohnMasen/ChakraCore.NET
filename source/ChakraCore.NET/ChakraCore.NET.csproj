@@ -11,10 +11,10 @@ this package contains all features in one package.</Description>
     <PackageTags>chakracore,netcore</PackageTags>
     <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
-    <Version>1.2.6</Version>
-    <PackageReleaseNotes>remove hosting namespace to seprated package</PackageReleaseNotes>
-    <AssemblyVersion>1.2.6.0</AssemblyVersion>
-    <FileVersion>1.2.6.0</FileVersion>
+    <Version>1.2.7</Version>
+    <PackageReleaseNotes>improve error message handling</PackageReleaseNotes>
+    <AssemblyVersion>1.2.7.0</AssemblyVersion>
+    <FileVersion>1.2.7.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

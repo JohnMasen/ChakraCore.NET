@@ -12,10 +12,10 @@ this package contains all core features</Description>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <PackageTags>chakracore,netcore</PackageTags>
-    <Version>1.0.7</Version>
-    <PackageReleaseNotes>Improve Promise convert support</PackageReleaseNotes>
-    <AssemblyVersion>1.0.7.0</AssemblyVersion>
-    <FileVersion>1.0.7.0</FileVersion>
+    <Version>1.0.8</Version>
+    <PackageReleaseNotes>Improve error message handle</PackageReleaseNotes>
+    <AssemblyVersion>1.0.8.0</AssemblyVersion>
+    <FileVersion>1.0.8.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
