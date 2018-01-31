@@ -23,6 +23,17 @@ namespace ChakraCore.NET.UnitTest
         }
 
         [TestMethod]
+        public void MultipleClassProject()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var value = projectModuleClass("BasicExport", "TestClass");
+                var result = value.CallFunction<int, int>("Test1", 1);
+                Assert.AreEqual(2, result);
+            }
+        }
+
+        [TestMethod]
         public void ImportExport()
         {
             var value = projectModuleClass("BasicImport", "TestClass2");
@@ -47,5 +58,6 @@ namespace ChakraCore.NET.UnitTest
             var tt = await c.CallFunction<int, Task<int>>("test1",1);
             Assert.AreEqual(2, tt);
         }
+
     }
 }

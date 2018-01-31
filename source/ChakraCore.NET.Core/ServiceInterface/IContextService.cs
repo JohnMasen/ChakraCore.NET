@@ -3,6 +3,7 @@ using ChakraCore.NET.API;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace ChakraCore.NET
 {
@@ -11,5 +12,6 @@ namespace ChakraCore.NET
         string RunScript(string script);
         JavaScriptValue ParseScript(string script);
         void RunModule(string script, Func<string, string> loadModuleCallback);
+        CancellationTokenSource ContextShutdownCTS { get; }
     }
 }

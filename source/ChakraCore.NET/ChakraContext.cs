@@ -20,7 +20,7 @@ namespace ChakraCore.NET
 
         internal JavaScriptContext jsContext;
         private EventWaitHandle syncHandle;
-        private CancellationTokenSource promiseTaskCTS = new CancellationTokenSource();
+        private CancellationTokenSource shutdownCTS = new CancellationTokenSource();
         private BlockingCollection<JavaScriptValue> promiseTaskQueue = new BlockingCollection<JavaScriptValue>();
         private JavaScriptPromiseContinuationCallback promiseContinuationCallback;
         private JavaScriptValue JSGlobalObject;
@@ -64,7 +64,7 @@ namespace ChakraCore.NET
                 {
                     throw new InvalidOperationException("failed to setup callback for ES6 Promise");
                 }
-                StartPromiseTaskLoop(promiseTaskCTS.Token);
+                StartPromiseTaskLoop(shutdownCTS.Token);
 
                 
 
@@ -73,7 +73,7 @@ namespace ChakraCore.NET
             Leave();
             
             
-            contextService = new ContextService();
+            contextService = new ContextService(shutdownCTS);
             ServiceNode.PushService<IContextService>(contextService);
             timerService=GlobalObject.InitTimer();
             
@@ -208,7 +208,7 @@ namespace ChakraCore.NET
             {
                 if (disposing)
                 {
-                    promiseTaskCTS.Cancel();
+                    shutdownCTS.Cancel();
                     timerService.ReleaseAll();
                     contextSwitch.Dispose();
                     jsContext.Release();

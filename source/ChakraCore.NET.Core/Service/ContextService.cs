@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using ChakraCore.NET.API;
 
 namespace ChakraCore.NET
@@ -17,8 +20,16 @@ namespace ChakraCore.NET
                 items.AddRange(itemsToHold);
             }
         }
-        private Queue<moduleItem> moduleParseQueue = new Queue<moduleItem>();
+        private BlockingCollection<moduleItem> moduleParseQueue = new BlockingCollection<moduleItem>();
         private Dictionary<string, JavaScriptModuleRecord> moduleCache = new Dictionary<string, JavaScriptModuleRecord>();
+        private AutoResetEvent moduleReadyEvent = new AutoResetEvent(false);
+        public CancellationTokenSource ContextShutdownCTS { get; private set; }
+
+        public ContextService(CancellationTokenSource shutdownCTS)
+        {
+            ContextShutdownCTS = shutdownCTS;
+            startModuleParseQueue();
+        }
         public JavaScriptValue ParseScript(string script)
         {
             return contextSwitch.With<JavaScriptValue>(() =>
@@ -38,8 +49,9 @@ namespace ChakraCore.NET
 
         public void RunModule(string script,Func<string,string> loadModuleCallback)
         {
-            contextSwitch.With(() => {
-                var rootRecord = createModule(null, null, (name) =>
+            JavaScriptModuleRecord rootRecord=contextSwitch.With(() =>
+            {
+                return createModule(null, null, (name) =>
                 {
                     if (string.IsNullOrEmpty(name))
                     {
@@ -50,9 +62,13 @@ namespace ChakraCore.NET
                         return loadModuleCallback(name);
                     }
                 });
-                startModuleParseQueue();
+            });
+                //startModuleParseQueue();
+            moduleReadyEvent.WaitOne();
+            contextSwitch.With(() =>
+            {
                 JavaScriptModuleRecord.RunModule(rootRecord);
-                startModuleParseQueue();//for dynamic import during module run
+                //startModuleParseQueue();//for dynamic import during module run
                 //this pattern is not consistent to promise loop pattern, should change it?
             });
             
@@ -60,10 +76,26 @@ namespace ChakraCore.NET
 
         private void startModuleParseQueue()
         {
-            while (moduleParseQueue.Count > 0)
+            Task.Factory.StartNew(() =>
             {
-                moduleParseQueue.Dequeue().parse();
-            }
+                while (true)
+                {
+                    try
+                    {
+                        var item = moduleParseQueue.Take(ContextShutdownCTS.Token);
+                        contextSwitch.With(item.parse);
+                    }
+                    catch(OperationCanceledException)
+                    {
+                        return;
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                    
+                }
+            },ContextShutdownCTS.Token);
         }
 
         private JavaScriptModuleRecord createModule(JavaScriptModuleRecord? parent, string name, Func<string, string> loadModuleCallback)
@@ -94,6 +126,7 @@ namespace ChakraCore.NET
 
             NotifyModuleReadyCallbackDelegate notifyReady = (module, jsvalue) =>
             {
+                moduleReadyEvent.Set();
                 if (jsvalue.IsValid)
                 {
                     var valueService = CurrentNode.GetService<IJSValueService>();
@@ -114,7 +147,7 @@ namespace ChakraCore.NET
             JavaScriptModuleRecord.SetFetchModuleScriptCallback(result, fetchImportedFromScript);
             JavaScriptModuleRecord.SetNotifyReady(result, notifyReady);
 
-            moduleParseQueue.Enqueue(new moduleItem(
+            moduleParseQueue.Add(new moduleItem(
                 parseModule,
                 fetchImported,
                 fetchImportedFromScript, 
