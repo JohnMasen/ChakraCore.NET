@@ -18,7 +18,7 @@ namespace ChakraCore.NET.Hosting
             DefaultProtocol = defaultProtocol;
             ProtocolKey = protoclKey.ToCharArray();
         }
-        public T Process(string command)
+        public T Process(string command,bool throwIfMissingProcessor=false)
         {
             if (command==null)
             {
@@ -29,9 +29,13 @@ namespace ChakraCore.NET.Hosting
             {
                 return this[item.Protocol](item.Content);
             }
-            else
+            if (throwIfMissingProcessor)
             {
                 throw new MissingProtocolProcessorException(item.Protocol);
+            }
+            else
+            {
+                return default(T);
             }
         }
         public void Add(Func<string,T> value)

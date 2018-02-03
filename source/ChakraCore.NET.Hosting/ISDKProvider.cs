@@ -4,9 +4,8 @@ using System.Text;
 
 namespace ChakraCore.NET.Hosting
 {
-    public interface IPluginInstaller:ISDKProvider
+    public interface ISDKProvider
     {
-        void Install(JSValue target);
-        string Name { get; }
+        string GetSDK();
     }
 }

@@ -38,7 +38,49 @@ namespace ChakraCore.NET.Hosting
         {
             RequireNativeResolver.Add(getPlugin);//add default protocol resolver
             ModuleScriptResolver.Add(loadModuleFile);//add default file loader resolver
-            ModuleScriptResolver.Add(MODULE_LOADER_PROTOCOL_SDK, (name)=> { return getPlugin(name).GetSDK(); });
+            ModuleScriptResolver.Add(MODULE_LOADER_PROTOCOL_SDK, (name)=> 
+            {
+                string result = createInstance<ISDKProvider>(name)?.GetSDK();
+                if (result==null)
+                {
+                    foreach (var item in PluginLoaders)
+                    {
+                        var tmp = item(name);
+                        if (tmp != null)
+                        {
+                            return tmp.GetSDK();
+                        }
+                    }
+                }
+                else
+                {
+                    return result;
+                }
+                throw new SDKProviderNotFoundException(name);
+            });
+        }
+
+        private T createInstance<T>(string typeName) where T:class
+        {
+            Type t;
+            t=Type.GetType(typeName, false);
+            if (t==null)
+            {
+                var tmp = typeName.Split(',');
+                if (tmp.Length==2)
+                {
+                    t = Type.GetType($"{tmp[1]}.{tmp[0]},{tmp[1]}",false);
+                    if (t==null)
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return Activator.CreateInstance(t) as T;
         }
 
         private string loadModuleFile(string name)
