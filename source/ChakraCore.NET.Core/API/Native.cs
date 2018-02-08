@@ -903,5 +903,131 @@
 
         [DllImport(DllName)]
         public static extern JavaScriptErrorCode JsCreatePromise(out JavaScriptValue promise, out JavaScriptValue resolve, out JavaScriptValue reject);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagStartDebugging(JavaScriptRuntime runtimeHandle, JsDiagDebugEventCallback debugEventCallback, IntPtr callbackState);
+        /// <summary>
+        ///     Stops debugging in the given runtime.
+        /// </summary>
+        /// <param name="runtimeHandle">Runtime to stop debugging.</param>
+        /// <param name="callbackState">User provided state that was passed in JsDiagStartDebugging.</param>
+        /// <returns>
+        ///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+        /// </returns>
+        /// <remarks>
+        ///     The runtime should be active on the current thread and in debug state.
+        /// </remarks>
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagStopDebugging(JavaScriptRuntime runtimeHandle,out IntPtr callbackState);
+
+        /// <summary>
+        ///     Request the runtime to break on next JavaScript statement.
+        /// </summary>
+        /// <param name="runtimeHandle">Runtime to request break.</param>
+        /// <returns>
+        ///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+        /// </returns>
+        /// <remarks>
+        ///     The runtime should be in debug state. This API can be called from another runtime.
+        /// </remarks>
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagRequestAsyncBreak(JavaScriptRuntime runtimeHandle);
+
+        /// <summary>
+        ///     List all breakpoints in the current runtime.
+        /// </summary>
+        /// <param name="breakpoints">Array of breakpoints.</param>
+        /// <remarks>
+        ///     <para>
+        ///     [{
+        ///         "breakpointId" : 1,
+        ///         "scriptId" : 1,
+        ///         "line" : 0,
+        ///         "column" : 62
+        ///     }]
+        ///     </para>
+        /// </remarks>
+        /// <returns>
+        ///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+        /// </returns>
+        /// <remarks>
+        ///     The current runtime should be in debug state. This API can be called when runtime is at a break or running.
+        /// </remarks>
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetBreakpoints(out JavaScriptValue breakpoints);
+
+
+        /// <summary>
+        ///     Sets breakpoint in the specified script at give location.
+        /// </summary>
+        /// <param name="scriptId">Id of script from JsDiagGetScripts or JsDiagGetSource to put breakpoint.</param>
+        /// <param name="lineNumber">0 based line number to put breakpoint.</param>
+        /// <param name="columnNumber">0 based column number to put breakpoint.</param>
+        /// <param name="breakpoint">Breakpoint object with id, line and column if success.</param>
+        /// <remarks>
+        ///     <para>
+        ///     {
+        ///         "breakpointId" : 1,
+        ///         "line" : 2,
+        ///         "column" : 4
+        ///     }
+        ///     </para>
+        /// </remarks>
+        /// <returns>
+        ///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+        /// </returns>
+        /// <remarks>
+        ///     The current runtime should be in debug state. This API can be called when runtime is at a break or running.
+        /// </remarks>
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagSetBreakpoint(uint scriptId, uint lineNumber, uint columnNumber, out JavaScriptValue breakpoint);
+
+
+        /// <summary>
+        ///     Remove a breakpoint.
+        /// </summary>
+        /// <param name="breakpointId">Breakpoint id returned from JsDiagSetBreakpoint.</param>
+        /// <returns>
+        ///     The code <c>JsNoError</c> if the operation succeeded, a failure code otherwise.
+        /// </returns>
+        /// <remarks>
+        ///     The current runtime should be in debug state. This API can be called when runtime is at a break or running.
+        /// </remarks>
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagRemoveBreakpoint(uint breakpointId);
+
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagSetBreakOnException(JavaScriptRuntime runtimeHandle, JavaScriptDiagBreakOnExceptionAttributes exceptionAttributes);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetBreakOnException(JavaScriptRuntime runtimeHandle, out JavaScriptDiagBreakOnExceptionAttributes exceptionAttributes);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagSetStepType(JavaScriptDiagStepType stepType);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetScripts(out JavaScriptValue scriptsArray);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetSource(uint scriptId, out JavaScriptValue source);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetFunctionPosition(JavaScriptValue function, out JavaScriptValue functionPosition);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetStackTrace(out JavaScriptValue stackTrace);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetStackProperties(uint stackFrameIndex, out JavaScriptValue properties);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetProperties(uint objectHandle, uint fromCount, uint totalCount, out JavaScriptValue propertiesObject);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagGetObjectFromHandle(uint objectHandle, out JavaScriptValue handleObject);
+
+        [DllImport(DllName)]
+        public static extern JavaScriptErrorCode JsDiagEvaluate(JavaScriptValue expression, uint stackFrameIndex, JavaScriptParseScriptAttributes parseAttributes, bool forceSetValueProp, out JavaScriptValue evalResult);
     }
 }
