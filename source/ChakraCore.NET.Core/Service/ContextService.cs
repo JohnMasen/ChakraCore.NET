@@ -24,7 +24,7 @@ namespace ChakraCore.NET
         private Dictionary<string, JavaScriptModuleRecord> moduleCache = new Dictionary<string, JavaScriptModuleRecord>();
         private AutoResetEvent moduleReadyEvent = new AutoResetEvent(false);
         public CancellationTokenSource ContextShutdownCTS { get; private set; }
-
+        private Exception moduleLoadException;
         public ContextService(CancellationTokenSource shutdownCTS)
         {
             ContextShutdownCTS = shutdownCTS;
@@ -49,7 +49,8 @@ namespace ChakraCore.NET
 
         public void RunModule(string script,Func<string,string> loadModuleCallback)
         {
-            JavaScriptModuleRecord rootRecord=contextSwitch.With(() =>
+            moduleLoadException = null;
+            JavaScriptModuleRecord rootRecord = contextSwitch.With(() =>
             {
                 return createModule(null, null, (name) =>
                 {
@@ -63,15 +64,24 @@ namespace ChakraCore.NET
                     }
                 });
             });
-                //startModuleParseQueue();
+            //startModuleParseQueue();
             moduleReadyEvent.WaitOne();
+            throwIfExceptionInLoading();
             contextSwitch.With(() =>
             {
                 JavaScriptModuleRecord.RunModule(rootRecord);
-                //startModuleParseQueue();//for dynamic import during module run
-                //this pattern is not consistent to promise loop pattern, should change it?
             });
-            
+
+        }
+
+        private void throwIfExceptionInLoading()
+        {
+            var ex = moduleLoadException;
+            if (ex != null)
+            {
+                moduleLoadException = null;
+                throw ex;
+            }
         }
 
         private void startModuleParseQueue()
@@ -83,15 +93,20 @@ namespace ChakraCore.NET
                     try
                     {
                         var item = moduleParseQueue.Take(ContextShutdownCTS.Token);
-                        contextSwitch.With(item.parse);
+                        if (moduleLoadException==null)//if previous exception is not handled, empty the queue
+                        {
+                            contextSwitch.With(item.parse);
+                        }
+                        
                     }
                     catch(OperationCanceledException)
                     {
                         return;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        throw;
+                        moduleLoadException = ex;
+                        moduleReadyEvent.Set();
                     }
                     
                 }

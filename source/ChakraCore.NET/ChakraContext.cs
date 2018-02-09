@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using ChakraCore.NET.API;
 using ChakraCore.NET.Timer;
-
 namespace ChakraCore.NET
 {
     /// <summary>
@@ -40,7 +39,7 @@ namespace ChakraCore.NET
         public ChakraRuntime Runtime { get; private set; }
 
         private bool isDebug;
-        internal ChakraContext(JavaScriptContext jsContext, ChakraRuntime runtime,EventWaitHandle handle):base(runtime.ServiceNode,"ChakraContext")
+        internal ChakraContext(JavaScriptContext jsContext, ChakraRuntime runtime, EventWaitHandle handle) : base(runtime.ServiceNode, "ChakraContext")
         {
             jsContext.AddRef();
             this.jsContext = jsContext;
@@ -55,28 +54,28 @@ namespace ChakraCore.NET
             ServiceNode.PushService<IContextSwitchService>(contextSwitch);
             ServiceNode.PushService<IGCSyncService>(new GCSyncService());
             Enter();
-                promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
-                {
-                    promiseTaskQueue.Add(task);
-                };
+            promiseContinuationCallback = delegate (JavaScriptValue task, IntPtr callbackState)
+            {
+                promiseTaskQueue.Add(task);
+            };
 
-                if (Native.JsSetPromiseContinuationCallback(promiseContinuationCallback, IntPtr.Zero) != JavaScriptErrorCode.NoError)
-                {
-                    throw new InvalidOperationException("failed to setup callback for ES6 Promise");
-                }
-                StartPromiseTaskLoop(shutdownCTS.Token);
+            if (Native.JsSetPromiseContinuationCallback(promiseContinuationCallback, IntPtr.Zero) != JavaScriptErrorCode.NoError)
+            {
+                throw new InvalidOperationException("failed to setup callback for ES6 Promise");
+            }
+            StartPromiseTaskLoop(shutdownCTS.Token);
 
-                
+
 
             JSGlobalObject = JavaScriptValue.GlobalObject;
-                GlobalObject = new JSValue(ServiceNode, JSGlobalObject);
+            GlobalObject = new JSValue(ServiceNode, JSGlobalObject);
             Leave();
-            
-            
+
+
             contextService = new ContextService(shutdownCTS);
             ServiceNode.PushService<IContextService>(contextService);
-            timerService=GlobalObject.InitTimer();
-            
+            timerService = GlobalObject.InitTimer();
+
         }
 
 
@@ -84,35 +83,35 @@ namespace ChakraCore.NET
         {
             Task.Factory.StartNew((Action)(() =>
             {
-                    Debug.WriteLine("Promise task loop started");
-                    while (true)
+                System.Diagnostics.Debug.WriteLine("Promise task loop started");
+                while (true)
+                {
+                    JavaScriptValue task;
+                    try
                     {
-                        JavaScriptValue task;
-                        try
-                        {
-                            task = promiseTaskQueue.Take(token);
-                            Debug.WriteLine("Promise task taken");
-                        }
-                        catch(OperationCanceledException)
-                        {
-                            Debug.WriteLine("Promise task stop");
-                            return;
-                        }
-                        catch (Exception)
-                        {
-
-                            throw;
-                        }
-                        Enter();
-                        task.CallFunction((JavaScriptValue)this.JSGlobalObject);
-                        Leave();
-                        Debug.WriteLine("Promise task complete");
+                        task = promiseTaskQueue.Take(token);
+                        System.Diagnostics.Debug.WriteLine("Promise task taken");
                     }
-                })
+                    catch (OperationCanceledException)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Promise task stop");
+                        return;
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                    Enter();
+                    task.CallFunction((JavaScriptValue)this.JSGlobalObject);
+                    Leave();
+                    System.Diagnostics.Debug.WriteLine("Promise task complete");
+                }
+            })
                 , token
                 );
         }
-        
+
         /// <summary>
         /// Try switch context to current thread
         /// </summary>
@@ -152,7 +151,7 @@ namespace ChakraCore.NET
         /// </summary>
         /// <param name="script">script content</param>
         /// <param name="loadModuleCallback">callback to load imported script content</param>
-        public void RunModule(string script,Func<string,string> loadModuleCallback)
+        public void RunModule(string script, Func<string, string> loadModuleCallback)
         {
             ServiceNode.GetService<IContextService>().RunModule(script, loadModuleCallback);
         }
@@ -164,14 +163,14 @@ namespace ChakraCore.NET
         /// <param name="className">class name to create an instance</param>
         /// <param name="loadModuleCallback">local module script by name callback </param>
         /// <returns>the mapped value</returns>
-        public JSValue ProjectModuleClass( string moduleName, string className, Func<string, string> loadModuleCallback, string projectTo=null)
+        public JSValue ProjectModuleClass(string moduleName, string className, Func<string, string> loadModuleCallback, string projectTo = null)
         {
             string template = "import { {className} } from '{moduleName}'; {projectTo}=new {className}();";
-            return ProjectModuleClass(template, moduleName, className, loadModuleCallback,projectTo);
+            return ProjectModuleClass(template, moduleName, className, loadModuleCallback, projectTo);
         }
 
 
-        public JSValue ProjectModuleClass(string proxyModuleScriptTemplate,  string moduleName, string className, Func<string, string> loadModuleCallback,string projectTo=null)
+        public JSValue ProjectModuleClass(string proxyModuleScriptTemplate, string moduleName, string className, Func<string, string> loadModuleCallback, string projectTo = null)
         {
             if (string.IsNullOrWhiteSpace(projectTo))
             {
