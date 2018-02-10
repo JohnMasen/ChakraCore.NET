@@ -70,7 +70,7 @@ namespace ChakraCore.NET.UnitTest
         }
         protected  void Log(string text)
         {
-            Debug.WriteLine(logPrefix + text);
+            System.Diagnostics.Debug.WriteLine(logPrefix + text);
         }
         protected  void LogAndPush(string text, string prefix="--")
         {

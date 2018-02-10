@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.InteropServices;
+    using System.Text;
 
     /// <summary>
     ///     A JavaScript value.
@@ -344,7 +345,7 @@
         public static JavaScriptValue FromString(string value)
         {
             JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsPointerToString(value, new UIntPtr((uint)value.Length), out reference));
+            Native.ThrowIfError(Native.JsCreateStringUtf16(value, new UIntPtr((uint)value.Length), out reference));
             return reference;
         }
 
@@ -615,10 +616,11 @@
         /// <returns>The string.</returns>
         public new string ToString()
         {
-            IntPtr buffer;
-            UIntPtr length;
-            Native.ThrowIfError(Native.JsStringToPointer(this, out buffer, out length));
-            return Marshal.PtrToStringUni(buffer, (int)length);
+            Native.ThrowIfError(Native.JsGetStringLength(this, out int bufferSize));
+            StringBuilder sb = new StringBuilder();
+            Native.ThrowIfError(Native.JsCopyStringUtf16(this,0,bufferSize,sb,out UIntPtr size));
+            string ss = sb.ToString(0, (int)size);
+            return ss;
         }
 
         /// <summary>

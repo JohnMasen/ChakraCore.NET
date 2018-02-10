@@ -30,6 +30,7 @@ namespace ChakraCore.NET.UnitTest
         {
             //System.Diagnostics.Debug.WriteLine("ReadWriteTest start");
             ReadWrite<string>("hello");
+            ReadWrite<string>("helloÖÐÎÄ");
             ReadWrite<int>(1000);
             ReadWrite<float>(100.11f);
             ReadWrite<byte>(0x0f);

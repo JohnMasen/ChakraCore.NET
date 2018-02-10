@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.InteropServices;
+    using System.Text;
 
     /// <summary>
     ///     Native interfaces.
@@ -1029,5 +1030,14 @@
 
         [DllImport(DllName)]
         public static extern JavaScriptErrorCode JsDiagEvaluate(JavaScriptValue expression, uint stackFrameIndex, JavaScriptParseScriptAttributes parseAttributes, bool forceSetValueProp, out JavaScriptValue evalResult);
+
+        //[DllImport(DllName)]
+        //public static extern JavaScriptErrorCode JsCopyString(JavaScriptValue value,StringBuilder buffer,uint bufferSize,out UIntPtr length);
+
+        [DllImport(DllName,CharSet =CharSet.Unicode)]
+        public static extern JavaScriptErrorCode JsCopyStringUtf16(JavaScriptValue value, int start, int length, StringBuilder stringBuilder, out UIntPtr size);
+
+        [DllImport(DllName,CharSet =CharSet.Unicode)]
+        public static extern JavaScriptErrorCode JsCreateStringUtf16(string value, UIntPtr size, out JavaScriptValue reference);
     }
 }
