@@ -174,6 +174,7 @@ namespace ChakraCore.NET
                     return value;
                 }
                 );
+            this.RegisterArrayConverter<JavaScriptValue>();
             #endregion
         }
     }

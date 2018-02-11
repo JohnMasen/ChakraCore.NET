@@ -123,7 +123,7 @@ namespace ChakraCore.NET
                 return moduleCache[name];
             }
 
-
+            IRuntimeDebuggingService debugService = CurrentNode.GetService<IRuntimeDebuggingService>();
             var result = JavaScriptModuleRecord.Create(parent, name);
             #region init moudle callback delegates
             FetchImportedModuleDelegate fetchImported = (JavaScriptModuleRecord reference, JavaScriptValue scriptName, out JavaScriptModuleRecord output) =>
@@ -147,6 +147,7 @@ namespace ChakraCore.NET
                     var valueService = CurrentNode.GetService<IJSValueService>();
                     valueService.ThrowIfErrorValue(jsvalue);
                 }
+                debugService.ScriptReady();
                 return JavaScriptErrorCode.NoError;
             };
             #endregion
@@ -154,13 +155,20 @@ namespace ChakraCore.NET
 
             Action parseModule = () =>
              {
-                 JavaScriptModuleRecord.ParseScript(result, loadModuleCallback(name));
+                 string script = loadModuleCallback(name);
+                 JavaScriptModuleRecord.ParseScript(result,script );
+                 debugService.AddScriptSource(name,script);
                  System.Diagnostics.Debug.WriteLine($"module {name} Parsed");
              };
 
             JavaScriptModuleRecord.SetFetchModuleCallback(result, fetchImported);
             JavaScriptModuleRecord.SetFetchModuleScriptCallback(result, fetchImportedFromScript);
             JavaScriptModuleRecord.SetNotifyReady(result, notifyReady);
+            if (!string.IsNullOrEmpty(name))
+            {
+                JavaScriptModuleRecord.SetHostUrl(result, name);
+            }
+            
 
             moduleParseQueue.Add(new moduleItem(
                 parseModule,

@@ -38,7 +38,7 @@ namespace RunScript
                     .AddModuleFolderFromCurrentAssembly()
                     .EnableHosting((moduleName) => { return hostingConfig; })
                     ;
-                    
+                hostingConfig.DebugAdapter = new TestDebugAdapter();
                 string script = File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");
                 if (config.IsModule)

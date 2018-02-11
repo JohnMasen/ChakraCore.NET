@@ -12,6 +12,7 @@ namespace ChakraCore.NET
         public JSValueConverterService()
         {
             initDefault();
+            initDebugTypes();
         }
 
         public bool CanConvert<T>()

@@ -85,9 +85,10 @@ namespace ChakraCore.NET.API
             return result;
         }
 
-        public static void SetHostInfo(JavaScriptModuleRecord module,JavascriptModuleHostInfoKind kind,object value)
+        public static void SetHostUrl(JavaScriptModuleRecord module,string url)
         {
-            Native.ThrowIfError(Native.JsSetModuleHostInfo(module, kind, value));
+            var value= JavaScriptValue.FromString(url);
+            Native.ThrowIfError(Native.JsSetModuleHostInfo(module, JavascriptModuleHostInfoKind.JsModuleHostInfo_Url, value));
         }
 
         /// <summary>

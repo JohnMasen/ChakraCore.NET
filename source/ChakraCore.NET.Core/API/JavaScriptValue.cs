@@ -614,11 +614,18 @@
         ///     </para>
         /// </remarks>
         /// <returns>The string.</returns>
+        public string ToStringWin()
+        {
+            IntPtr buffer;
+            UIntPtr length;
+            Native.ThrowIfError(Native.JsStringToPointer(this, out buffer, out length));
+            return Marshal.PtrToStringUni(buffer, (int)length);
+        }
         public new string ToString()
         {
             Native.ThrowIfError(Native.JsGetStringLength(this, out int bufferSize));
             StringBuilder sb = new StringBuilder();
-            Native.ThrowIfError(Native.JsCopyStringUtf16(this,0,bufferSize,sb,out UIntPtr size));
+            Native.ThrowIfError(Native.JsCopyStringUtf16(this, 0, bufferSize + 1, sb, out UIntPtr size));
             string ss = sb.ToString(0, (int)size);
             return ss;
         }

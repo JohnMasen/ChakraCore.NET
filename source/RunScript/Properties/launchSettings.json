@@ -10,6 +10,10 @@
     "Hosting": {
       "commandName": "Project",
       "commandLineArgs": "Scripts\\Hosting/App.js /m"
+    },
+    "Debugging": {
+      "commandName": "Project",
+      "commandLineArgs": "Scripts\\Debugging\\app.js /m"
     }
   }
 }

@@ -888,7 +888,7 @@
         public static extern JavaScriptErrorCode JsModuleEvaluation(JavaScriptModuleRecord moduel, out JavaScriptValue result);
 
         [DllImport(DllName)]
-        public static extern JavaScriptErrorCode JsSetModuleHostInfo(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, object value);
+        public static extern JavaScriptErrorCode JsSetModuleHostInfo(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, JavaScriptValue value);
 
         [DllImport(DllName, EntryPoint = "JsSetModuleHostInfo")]
         public static extern JavaScriptErrorCode JsSetModuleNotifyModuleReadyCallback(JavaScriptModuleRecord module, JavascriptModuleHostInfoKind kind, NotifyModuleReadyCallbackDelegate value);

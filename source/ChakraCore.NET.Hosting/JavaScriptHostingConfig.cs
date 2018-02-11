@@ -20,7 +20,7 @@ namespace ChakraCore.NET.Hosting
 
         public List<LoadPluginInstallerFunction> PluginLoaders { get; private set; } = new List<LoadPluginInstallerFunction>();
         public List<LoadModuleFunction> ModuleFileLoaders { get; private set; } = new  List<LoadModuleFunction>();
-        
+        public Debug.IDebugAdapter DebugAdapter { get; set; }
         private IPluginInstaller getPlugin(string name)
         {
             foreach (var item in PluginLoaders)

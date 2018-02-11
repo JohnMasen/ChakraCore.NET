@@ -23,6 +23,7 @@ namespace ChakraCore.NET
             ServiceNode.PushService(runtimeService);
             ServiceNode.PushService<IJSValueConverterService>(converter);
             ServiceNode.PushService<IJSValueService>(new JSValueService());
+            ServiceNode.PushService<IRuntimeDebuggingService>(new RuntimeDebuggingService(runtime));
             ServiceNode.InjectShareMemoryObjects();
             ServiceNode.InjecTimerService();
             converter.RegisterTask();
