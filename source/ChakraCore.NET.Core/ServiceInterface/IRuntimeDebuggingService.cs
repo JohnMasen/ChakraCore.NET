@@ -13,8 +13,8 @@ namespace ChakraCore.NET
         void ScriptReady();
         JavaScriptSourceContext GetScriptContext(string name, string script);
         #region Chakracore Debug Features
-        string SetBreakpoint(uint scriptId, uint line, uint column);
-        string GetBreakpoints();
+        BreakPoint SetBreakpoint(uint scriptId, uint line, uint column);
+        BreakPoint[] GetBreakpoints();
         void RemoveBreakpoint(uint breakpointId);
         void SetBreakpointOnException(JavaScriptDiagBreakOnExceptionAttributes attributes);
         void SetStepType(JavaScriptDiagStepType stepType);

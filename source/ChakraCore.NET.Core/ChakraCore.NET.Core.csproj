@@ -20,6 +20,7 @@ this package contains all core features</Description>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ChakraCore" Version="1.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
