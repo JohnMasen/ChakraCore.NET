@@ -614,18 +614,11 @@
         ///     </para>
         /// </remarks>
         /// <returns>The string.</returns>
-        public string ToStringWin()
-        {
-            IntPtr buffer;
-            UIntPtr length;
-            Native.ThrowIfError(Native.JsStringToPointer(this, out buffer, out length));
-            return Marshal.PtrToStringUni(buffer, (int)length);
-        }
         public new string ToString()
         {
             Native.ThrowIfError(Native.JsGetStringLength(this, out int bufferSize));
-            StringBuilder sb = new StringBuilder();
-            Native.ThrowIfError(Native.JsCopyStringUtf16(this, 0, bufferSize + 1, sb, out UIntPtr size));
+            StringBuilder sb = new StringBuilder(bufferSize);
+            Native.ThrowIfError(Native.JsCopyStringUtf16(this, 0, bufferSize, sb, out UIntPtr size));
             string ss = sb.ToString(0, (int)size);
             return ss;
         }
@@ -942,6 +935,16 @@
         public static void CreatePromise(out JavaScriptValue promise,out JavaScriptValue resolve,out JavaScriptValue reject)
         {
             Native.ThrowIfError(Native.JsCreatePromise(out promise, out resolve, out reject));
+        }
+
+        public string ToJsonString()
+        {
+            JavaScriptPropertyId jsonId = JavaScriptPropertyId.FromString("JSON");
+            JavaScriptPropertyId stringifyId = JavaScriptPropertyId.FromString("stringify");
+            var json = JavaScriptValue.GlobalObject.GetProperty(jsonId);
+            var stringify = json.GetProperty(stringifyId);
+            var result = stringify.CallFunction(json, this);
+            return result.ToString();
         }
     }
 }

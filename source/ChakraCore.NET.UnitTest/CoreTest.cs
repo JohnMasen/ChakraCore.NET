@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using ChakraCore.NET.SharedMemory;
 using ChakraCore.NET;
+using System.Text;
 
 namespace ChakraCore.NET.UnitTest
 {
@@ -36,6 +37,12 @@ namespace ChakraCore.NET.UnitTest
             ReadWrite<byte>(0x0f);
             ReadWrite<double>(-33.4455);
             ReadWrite<bool>(false);
+            StringBuilder longString = new StringBuilder();
+            for (int i = 0; i < 100; i++)
+            {
+                longString.Append(@"abcabcabc{}@+@#_$)432|\\\~~");
+            }
+            ReadWrite(longString.ToString());
             //System.Diagnostics.Debug.WriteLine("ReadWriteTest stop");
         }
 

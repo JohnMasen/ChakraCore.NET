@@ -11,20 +11,21 @@ namespace ChakraCore.NET
         void DetachAdapter();
         void AddScriptSource(string name, string content);
         void ScriptReady();
+        JavaScriptSourceContext GetScriptContext(string name, string script);
         #region Chakracore Debug Features
         string SetBreakpoint(uint scriptId, uint line, uint column);
         string GetBreakpoints();
         void RemoveBreakpoint(uint breakpointId);
         void SetBreakpointOnException(JavaScriptDiagBreakOnExceptionAttributes attributes);
         void SetStepType(JavaScriptDiagStepType stepType);
-        IEnumerable<string> GetScripts();
+        string GetScripts();
         string GetScriptSource(uint scriptId);
         string GetStackTrace();
         string GetStackProperties(uint stackFrameIndex);
         string GetProperties(uint objectHandle, uint from, uint to);
         void RequestAsyncBreak();
         JavaScriptValue GetObjectFromHandle(uint objectHandle);
-        JavaScriptValue Evaluate(string expression, uint stackFrameIndex, JavaScriptParseScriptAttributes parseScriptAttributes, bool forceSetValueProp);
+        JavaScriptValue Evaluate(string expression, uint stackFrameIndex,  bool forceSetValueProp);
         #endregion
 
     }

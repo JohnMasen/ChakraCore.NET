@@ -67,11 +67,11 @@ namespace ChakraCore.NET.API
             
             return result;
         }
-        public static void ParseScript(JavaScriptModuleRecord module,string script)
+        public static void ParseScript(JavaScriptModuleRecord module,string script, JavaScriptSourceContext sourceContext)
         {
             var buffer=Encoding.UTF8.GetBytes(script);
             uint length = (uint)buffer.Length;
-            Native.ThrowIfError( Native.JsParseModuleSource(module, JavaScriptSourceContext.None, buffer, length, JavaScriptParseModuleSourceFlags.JsParseModuleSourceFlags_DataIsUTF8, out JavaScriptValue parseException));
+            Native.ThrowIfError( Native.JsParseModuleSource(module, sourceContext, buffer, length, JavaScriptParseModuleSourceFlags.JsParseModuleSourceFlags_DataIsUTF8, out JavaScriptValue parseException));
             if (parseException.IsValid)
             {
                 string ex = parseException.ToString();

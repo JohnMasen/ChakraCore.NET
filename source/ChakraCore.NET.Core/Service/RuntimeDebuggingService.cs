@@ -12,6 +12,7 @@ namespace ChakraCore.NET
         IDebugAdapter currentAdapter;
         public bool IsDebugging { get; private set; }
         DebugEngine engine;
+        JavaScriptSourceContext sourceContext = new JavaScriptSourceContext();
         public RuntimeDebuggingService(JavaScriptRuntime runtime)
         {
             this.runtime = runtime;
@@ -27,7 +28,7 @@ namespace ChakraCore.NET
                     string data=null;
                     if (eventData.IsValid)
                     {
-                        data = getJsonString(eventData);
+                        data = eventData.ToJsonString();
                     }
                     var stepType=currentAdapter.OnDebugEvent(debugEvent, data,engine);
                     switch (debugEvent)
@@ -88,11 +89,11 @@ namespace ChakraCore.NET
             currentAdapter = null;
         }
 
-        public JavaScriptValue Evaluate(string expression, uint stackFrameIndex, JavaScriptParseScriptAttributes parseScriptAttributes, bool forceSetValueProp)
+        public JavaScriptValue Evaluate(string expression, uint stackFrameIndex,  bool forceSetValueProp)
         {
                 JavaScriptValue exp = JavaScriptValue.FromString(expression);
 
-                Native.ThrowIfError(Native.JsDiagEvaluate(exp, stackFrameIndex, parseScriptAttributes, forceSetValueProp, out JavaScriptValue result));
+                Native.ThrowIfError(Native.JsDiagEvaluate(exp, stackFrameIndex, JavaScriptParseScriptAttributes.JsParseScriptAttributeNone, forceSetValueProp, out JavaScriptValue result));
                 return result;
             
         }
@@ -120,7 +121,7 @@ namespace ChakraCore.NET
             return WithInternalContext(() =>
             {
                 Native.ThrowIfError(Native.JsDiagGetProperties(objectHandle, from, to, out JavaScriptValue result));
-                return result.ToString();
+                return result.ToJsonString();
             });
         }
 
@@ -133,19 +134,15 @@ namespace ChakraCore.NET
             });
         }
 
-        public IEnumerable<string> GetScripts()
+        public string GetScripts()
         {
             IJSValueConverterService converter = CurrentNode.GetService<IJSValueConverterService>();
-            //return WithInternalContext(() =>
-            //{
-                Native.ThrowIfError(Native.JsDiagGetScripts(out JavaScriptValue result));
-                var items= converter.FromJSValue<IEnumerable<JavaScriptValue>>(result);
-            foreach (var item in items)
+            return WithInternalContext(() =>
             {
-                yield return getJsonString(item);
-            }
-            //});
-            
+                Native.ThrowIfError(Native.JsDiagGetScripts(out JavaScriptValue result));
+            return result.ToJsonString();
+            });
+
         }
 
         public string GetStackProperties(uint stackFrameIndex)
@@ -153,7 +150,7 @@ namespace ChakraCore.NET
             return WithInternalContext(() =>
             {
                 Native.ThrowIfError(Native.JsDiagGetStackProperties(stackFrameIndex, out JavaScriptValue result));
-                return result.ToString();
+                return result.ToJsonString();
             });
         }
 
@@ -162,7 +159,7 @@ namespace ChakraCore.NET
             return WithInternalContext(() =>
             {
                 Native.ThrowIfError(Native.JsDiagGetStackTrace(out JavaScriptValue result));
-                return result.ToString();
+                return result.ToJsonString();
             });
         }
 
@@ -182,7 +179,7 @@ namespace ChakraCore.NET
             return WithInternalContext(() =>
             {
                 Native.ThrowIfError(Native.JsDiagSetBreakpoint(scriptId, line, column, out JavaScriptValue breakpoint));
-                return getJsonString(breakpoint);
+                return breakpoint.ToJsonString();
             });
         }
 
@@ -210,16 +207,22 @@ namespace ChakraCore.NET
         {
             Native.ThrowIfError(Native.JsDiagRequestAsyncBreak(runtime));
         }
-        private string getJsonString(JavaScriptValue value)
+        //private string getJsonString(JavaScriptValue value)
+        //{
+        //    var valueService=CurrentNode.GetService<IJSValueService>();
+        //    var valueConverter = CurrentNode.GetService<IJSValueConverterService>();
+        //    JavaScriptPropertyId jsonId = JavaScriptPropertyId.FromString("JSON");
+        //    JavaScriptPropertyId stringifyId = JavaScriptPropertyId.FromString("stringify");
+        //    var json = JavaScriptValue.GlobalObject.GetProperty(jsonId);
+        //    var stringify = json.GetProperty(stringifyId);
+        //    var result=stringify.CallFunction(json, value);
+        //    return result.ToString();
+        //}
+
+        public JavaScriptSourceContext GetScriptContext(string name, string script)
         {
-            var valueService=CurrentNode.GetService<IJSValueService>();
-            var valueConverter = CurrentNode.GetService<IJSValueConverterService>();
-            JavaScriptPropertyId jsonId = JavaScriptPropertyId.FromString("JSON");
-            JavaScriptPropertyId stringifyId = JavaScriptPropertyId.FromString("stringify");
-            var json = JavaScriptValue.GlobalObject.GetProperty(jsonId);
-            var stringify = json.GetProperty(stringifyId);
-            var result=stringify.CallFunction(json, value);
-            return result.ToStringWin();
+            sourceContext++;
+            return sourceContext;
         }
     }
 }

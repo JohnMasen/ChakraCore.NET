@@ -309,9 +309,9 @@
         /// </remarks>
         /// <param name="script">The script to run.</param>
         /// <returns>The result of the script, if any.</returns>
-        public static JavaScriptValue RunScript(string script)
+        public static JavaScriptValue RunScript(string script, JavaScriptSourceContext sourceContext)
         {
-            return RunScript(script, JavaScriptSourceContext.None, string.Empty);
+            return RunScript(script, sourceContext, string.Empty);
         }
 
         /// <summary>
@@ -323,9 +323,9 @@
         /// <param name="script">The source code of the serialized script.</param>
         /// <param name="buffer">The serialized script.</param>
         /// <returns>The result of the script, if any.</returns>
-        public static JavaScriptValue RunScript(string script, byte[] buffer)
+        public static JavaScriptValue RunScript(string script, byte[] buffer, JavaScriptSourceContext sourceContext)
         {
-            return RunScript(script, buffer, JavaScriptSourceContext.None, string.Empty);
+            return RunScript(script, buffer, sourceContext, string.Empty);
         }
 
         /// <summary>

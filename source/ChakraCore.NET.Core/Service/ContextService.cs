@@ -40,9 +40,10 @@ namespace ChakraCore.NET
 
         public string RunScript(string script)
         {
+            var debugService = CurrentNode.GetService<IRuntimeDebuggingService>();
             return contextSwitch.With<string>(() =>
               {
-                  var result= JavaScriptContext.RunScript(script);
+                  var result= JavaScriptContext.RunScript(script,debugService.GetScriptContext("Script",script));
                   return result.ConvertToString().ToString();
               });
         }
@@ -156,7 +157,7 @@ namespace ChakraCore.NET
             Action parseModule = () =>
              {
                  string script = loadModuleCallback(name);
-                 JavaScriptModuleRecord.ParseScript(result,script );
+                 JavaScriptModuleRecord.ParseScript(result,script,debugService.GetScriptContext(name,script) );
                  debugService.AddScriptSource(name,script);
                  System.Diagnostics.Debug.WriteLine($"module {name} Parsed");
              };
@@ -167,6 +168,10 @@ namespace ChakraCore.NET
             if (!string.IsNullOrEmpty(name))
             {
                 JavaScriptModuleRecord.SetHostUrl(result, name);
+            }
+            else
+            {
+                JavaScriptModuleRecord.SetHostUrl(result, "<Generated_ModuleRoot>");
             }
             
 
