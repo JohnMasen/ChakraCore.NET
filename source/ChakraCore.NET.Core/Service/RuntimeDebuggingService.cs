@@ -14,9 +14,11 @@ namespace ChakraCore.NET
         IDebugAdapter currentAdapter;
         public bool IsDebugging { get; private set; }
         JavaScriptSourceContext sourceContext = new JavaScriptSourceContext();
+        private JsDiagDebugEventCallback debugCallback;
         public RuntimeDebuggingService(JavaScriptRuntime runtime)
         {
             this.runtime = runtime;
+            debugCallback = onDebugEvent;
         }
 
         private void onDebugEvent(JavaScriptDiagDebugEvent debugEvent, JavaScriptValue eventData, IntPtr callbackState)
@@ -32,6 +34,8 @@ namespace ChakraCore.NET
                 switch (debugEvent)
                 {
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventSourceCompile:
+                        currentAdapter.AddScript(JsonConvert.DeserializeObject<SourceCode>(data));
+                        break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventCompileError:
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventDebuggerStatement:
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventStepComplete:
@@ -65,16 +69,19 @@ namespace ChakraCore.NET
         private DebugEngine callWithEngine(Func<DebugEngine,Task> func)
         {
             DebugEngine engine = new DebugEngine(this);
-            var t = func(engine);
-            t.ContinueWith(_=> { engine.StopProcessing(); });
+            Task.Factory.StartNew(() => {
+                var t = func(engine);
+                t.ContinueWith(_ => { engine.StopProcessing(); });
+            });
+            
             engine.StartProcessing();
             return engine;
         }
 
-        public void AddScriptSource(string name, string content)
-        {
-            currentAdapter?.AddScript(name, content);
-        }
+        //public void AddScriptSource(string name, string content)
+        //{
+        //    currentAdapter?.AddScript(name, content);
+        //}
 
         public void AttachAdapter(IDebugAdapter adapter)
         {
@@ -82,7 +89,7 @@ namespace ChakraCore.NET
             {
                 throw new InvalidOperationException("Debugging is already in progress, detach current adapter first");
             }
-            Native.ThrowIfError(Native.JsDiagStartDebugging(runtime, onDebugEvent, IntPtr.Zero));
+            Native.ThrowIfError(Native.JsDiagStartDebugging(runtime, debugCallback, IntPtr.Zero));
             IsDebugging = true;
             currentAdapter = adapter;
         }

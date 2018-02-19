@@ -9,10 +9,11 @@ namespace RunScript
 {
     class TestDebugAdapter : IDebugAdapter
     {
-        public void AddScript(string name, string script)
+        
+
+        public void AddScript(SourceCode sourceCode)
         {
-            var lines = script.Split(Environment.NewLine);
-            Console.WriteLine($"script {name} loaded,line count={lines.Length},size ={script.Length}");
+            Console.WriteLine($"AddScript,{sourceCode}");
         }
 
         public async Task OnBreakPoint(BreakPoint breakPoint, DebugEngine engine)
@@ -40,7 +41,7 @@ namespace RunScript
                 case JavaScriptDiagDebugEvent.JsDiagDebugEventDebuggerStatement:
                     break;
                 case JavaScriptDiagDebugEvent.JsDiagDebugEventAsyncBreak:
-                    Console.WriteLine($"Breakpoint set: {await engine.SetBreakpointAsync(3, 6, 0)}");
+                    //Console.WriteLine($"Breakpoint set: {await engine.SetBreakpointAsync(3, 8, 0)}");
                     foreach (var item in await engine.GetBreakPointsAsync())
                     {
                         Console.WriteLine($"Breakpoints={item}");
@@ -56,9 +57,9 @@ namespace RunScript
 
         public async Task ScriptReady(DebugEngine engine)
         {
-            engine.RequestAsyncBreak();
+            //engine.RequestAsyncBreak();
             Console.WriteLine($"GetScripts {await engine.GetScriptsAsync()}");
-            
+            Console.WriteLine($"Breakpoint set: {await engine.SetBreakpointAsync(3, 8, 0)}");
         }
     }
 }

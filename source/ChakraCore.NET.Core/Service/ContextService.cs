@@ -158,7 +158,7 @@ namespace ChakraCore.NET
              {
                  string script = loadModuleCallback(name);
                  JavaScriptModuleRecord.ParseScript(result,script,debugService.GetScriptContext(name,script) );
-                 debugService.AddScriptSource(name,script);
+                 //debugService.AddScriptSource(name,script);
                  System.Diagnostics.Debug.WriteLine($"module {name} Parsed");
              };
 

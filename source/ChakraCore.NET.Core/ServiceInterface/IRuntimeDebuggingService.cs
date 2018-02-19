@@ -9,7 +9,7 @@ namespace ChakraCore.NET
     {
         void AttachAdapter(IDebugAdapter adapter);
         void DetachAdapter();
-        void AddScriptSource(string name, string content);
+        //void AddScriptSource(string name, string content);
         void ScriptReady();
         JavaScriptSourceContext GetScriptContext(string name, string script);
         #region Chakracore Debug Features

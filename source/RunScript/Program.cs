@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using ChakraCore.NET.Hosting;
@@ -38,7 +40,11 @@ namespace RunScript
                     .AddModuleFolderFromCurrentAssembly()
                     .EnableHosting((moduleName) => { return hostingConfig; })
                     ;
-                hostingConfig.DebugAdapter = new TestDebugAdapter();
+                var session = new VSCodeDebugAdapter();
+                hostingConfig.DebugAdapter = session;
+                RunServer(session, 4711);
+                //hostingConfig.DebugAdapter = new TestDebugAdapter();
+
                 string script = File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");
                 if (config.IsModule)
@@ -72,6 +78,44 @@ namespace RunScript
                 , "/entrypoint:FunctionName          the entrypoint function name of module, default is \"main\""
                 );
             Console.WriteLine(sb);
+        }
+
+        private static void RunSession(VSCodeDebugAdapter session, Stream inputStream, Stream outputStream)
+        {
+            session.Start(inputStream, outputStream).Wait();
+        }
+
+        private static void RunServer(VSCodeDebugAdapter session, int port)
+        {
+            TcpListener serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
+            serverSocket.Start();
+            Console.WriteLine($"StartListening at {serverSocket.LocalEndpoint}");
+            new System.Threading.Thread(() => {
+                while (true)
+                {
+                    var clientSocket = serverSocket.AcceptSocket();
+                    if (clientSocket != null)
+                    {
+                        Console.WriteLine(">> accepted connection from client");
+
+                        new System.Threading.Thread(() => {
+                            using (var networkStream = new NetworkStream(clientSocket))
+                            {
+                                try
+                                {
+                                    RunSession(session,networkStream, networkStream);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.Error.WriteLine("Exception: " + e);
+                                }
+                            }
+                            clientSocket.Close();
+                            Console.Error.WriteLine(">> client connection closed");
+                        }).Start();
+                    }
+                }
+            }).Start();
         }
     }
 }
