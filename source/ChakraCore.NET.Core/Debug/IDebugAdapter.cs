@@ -12,5 +12,6 @@ namespace ChakraCore.NET.Debug
         Task ScriptReady(DebugEngine engine);
         void AddScript(SourceCode sourceCode);
         Task OnBreakPoint(BreakPoint breakPoint, DebugEngine engine);
+        Task OnStep(BreakPoint breakPoint, DebugEngine engine);
     }
 }

@@ -22,7 +22,7 @@ namespace ChakraCore.NET
         string GetScriptSource(uint scriptId);
         StackTrace[] GetStackTrace();
         StackProperties GetStackProperties(uint stackFrameIndex);
-        string GetProperties(uint objectHandle, uint from, uint to);
+        VariableProperties GetProperties(uint objectHandle, uint from, uint to);
         void RequestAsyncBreak();
         JavaScriptValue GetObjectFromHandle(uint objectHandle);
         JavaScriptValue Evaluate(string expression, uint stackFrameIndex,  bool forceSetValueProp);

@@ -102,7 +102,10 @@ namespace RunScript
 
         public override void Next(Response response, dynamic arguments)
         {
-            throw new NotImplementedException();
+            currentEngine.StepType = JavaScriptDiagStepType.JsDiagStepTypeStepOver;
+            SendResponse(response);
+            vscodeEventASE.Set();
+            
         }
 
         public override void Pause(Response response, dynamic arguments)
@@ -112,10 +115,12 @@ namespace RunScript
 
         public override void Scopes(Response response, dynamic arguments)
         {
+            uint frameid = (uint)arguments.frameId;
             List<Scope> scopes = new List<Scope>()
             {
-                new Scope("Local",CreateVariableHandle(arguments.frameId,false)),
-                new Scope("Global",CreateVariableHandle(arguments.frameId,true))
+                new Scope("Global",CreateVariableHandle(frameid,true)),
+                new Scope("Local",CreateVariableHandle(frameid,false))
+                
 
             };
             SendResponse(response, new ScopesResponseBody(scopes));
@@ -186,12 +191,16 @@ namespace RunScript
 
         public override void StepIn(Response response, dynamic arguments)
         {
-            throw new NotImplementedException();
+            currentEngine.StepType = JavaScriptDiagStepType.JsDiagStepTypeStepIn;
+            SendResponse(response);
+            vscodeEventASE.Set();
         }
 
         public override void StepOut(Response response, dynamic arguments)
         {
-            throw new NotImplementedException();
+            currentEngine.StepType = JavaScriptDiagStepType.JsDiagStepTypeStepOut;
+            SendResponse(response);
+            vscodeEventASE.Set();
         }
 
         public override void Threads(Response response, dynamic arguments)
@@ -202,12 +211,41 @@ namespace RunScript
 
         public override void Variables(Response response, dynamic arguments)
         {
-            VariableHandle handle = VariableHandles[arguments.variablesReference];
-            var t=currentEngine.GetStackPropertiesAsync(handle.FrameId);
-            t.Wait();
-            foreach (var item in t.Result.Locals)
+            int variableReference = arguments.variablesReference;
+            if (VariableHandles.ContainsKey(variableReference))
             {
+                //variableReference is scope id
+                SendResponse(response, loadVariablesFromScope(VariableHandles[variableReference]));
+            }
+            else
+            {
+                //variableReference is variable handle
+                SendResponse(response, loadVariableProperties(variableReference));
+            }
+        }
 
+        private VariablesResponseBody loadVariableProperties(int varibleHandle)
+        {
+            var t = currentEngine.GetObjectPropertiesAsync((uint)varibleHandle);
+            t.Wait();
+            var properties =from item in t.Result.Properties
+                            select new Variable(item.Name, item.Display ?? item.Value, item.Type, (int)item.Handle);
+            return new VariablesResponseBody(properties.ToList());
+        }
+
+        private VariablesResponseBody loadVariablesFromScope(VariableHandle handle)
+        {
+            var t = currentEngine.GetStackPropertiesAsync(handle.FrameId);
+            t.Wait();
+            if (handle.IsGlobal)
+            {
+                return new VariablesResponseBody(new List<Variable>());
+            }
+            else
+            {
+                var variables = from item in t.Result.Locals
+                                select new Variable(item.Name, item.Display ?? item.Value, item.Type, (int)item.Handle);
+                return new VariablesResponseBody(variables.ToList());
             }
         }
 
@@ -235,22 +273,30 @@ namespace RunScript
             return Task.CompletedTask;
         }
 
-        async Task IDebugAdapter.ScriptReady(DebugEngine engine)
+        Task IDebugAdapter.ScriptReady(DebugEngine engine)
         {
             currentEngine = engine;
-            Console.WriteLine("Script ready");
+            Console.WriteLine("Script ready, Waiting for debugger");
             engineEventASE.Set();
             vscodeEventASE.WaitOne();
-            //engine.RequestAsyncBreak();
-            //await engine.SetBreakpointAsync(3, 8, 0);
-            //await engine.SetBreakpointAsync(3, 9, 0);
             Console.WriteLine("Script continue running");
+            return Task.CompletedTask;
         }
 
         void IDebugAdapter.AddScript(SourceCode sourceCode)
         {
             sourceCodeList.Add(sourceCode);
             sourceMap.Add(sourceCode.FileName, string.Empty);
+        }
+
+
+        Task IDebugAdapter.OnStep(BreakPoint breakPoint, DebugEngine engine)
+        {
+            Console.WriteLine($"Step complete at {breakPoint}");
+            SendEvent(new StoppedEvent(currentThread.id, "step"));
+            currentEngine = engine;
+            vscodeEventASE.WaitOne();
+            return Task.CompletedTask;
         }
     }
 }

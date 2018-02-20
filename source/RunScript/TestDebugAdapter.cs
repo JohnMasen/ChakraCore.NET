@@ -55,6 +55,11 @@ namespace RunScript
             }
         }
 
+        public Task OnStep(BreakPoint breakPoint, DebugEngine engine)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task ScriptReady(DebugEngine engine)
         {
             //engine.RequestAsyncBreak();

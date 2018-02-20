@@ -38,18 +38,23 @@ namespace ChakraCore.NET
                         break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventCompileError:
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventDebuggerStatement:
-                    case JavaScriptDiagDebugEvent.JsDiagDebugEventStepComplete:
-                    
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventRuntimeException:
                         callWithEngine((e) =>
                         {
                             return currentAdapter.OnDebugEvent(debugEvent, data, e);
                         });
                         break;
+                    case JavaScriptDiagDebugEvent.JsDiagDebugEventStepComplete:
+                        engine = callWithEngine((e) =>
+                        {
+                            return currentAdapter.OnStep(JsonConvert.DeserializeObject<BreakPoint>(data), e);
+                        });
+                        SetStepType(engine.StepType);
+                        break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventBreakpoint:
                         engine = callWithEngine((e) =>
                         {
-                            return currentAdapter.OnBreakPoint(JsonConvert.DeserializeObject<BreakPoint>(data),e);
+                            return currentAdapter.OnBreakPoint(JsonConvert.DeserializeObject<BreakPoint>(data), e);
                         });
                         SetStepType(engine.StepType);
                         break;
@@ -63,17 +68,18 @@ namespace ChakraCore.NET
                     default:
                         break;
                 }
-                
+
             }
         }
-        private DebugEngine callWithEngine(Func<DebugEngine,Task> func)
+        private DebugEngine callWithEngine(Func<DebugEngine, Task> func)
         {
             DebugEngine engine = new DebugEngine(this);
-            Task.Factory.StartNew(() => {
+            Task.Factory.StartNew(() =>
+            {
                 var t = func(engine);
                 t.ContinueWith(_ => { engine.StopProcessing(); });
             });
-            
+
             engine.StartProcessing();
             return engine;
         }
@@ -126,10 +132,10 @@ namespace ChakraCore.NET
             return result;
         }
 
-        public string GetProperties(uint objectHandle, uint from, uint to)
+        public VariableProperties GetProperties(uint objectHandle, uint from, uint to)
         {
             Native.ThrowIfError(Native.JsDiagGetProperties(objectHandle, from, to, out JavaScriptValue result));
-            return result.ToJsonString();
+            return JsonConvert.DeserializeObject<VariableProperties>(result.ToJsonString());
         }
 
         public string GetScriptSource(uint scriptId)
@@ -185,7 +191,7 @@ namespace ChakraCore.NET
         {
 
             Native.ThrowIfError(Native.JsDiagSetBreakpoint(scriptId, line, column, out JavaScriptValue breakpoint));
-            string json= breakpoint.ToJsonString();
+            string json = breakpoint.ToJsonString();
             return JsonConvert.DeserializeObject<BreakPoint>(json);
         }
 

@@ -89,7 +89,7 @@ namespace ChakraCore.NET.Debug
             });
         }
 
-        public Task<string> GetObjectPropertiesAsync(uint objectHandle, uint from = 0, uint to = 99)
+        public Task<VariableProperties> GetObjectPropertiesAsync(uint objectHandle, uint from = 0, uint to = 99)
         {
             return addCommand(() =>
             {
