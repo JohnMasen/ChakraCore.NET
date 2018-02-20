@@ -22,7 +22,6 @@ namespace RunScript
 
 {
 
-    // ---- Types -------------------------------------------------------------------------
     public class Message
     {
         public int id { get; }
@@ -152,14 +151,19 @@ namespace RunScript
     public class StoppedEvent : Event
     {
         public StoppedEvent(int tid, string reasn, string txt = null)
-            : base("stopped",$"{{threadId = {tid},reason = {reasn},text = {txt}}}")
+            : base("stopped", new
+            {
+                threadId = tid,
+                reason = reasn,
+                text = txt
+            })
         { }
     }
 
     public class ExitedEvent : Event
     {
         public ExitedEvent(int exCode)
-            : base("exited", $" {{ exitCode = {exCode }}}") { }
+            : base("exited", new { exitCode = exCode }) { }
     }
 
     public class TerminatedEvent : Event
@@ -171,14 +175,22 @@ namespace RunScript
     public class ThreadEvent : Event
     {
         public ThreadEvent(string reasn, int tid)
-            : base("thread", "{reason = reasn,threadId = tid}")
+            : base("thread", new
+            {
+                reason = reasn,
+                threadId = tid
+            })
         { }
     }
 
     public class OutputEvent : Event
     {
         public OutputEvent(string cat, string outpt)
-            : base("output", "{category = cat,output = outpt}")
+            : base("output", new
+            {
+                category = cat,
+                output = outpt
+            })
         { }
     }
 
@@ -303,6 +315,11 @@ namespace RunScript
 
         protected override void DispatchRequest(string command, dynamic args, Response response)
         {
+            if (args == null)
+            {
+                args = new { };
+            }
+
             try
             {
                 switch (command)
@@ -387,6 +404,9 @@ namespace RunScript
                     case "setBreakpoints":
                         SetBreakpoints(response, args);
                         break;
+                    case "configurationDone":
+                        ConfigurationDone(response, args);
+                        break;
 
                     case "setFunctionBreakpoints":
                         SetFunctionBreakpoints(response, args);
@@ -398,9 +418,6 @@ namespace RunScript
 
                     case "evaluate":
                         Evaluate(response, args);
-                        break;
-                    case "configurationDone":
-                        ConfigurationDone(response, args);
                         break;
 
                     default:

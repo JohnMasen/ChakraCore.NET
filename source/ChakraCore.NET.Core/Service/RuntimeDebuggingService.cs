@@ -149,16 +149,16 @@ namespace ChakraCore.NET
 
         }
 
-        public string GetStackProperties(uint stackFrameIndex)
+        public StackProperties GetStackProperties(uint stackFrameIndex)
         {
             Native.ThrowIfError(Native.JsDiagGetStackProperties(stackFrameIndex, out JavaScriptValue result));
-            return result.ToJsonString();
+            return JsonConvert.DeserializeObject<StackProperties>(result.ToJsonString());
         }
 
-        public string GetStackTrace()
+        public StackTrace[] GetStackTrace()
         {
             Native.ThrowIfError(Native.JsDiagGetStackTrace(out JavaScriptValue result));
-            return result.ToJsonString();
+            return JsonConvert.DeserializeObject<StackTrace[]>(result.ToJsonString());
         }
 
         public void RemoveBreakpoint(uint breakpointId)

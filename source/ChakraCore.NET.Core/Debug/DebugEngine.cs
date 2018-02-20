@@ -65,7 +65,7 @@ namespace ChakraCore.NET.Debug
             });
         }
 
-        public Task<string> GetStackTraceAsync()
+        public Task<StackTrace[]> GetStackTraceAsync()
         {
             return addCommand(() =>
             {
@@ -73,7 +73,7 @@ namespace ChakraCore.NET.Debug
             });
         }
 
-        public Task<string> GetStackPropertiesAsync(uint stackFrameIndex)
+        public Task<StackProperties> GetStackPropertiesAsync(uint stackFrameIndex)
         {
             return addCommand(() =>
             {

@@ -20,8 +20,8 @@ namespace ChakraCore.NET
         void SetStepType(JavaScriptDiagStepType stepType);
         string GetScripts();
         string GetScriptSource(uint scriptId);
-        string GetStackTrace();
-        string GetStackProperties(uint stackFrameIndex);
+        StackTrace[] GetStackTrace();
+        StackProperties GetStackProperties(uint stackFrameIndex);
         string GetProperties(uint objectHandle, uint from, uint to);
         void RequestAsyncBreak();
         JavaScriptValue GetObjectFromHandle(uint objectHandle);
