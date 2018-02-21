@@ -126,10 +126,10 @@ namespace ChakraCore.NET
             return JsonConvert.DeserializeObject<BreakPoint[]>(json);
         }
 
-        public JavaScriptValue GetObjectFromHandle(uint objectHandle)
+        public Variable GetObjectFromHandle(uint objectHandle)
         {
             Native.ThrowIfError(Native.JsDiagGetObjectFromHandle(objectHandle, out JavaScriptValue result));
-            return result;
+            return JsonConvert.DeserializeObject<Variable>(result.ToJsonString());
         }
 
         public VariableProperties GetProperties(uint objectHandle, uint from, uint to)

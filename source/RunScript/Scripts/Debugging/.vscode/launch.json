@@ -12,6 +12,14 @@
             "program": "${workspaceFolder}/app.js",
             "debugServer": 4711
         }
+        {
+            "type": "mono",
+            "request": "attach",
+            "name": "Attach",
+            //"program": "${workspaceFolder}/app.js",
+            "debugServer": 4711
+        }
+        
         
     ]
 }

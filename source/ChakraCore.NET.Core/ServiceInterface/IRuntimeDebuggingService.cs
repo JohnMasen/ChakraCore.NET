@@ -24,7 +24,7 @@ namespace ChakraCore.NET
         StackProperties GetStackProperties(uint stackFrameIndex);
         VariableProperties GetProperties(uint objectHandle, uint from, uint to);
         void RequestAsyncBreak();
-        JavaScriptValue GetObjectFromHandle(uint objectHandle);
+        Variable GetObjectFromHandle(uint objectHandle);
         JavaScriptValue Evaluate(string expression, uint stackFrameIndex,  bool forceSetValueProp);
         #endregion
 

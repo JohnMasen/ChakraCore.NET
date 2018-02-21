@@ -194,6 +194,16 @@ namespace RunScript
         { }
     }
 
+    public class LoadedSourceEvent:Event
+    {
+        public LoadedSourceEvent( string reason,Source source) : base("loadedSource", new
+        {
+            reason,
+            source
+        })
+        {}
+    }
+
     // ---- Response -------------------------------------------------------------------------
 
     public class Capabilities : ResponseBody

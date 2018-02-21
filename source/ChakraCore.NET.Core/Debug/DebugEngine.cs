@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace ChakraCore.NET.Debug
 {
@@ -81,11 +82,23 @@ namespace ChakraCore.NET.Debug
             });
         }
 
-        public Task<string> GetObjectFromHandleAsync(uint objectHandle)
+        public Task ClearBreakPointOnScript(uint scriptId)
         {
             return addCommand(() =>
             {
-                return service.GetObjectFromHandle(objectHandle).ToJsonString();
+                var bps = service.GetBreakpoints();
+                foreach (var item in bps.Where(x=>x.ScriptId==scriptId))
+                {
+                    service.RemoveBreakpoint(item.BreakpointId);
+                }
+            });
+        }
+
+        public Task<Variable> GetObjectFromHandleAsync(uint objectHandle)
+        {
+            return addCommand(() =>
+            {
+                return service.GetObjectFromHandle(objectHandle);
             });
         }
 
@@ -111,6 +124,17 @@ namespace ChakraCore.NET.Debug
             commandQueue.Add(() =>
             {
                 tcs.SetResult(func());
+            });
+            return tcs.Task;
+        }
+
+        private Task addCommand(Action action)
+        {
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            commandQueue.Add(() =>
+            {
+                action();
+                tcs.SetResult(null);
             });
             return tcs.Task;
         }

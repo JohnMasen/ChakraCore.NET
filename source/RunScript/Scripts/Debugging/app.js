@@ -8,6 +8,10 @@ export class app {
         let f=this.abc(c);
         let o = { a: a, b: b, c: c, d: 123 };
         let o2 = { o: o, text: "text" };
+        let ff = function (a) {
+            return a + a;
+        }
+        ff(1);
         echo("---Script Finish---");
     }
     abc(v){
