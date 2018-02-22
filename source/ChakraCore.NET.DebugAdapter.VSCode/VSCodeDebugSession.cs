@@ -18,7 +18,7 @@ using System.IO;
 
 
 
-namespace RunScript
+namespace ChakraCore.NET.DebugAdapter.VSCode
 
 {
 

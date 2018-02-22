@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Diagnostics;
 
 
-namespace RunScript
+namespace ChakraCore.NET.DebugAdapter.VSCode
 {
 	public class Utilities
 	{
@@ -26,86 +26,86 @@ namespace RunScript
 		/*
 		 * Enclose the given string in quotes if it contains space or tab characters.
 		 */
-		public static string Quote(string arg)
-		{
-			if (arg.IndexOfAny(ARGUMENT_SEPARATORS) >= 0) {
-				return '"' + arg + '"';
-			}
-			return arg;
-		}
+		//public static string Quote(string arg)
+		//{
+		//	if (arg.IndexOfAny(ARGUMENT_SEPARATORS) >= 0) {
+		//		return '"' + arg + '"';
+		//	}
+		//	return arg;
+		//}
 
 		/*
 		 * Is the given runtime executable on the PATH.
 		 */
-		public static bool IsOnPath(string runtime)
-		{
-			var process = new Process();
+		//public static bool IsOnPath(string runtime)
+		//{
+		//	var process = new Process();
 
-			process.StartInfo.CreateNoWindow = true;
-			process.StartInfo.UseShellExecute = false;
-			process.StartInfo.RedirectStandardOutput = true;
-			process.StartInfo.FileName = File.Exists(WHICH) ? WHICH : WHERE;
-			process.StartInfo.Arguments = Quote(runtime);
+		//	process.StartInfo.CreateNoWindow = true;
+		//	process.StartInfo.UseShellExecute = false;
+		//	process.StartInfo.RedirectStandardOutput = true;
+		//	process.StartInfo.FileName = File.Exists(WHICH) ? WHICH : WHERE;
+		//	process.StartInfo.Arguments = Quote(runtime);
 
-			try {
-				process.Start();
-				process.WaitForExit();
-				return process.ExitCode == 0;
-			} catch (Exception) {
-				// ignore
-			}
+		//	try {
+		//		process.Start();
+		//		process.WaitForExit();
+		//		return process.ExitCode == 0;
+		//	} catch (Exception) {
+		//		// ignore
+		//	}
 
-			return false;
-		}
+		//	return false;
+		//}
 
-		public static string ConcatArgs(string[] args)
-		{
-			var arg = "";
-			if (args != null) {
-				foreach (var r in args) {
-					if (arg.Length > 0) {
-						arg += " ";
-					}
-					arg += Utilities.Quote(r);
-				}
-			}
-			return arg;
-		}
+		//public static string ConcatArgs(string[] args)
+		//{
+		//	var arg = "";
+		//	if (args != null) {
+		//		foreach (var r in args) {
+		//			if (arg.Length > 0) {
+		//				arg += " ";
+		//			}
+		//			arg += Utilities.Quote(r);
+		//		}
+		//	}
+		//	return arg;
+		//}
 
-		/*
-		 * Resolve hostname, dotted-quad notation for IPv4, or colon-hexadecimal notation for IPv6 to IPAddress.
-		 * Returns null on failure.
-		 */
-		public static IPAddress ResolveIPAddress(string addressString)
-		{
-			try {
-				IPAddress ipaddress = null;
-				if (IPAddress.TryParse(addressString, out ipaddress)) {
-					return ipaddress;
-				}
+		///*
+		// * Resolve hostname, dotted-quad notation for IPv4, or colon-hexadecimal notation for IPv6 to IPAddress.
+		// * Returns null on failure.
+		// */
+		//public static IPAddress ResolveIPAddress(string addressString)
+		//{
+		//	try {
+		//		IPAddress ipaddress = null;
+		//		if (IPAddress.TryParse(addressString, out ipaddress)) {
+		//			return ipaddress;
+		//		}
 
-				#if DNXCORE50
-				IPHostEntry entry = Dns.GetHostEntryAsync(addressString).Result;
-				#else
-				IPHostEntry entry = Dns.GetHostEntry(addressString);
-				#endif
-				if (entry != null && entry.AddressList != null && entry.AddressList.Length > 0) {
-					if (entry.AddressList.Length == 1) {
-						return entry.AddressList[0];
-					}
-					foreach (IPAddress address in entry.AddressList) {
-						if (address.AddressFamily == AddressFamily.InterNetwork) {
-							return address;
-						}
-					}
-				}
-			}
-			catch (Exception) {
-				// fall through
-			}
+		//		#if DNXCORE50
+		//		IPHostEntry entry = Dns.GetHostEntryAsync(addressString).Result;
+		//		#else
+		//		IPHostEntry entry = Dns.GetHostEntry(addressString);
+		//		#endif
+		//		if (entry != null && entry.AddressList != null && entry.AddressList.Length > 0) {
+		//			if (entry.AddressList.Length == 1) {
+		//				return entry.AddressList[0];
+		//			}
+		//			foreach (IPAddress address in entry.AddressList) {
+		//				if (address.AddressFamily == AddressFamily.InterNetwork) {
+		//					return address;
+		//				}
+		//			}
+		//		}
+		//	}
+		//	catch (Exception) {
+		//		// fall through
+		//	}
 
-			return null;
-		}
+		//	return null;
+		//}
 
 		/*
 		 * Find a free socket port.
@@ -137,7 +137,7 @@ namespace RunScript
 				string name = match.Groups[1].Value;
 				if (!underscoredOnly || name.StartsWith("_")) {
 
-					PropertyInfo property = type.GetProperty(name);
+					PropertyInfo property = type.GetRuntimeProperty(name);
 					if (property != null) {
 						object value = property.GetValue(variables, null);
 						return value.ToString();
@@ -147,6 +147,7 @@ namespace RunScript
 				return match.Groups[0].Value;
 			});
 		}
+
 
 		/**
 		 * converts the given absPath into a path that is relative to the given dirPath.

@@ -6,12 +6,17 @@ using System.Reflection;
 using System.Text;
 using ChakraCore.NET.Hosting;
 using ChakraCore.NET.Plugin.Common;
+using ChakraCore.NET.DebugAdapter.VSCode;
+using System.Threading;
+
 namespace RunScript
 {
     class Program
     {
         static void Main(string[] args)
         {
+            CancellationTokenSource debugCTS=null;
+
             if (args.Length == 0)
             {
                 showUsage();
@@ -33,6 +38,7 @@ namespace RunScript
                     return;
                 }
                 JavaScriptHostingConfig hostingConfig = new JavaScriptHostingConfig();
+                
                 hostingConfig
                     .AddPlugin<SysInfoPluginInstaller>()
                     .AddModuleFolder(config.RootFolder)
@@ -40,10 +46,17 @@ namespace RunScript
                     .AddModuleFolderFromCurrentAssembly()
                     .EnableHosting((moduleName) => { return hostingConfig; })
                     ;
-                var session = new VSCodeDebugAdapter();
-                hostingConfig.DebugAdapter = session;
-                RunServer(session, 4711);
-                //hostingConfig.DebugAdapter = new TestDebugAdapter();
+                if (config.DebugMode)
+                {
+                    debugCTS = new CancellationTokenSource();
+                    var adapter = new VSCodeDebugAdapter();
+                    hostingConfig.DebugAdapter = adapter;
+                    adapter.OnAdapterMessage += (sender, msg) => { Console.WriteLine(msg); };
+                    //RunServer(adapter, 4711);
+                    adapter.RunServer(4711, debugCTS.Token); ;
+                    //hostingConfig.DebugAdapter = new TestDebugAdapter();
+                }
+
 
                 string script = File.ReadAllText(config.File);
                 Console.WriteLine("---Script Start---");
@@ -61,6 +74,7 @@ namespace RunScript
 
             Console.WriteLine("Press Enter to exit");
             Console.Read();
+            debugCTS?.Cancel();
         }
         
 
@@ -80,42 +94,42 @@ namespace RunScript
             Console.WriteLine(sb);
         }
 
-        private static void RunSession(VSCodeDebugAdapter session, Stream inputStream, Stream outputStream)
-        {
-            session.Start(inputStream, outputStream).Wait();
-        }
+        //private static void RunSession(VSCodeDebugAdapter session, Stream inputStream, Stream outputStream)
+        //{
+        //    session.Start(inputStream, outputStream).Wait();
+        //}
 
-        private static void RunServer(VSCodeDebugAdapter session, int port)
-        {
-            TcpListener serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
-            serverSocket.Start();
-            Console.WriteLine($"StartListening at {serverSocket.LocalEndpoint}");
-            new System.Threading.Thread(() => {
-                while (true)
-                {
-                    var clientSocket = serverSocket.AcceptSocket();
-                    if (clientSocket != null)
-                    {
-                        Console.WriteLine(">> accepted connection from client");
+        //private static void RunServer(VSCodeDebugAdapter session, int port)
+        //{
+        //    TcpListener serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
+        //    serverSocket.Start();
+        //    Console.WriteLine($"StartListening at {serverSocket.LocalEndpoint}");
+        //    new System.Threading.Thread(() => {
+        //        while (true)
+        //        {
+        //            var clientSocket = serverSocket.AcceptSocket();
+        //            if (clientSocket != null)
+        //            {
+        //                Console.WriteLine(">> accepted connection from client");
 
-                        new System.Threading.Thread(() => {
-                            using (var networkStream = new NetworkStream(clientSocket))
-                            {
-                                try
-                                {
-                                    RunSession(session,networkStream, networkStream);
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.Error.WriteLine("Exception: " + e);
-                                }
-                            }
-                            clientSocket.Close();
-                            Console.Error.WriteLine(">> client connection closed");
-                        }).Start();
-                    }
-                }
-            }).Start();
-        }
+        //                new System.Threading.Thread(() => {
+        //                    using (var networkStream = new NetworkStream(clientSocket))
+        //                    {
+        //                        try
+        //                        {
+        //                            RunSession(session,networkStream, networkStream);
+        //                        }
+        //                        catch (Exception e)
+        //                        {
+        //                            Console.Error.WriteLine("Exception: " + e);
+        //                        }
+        //                    }
+        //                    clientSocket.Close();
+        //                    Console.Error.WriteLine(">> client connection closed");
+        //                }).Start();
+        //            }
+        //        }
+        //    }).Start();
+        //}
     }
 }

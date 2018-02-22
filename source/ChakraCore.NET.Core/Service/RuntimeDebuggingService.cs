@@ -90,11 +90,7 @@ namespace ChakraCore.NET
             return engine;
         }
 
-        //public void AddScriptSource(string name, string content)
-        //{
-        //    currentAdapter?.AddScript(name, content);
-        //}
-
+        
         public void AttachAdapter(IDebugAdapter adapter)
         {
             if (IsDebugging)

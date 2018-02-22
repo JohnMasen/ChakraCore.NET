@@ -37,6 +37,8 @@ namespace RunScript
         public string ModuleClass { get; set; } = "app";
         [ConfigKey("EntryPoint"), ConfigKey("E")]
         public string ModuleEntryPoint { get; set; } = "main";
+        [ConfigKey("Debug",true)]
+        public bool DebugMode { get; set; } = false;
         public string RootFolder { get; set; }
         public string PluginRootFolder { get; set; } = new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName + "\\Plugins";
         public static ScriptConfig Parse(string[] args)

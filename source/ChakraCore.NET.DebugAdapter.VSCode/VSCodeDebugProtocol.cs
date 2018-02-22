@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 
 
-namespace RunScript
+namespace ChakraCore.NET.DebugAdapter.VSCode
 
 {
 

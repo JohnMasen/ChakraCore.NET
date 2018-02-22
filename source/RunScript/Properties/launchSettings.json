@@ -13,7 +13,7 @@
     },
     "Debugging": {
       "commandName": "Project",
-      "commandLineArgs": "Scripts\\Debugging\\app.js /m"
+      "commandLineArgs": "Scripts\\Debugging\\app.js /m /debug"
     }
   }
 }

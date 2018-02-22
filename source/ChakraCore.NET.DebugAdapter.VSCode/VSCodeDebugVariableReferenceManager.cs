@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RunScript
+namespace ChakraCore.NET.DebugAdapter.VSCode
 {
     internal enum VariableScopeEnum
     {

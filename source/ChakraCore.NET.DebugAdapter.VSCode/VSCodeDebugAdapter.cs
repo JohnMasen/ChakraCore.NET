@@ -7,27 +7,33 @@ using ChakraCore.NET.API;
 using ChakraCore.NET.Debug;
 using System.Linq;
 
-namespace RunScript
+namespace ChakraCore.NET.DebugAdapter.VSCode
 {
-    internal class VSCodeDebugAdapter : DebugSession, IDebugAdapter
+    public class VSCodeDebugAdapter : DebugSession, IDebugAdapter
     {
+        public event EventHandler<string> OnAdapterMessage;
         private Thread currentThread = new Thread(1, "Thread1");
         DebugEngine currentEngine;
         ManualResetEvent scriptReadyMSE = new ManualResetEvent(false);
         AutoResetEvent engineEventASE = new AutoResetEvent(false);
         AutoResetEvent vscodeEventASE = new AutoResetEvent(false);
         private List<SourceCode> sourceCodeList = new List<SourceCode>();
-        string sourceMap;
+        private Dictionary<string, string> sourceMap = new Dictionary<string, string>();
 
         VSCodeDebugVariableReferenceManager handleManager = new VSCodeDebugVariableReferenceManager();
         public override void Attach(Response response, dynamic arguments)
         {
-            Console.WriteLine("[Attach]");
-            sourceMap = arguments.sourceMap;
+            OnAdapterMessage?.Invoke(this,"[Attach]");
+            sourceMap.Clear();
+            if (arguments.sourceMap != null)
+            {
+                foreach (var item in arguments.sourceMap)
+                {
+                    sourceMap.Add((string)item.name,(string)item.value);
+                }
+            }
             SendResponse(response);
             SendEvent(new OutputEvent(string.Empty, "Attach received"));
-            //sendLoadedScripts();
-            
         }
 
 
@@ -40,7 +46,7 @@ namespace RunScript
 
         public override void Disconnect(Response response, dynamic arguments)
         {
-            Console.WriteLine("Disconnect");
+            OnAdapterMessage?.Invoke(this,"Disconnect");
             vscodeEventASE.Set();
         }
 
@@ -51,7 +57,7 @@ namespace RunScript
 
         public override void Initialize(Response response, dynamic args)
         {
-            Console.WriteLine("Initialize called");
+            OnAdapterMessage?.Invoke(this,"Initialize called");
             SendResponse(response, new Capabilities()
             {
                 exceptionBreakpointFilters = new dynamic[0],
@@ -62,9 +68,9 @@ namespace RunScript
                 supportsLoadedSourcesRequest = true
             });
             
-            Console.WriteLine("Waiting for script ready");
+            OnAdapterMessage?.Invoke(this,"Waiting for script ready");
             scriptReadyMSE.WaitOne();
-            Console.WriteLine("InitializedEvent Sent");
+            OnAdapterMessage?.Invoke(this,"InitializedEvent Sent");
             SendEvent(new InitializedEvent());
             //SendEvent(new OutputEvent(string.Empty, "InitializedEvent"));
         }
@@ -80,7 +86,7 @@ namespace RunScript
             {
                 SendEvent(new LoadedSourceEvent("new", new Source(item.FileName,item.FileName,(int)item.ScriptId,"source hint")));
             }
-            Console.WriteLine("Source code sent to VSCode");
+            OnAdapterMessage?.Invoke(this,"Source code sent to VSCode");
         }
 
         public override void Next(Response response, dynamic arguments)
@@ -110,7 +116,6 @@ namespace RunScript
 
         public override void SetBreakpoints(Response response, dynamic arguments)
         {
-            //throw new NotImplementedException();
             string fileName = arguments.source.name;
             List<Breakpoint> bps = new List<Breakpoint>();
             if (findSourceCode(fileName, out var sourceCode))
@@ -125,7 +130,7 @@ namespace RunScript
                     bps.Add(new Breakpoint(true, ConvertClientLineToDebugger( (int)bp.Line)));
                 }
             }
-            Console.WriteLine($"BreakPoints on {fileName} Set");
+            OnAdapterMessage?.Invoke(this,$"BreakPoints on {fileName} Set");
             SendResponse(response, new SetBreakpointsResponseBody(bps));
             
         }
@@ -165,25 +170,28 @@ namespace RunScript
                 t1.Wait();
                 string functionName = t1.Result.Name;
                 SourceCode engineSource = sourceCodeList.First(x => x.ScriptId == item.ScriptId);
+                Source source;
+                if (sourceMap.ContainsKey(engineSource.FileName))
+                {
+                    source = new Source(engineSource.FileName, sourceMap[engineSource.FileName], 0, "file");
+                }
+                else
+                {
+                    source = new Source(engineSource.FileName, string.Empty,(int)engineSource.ScriptId, "dynamic load");
+                }
                 StackFrame frame = new StackFrame(
                     item.Index,
                     functionName,
-                    new RunScript.Source(engineSource.FileName,
-                    mapSourceFromEngine(engineSource.FileName),
-                    (int)engineSource.ScriptId,"Normal"),
+                    source,
                     ConvertClientLineToDebugger( item.Line),
                     item.Column,
-                    "Normal");
+                    string.Empty);
                 frames.Add(frame);
             }
 
             SendResponse(response, new StackTraceResponseBody(frames, frames.Count));
         }
 
-        private string mapSourceFromEngine(string fileName)
-        {
-            return sourceMap.Replace("{fileName}", fileName).Replace("/","\\");
-        }
 
         public override void StepIn(Response response, dynamic arguments)
         {
@@ -201,7 +209,7 @@ namespace RunScript
 
         public override void Threads(Response response, dynamic arguments)
         {
-            Console.WriteLine("[Threads]");
+            OnAdapterMessage?.Invoke(this,"[Threads]");
             handleManager.Reset();
             SendResponse(response, new ThreadsResponseBody(new List<Thread>() { currentThread }));
         }
@@ -261,7 +269,7 @@ namespace RunScript
         internal override void ConfigurationDone(Response response, dynamic args)
         {
             
-            Console.WriteLine("ConfigurationDone");
+            OnAdapterMessage?.Invoke(this,"ConfigurationDone");
             vscodeEventASE.Set();
             SendResponse(response);
         }
@@ -270,7 +278,7 @@ namespace RunScript
 
         Task IDebugAdapter.OnBreakPoint(BreakPoint breakPoint, DebugEngine engine)
         {
-            Console.WriteLine($"Breakpoint hit at {breakPoint}");
+            OnAdapterMessage?.Invoke(this,$"Breakpoint hit at {breakPoint}");
             currentEngine = engine;
             SendEvent(new StoppedEvent(currentThread.id, "breakpoint","breakpoint hit"));
             vscodeEventASE.WaitOne();
@@ -279,30 +287,30 @@ namespace RunScript
 
         Task IDebugAdapter.OnDebugEvent(JavaScriptDiagDebugEvent eventType, string data, DebugEngine engine)
         {
-            Console.WriteLine($"[{eventType}],{data}");
+            OnAdapterMessage?.Invoke(this,$"[{eventType}],{data}");
             return Task.CompletedTask;
         }
 
         Task IDebugAdapter.ScriptReady(DebugEngine engine)
         {
             currentEngine = engine;
-            Console.WriteLine("Script ready, Waiting for debugger");
+            OnAdapterMessage?.Invoke(this,"Script ready, Waiting for debugger");
             scriptReadyMSE.Set();
             vscodeEventASE.WaitOne();
-            Console.WriteLine("Script continue running");
+            OnAdapterMessage?.Invoke(this,"Script continue running");
             return Task.CompletedTask;
         }
 
         void IDebugAdapter.AddScript(SourceCode sourceCode)
         {
             sourceCodeList.Add(sourceCode);
-            Console.WriteLine($"Script {sourceCode.FileName} Loaded");
+            OnAdapterMessage?.Invoke(this,$"Script {sourceCode.FileName} Loaded");
         }
 
 
         Task IDebugAdapter.OnStep(BreakPoint breakPoint, DebugEngine engine)
         {
-            Console.WriteLine($"Step complete at {breakPoint}");
+            OnAdapterMessage?.Invoke(this,$"Step complete at {breakPoint}");
             currentEngine = engine;
             SendEvent(new StoppedEvent(currentThread.id, "step"));
             vscodeEventASE.WaitOne();
@@ -311,7 +319,7 @@ namespace RunScript
 
         Task IDebugAdapter.OnException(RuntimeException exception, DebugEngine engine)
         {
-            Console.WriteLine($"Exception occured at  {exception}");
+            OnAdapterMessage?.Invoke(this,$"Exception occured at  {exception}");
             currentEngine = engine;
             SendEvent(new StoppedEvent(currentThread.id, "exception",exception.ExceptionObject.Display));
             vscodeEventASE.WaitOne();

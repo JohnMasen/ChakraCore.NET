@@ -1,8 +1,8 @@
-﻿import { V1 } from 'Module1';
+﻿import { V1,F1 } from 'Module1';
 import { echo } from 'sdk@Echo';
 export class app {
     main() {
-        let a = "aaa";
+        let a = V1;
         let b = a;
         let c = a + b;
         let f=this.abc(c);
@@ -11,8 +11,9 @@ export class app {
         let ff = function (a) {
             return a + a;
         };
+        let ff2=F1(1,2);
         ff(1);
-        exceptionFunction();
+        //exceptionFunction();
         echo("---Script Finish---");
     }
     abc(v){
