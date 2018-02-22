@@ -16,6 +16,11 @@ namespace RunScript
             Console.WriteLine($"AddScript,{sourceCode}");
         }
 
+        public void AddScriptSource(string name, string content)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task OnBreakPoint(BreakPoint breakPoint, DebugEngine engine)
         {
             Console.WriteLine($"BreakPoint Hit:{breakPoint}");
@@ -53,6 +58,11 @@ namespace RunScript
                 default:
                     break;
             }
+        }
+
+        public Task OnException(RuntimeException exception, DebugEngine engine)
+        {
+            throw new NotImplementedException();
         }
 
         public Task OnStep(BreakPoint breakPoint, DebugEngine engine)

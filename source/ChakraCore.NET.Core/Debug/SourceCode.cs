@@ -15,6 +15,8 @@ namespace ChakraCore.NET.Debug
         public int SourceLength;
         [JsonProperty(propertyName: "scriptId")]
         public uint ScriptId;
+        [JsonProperty(propertyName: "source")]
+        public string Source;
 
         public override string ToString()
         {

@@ -18,8 +18,8 @@ namespace ChakraCore.NET
         void RemoveBreakpoint(uint breakpointId);
         void SetBreakpointOnException(JavaScriptDiagBreakOnExceptionAttributes attributes);
         void SetStepType(JavaScriptDiagStepType stepType);
-        string GetScripts();
-        string GetScriptSource(uint scriptId);
+        SourceCode[] GetScripts();
+        SourceCode GetScriptSource(uint scriptId);
         StackTrace[] GetStackTrace();
         StackProperties GetStackProperties(uint stackFrameIndex);
         VariableProperties GetProperties(uint objectHandle, uint from, uint to);

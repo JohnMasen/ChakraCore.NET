@@ -11,10 +11,11 @@
             "name": "Ask for file name",
             "program": "${workspaceFolder}/app.js",
             "debugServer": 4711
-        }
+        },
         {
             "type": "mono",
             "request": "attach",
+            "sourceMap":"${workspaceFolder}/{fileName}",
             "name": "Attach",
             //"program": "${workspaceFolder}/app.js",
             "debugServer": 4711

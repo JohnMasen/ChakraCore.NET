@@ -10,8 +10,9 @@ export class app {
         let o2 = { o: o, text: "text" };
         let ff = function (a) {
             return a + a;
-        }
+        };
         ff(1);
+        exceptionFunction();
         echo("---Script Finish---");
     }
     abc(v){

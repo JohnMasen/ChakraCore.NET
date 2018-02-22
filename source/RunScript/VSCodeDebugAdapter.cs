@@ -16,31 +16,20 @@ namespace RunScript
         ManualResetEvent scriptReadyMSE = new ManualResetEvent(false);
         AutoResetEvent engineEventASE = new AutoResetEvent(false);
         AutoResetEvent vscodeEventASE = new AutoResetEvent(false);
-        private Dictionary<string, string> sourceMap = new Dictionary<string, string>();
         private List<SourceCode> sourceCodeList = new List<SourceCode>();
+        string sourceMap;
 
         VSCodeDebugVariableReferenceManager handleManager = new VSCodeDebugVariableReferenceManager();
-        private bool isAttached = false;
         public override void Attach(Response response, dynamic arguments)
         {
             Console.WriteLine("[Attach]");
+            sourceMap = arguments.sourceMap;
             SendResponse(response);
             SendEvent(new OutputEvent(string.Empty, "Attach received"));
-            sendLoadedScripts();
-            isAttached = true;
+            //sendLoadedScripts();
             
         }
-        private string mapSourceFromVSCode(string vscodeFileName)
-        {
-            return sourceMap.First(item => item.Value == vscodeFileName).Key;
-        }
 
-        private string mapSourceFromEngine(string engineFileName)
-        {
-            return sourceMap[engineFileName];
-        }
-
-        
 
         public override void Continue(Response response, dynamic arguments)
         {
@@ -52,7 +41,6 @@ namespace RunScript
         public override void Disconnect(Response response, dynamic arguments)
         {
             Console.WriteLine("Disconnect");
-            isAttached = false;
             vscodeEventASE.Set();
         }
 
@@ -70,7 +58,8 @@ namespace RunScript
                 supportsConditionalBreakpoints = false,
                 supportsEvaluateForHovers = false,
                 supportsConfigurationDoneRequest = true,
-                supportsFunctionBreakpoints = false
+                supportsFunctionBreakpoints = false,
+                supportsLoadedSourcesRequest = true
             });
             
             Console.WriteLine("Waiting for script ready");
@@ -126,7 +115,6 @@ namespace RunScript
             List<Breakpoint> bps = new List<Breakpoint>();
             if (findSourceCode(fileName, out var sourceCode))
             {
-                sourceMap[sourceCode.FileName] = arguments.source.path;
                 currentEngine.ClearBreakPointOnScript(sourceCode.ScriptId).Wait();
                 for (int i = 0; i < arguments.breakpoints.Count; i++)
                 {
@@ -158,7 +146,10 @@ namespace RunScript
 
         public override void Source(Response response, dynamic arguments)
         {
-            throw new NotImplementedException();
+            uint id = arguments.source.sourceReference;
+            var t=currentEngine.GetScriptSourceAsync(id);
+            t.Wait();
+            SendResponse(response, new SourceResponseBody(t.Result.Source));
         }
 
         public override void StackTrace(Response response, dynamic arguments)
@@ -177,7 +168,9 @@ namespace RunScript
                 StackFrame frame = new StackFrame(
                     item.Index,
                     functionName,
-                    new RunScript.Source(engineSource.FileName, mapSourceFromEngine(engineSource.FileName),0,"Normal"),
+                    new RunScript.Source(engineSource.FileName,
+                    mapSourceFromEngine(engineSource.FileName),
+                    (int)engineSource.ScriptId,"Normal"),
                     ConvertClientLineToDebugger( item.Line),
                     item.Column,
                     "Normal");
@@ -185,6 +178,11 @@ namespace RunScript
             }
 
             SendResponse(response, new StackTraceResponseBody(frames, frames.Count));
+        }
+
+        private string mapSourceFromEngine(string fileName)
+        {
+            return sourceMap.Replace("{fileName}", fileName).Replace("/","\\");
         }
 
         public override void StepIn(Response response, dynamic arguments)
@@ -273,8 +271,8 @@ namespace RunScript
         Task IDebugAdapter.OnBreakPoint(BreakPoint breakPoint, DebugEngine engine)
         {
             Console.WriteLine($"Breakpoint hit at {breakPoint}");
-            SendEvent(new StoppedEvent(currentThread.id, "breakpoint","breakpoint hit"));
             currentEngine = engine;
+            SendEvent(new StoppedEvent(currentThread.id, "breakpoint","breakpoint hit"));
             vscodeEventASE.WaitOne();
             return Task.CompletedTask;
         }
@@ -298,7 +296,6 @@ namespace RunScript
         void IDebugAdapter.AddScript(SourceCode sourceCode)
         {
             sourceCodeList.Add(sourceCode);
-            sourceMap.Add(sourceCode.FileName, string.Empty);
             Console.WriteLine($"Script {sourceCode.FileName} Loaded");
         }
 
@@ -306,10 +303,20 @@ namespace RunScript
         Task IDebugAdapter.OnStep(BreakPoint breakPoint, DebugEngine engine)
         {
             Console.WriteLine($"Step complete at {breakPoint}");
-            SendEvent(new StoppedEvent(currentThread.id, "step"));
             currentEngine = engine;
+            SendEvent(new StoppedEvent(currentThread.id, "step"));
             vscodeEventASE.WaitOne();
             return Task.CompletedTask;
         }
+
+        Task IDebugAdapter.OnException(RuntimeException exception, DebugEngine engine)
+        {
+            Console.WriteLine($"Exception occured at  {exception}");
+            currentEngine = engine;
+            SendEvent(new StoppedEvent(currentThread.id, "exception",exception.ExceptionObject.Display));
+            vscodeEventASE.WaitOne();
+            return Task.CompletedTask;
+        }
+
     }
 }

@@ -213,6 +213,7 @@ namespace RunScript
         public bool supportsFunctionBreakpoints;
         public bool supportsConditionalBreakpoints;
         public bool supportsEvaluateForHovers;
+        public bool supportsLoadedSourcesRequest;
         public dynamic[] exceptionBreakpointFilters;
     }
 
@@ -224,6 +225,15 @@ namespace RunScript
         public ErrorResponseBody(Message error)
         {
             this.error = error;
+        }
+    }
+    
+    public class SourceResponseBody:ResponseBody
+    {
+        public string content;
+        public SourceResponseBody(string content)
+        {
+            this.content = content;
         }
     }
 

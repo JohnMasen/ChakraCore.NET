@@ -38,11 +38,17 @@ namespace ChakraCore.NET
                         break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventCompileError:
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventDebuggerStatement:
-                    case JavaScriptDiagDebugEvent.JsDiagDebugEventRuntimeException:
                         callWithEngine((e) =>
                         {
                             return currentAdapter.OnDebugEvent(debugEvent, data, e);
                         });
+                        break;
+                    case JavaScriptDiagDebugEvent.JsDiagDebugEventRuntimeException:
+                        engine = callWithEngine((e) =>
+                        {
+                            return currentAdapter.OnException(JsonConvert.DeserializeObject<RuntimeException>(data), e);
+                        });
+                        SetStepType(engine.StepType);
                         break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventStepComplete:
                         engine = callWithEngine((e) =>
@@ -138,19 +144,19 @@ namespace ChakraCore.NET
             return JsonConvert.DeserializeObject<VariableProperties>(result.ToJsonString());
         }
 
-        public string GetScriptSource(uint scriptId)
+        public SourceCode GetScriptSource(uint scriptId)
         {
 
             Native.ThrowIfError(Native.JsDiagGetSource(scriptId, out JavaScriptValue source));
-            return source.ToString();
+            return JsonConvert.DeserializeObject<SourceCode>(source.ToJsonString());
         }
 
-        public string GetScripts()
+        public SourceCode[] GetScripts()
         {
             IJSValueConverterService converter = CurrentNode.GetService<IJSValueConverterService>();
 
             Native.ThrowIfError(Native.JsDiagGetScripts(out JavaScriptValue result));
-            return result.ToJsonString();
+            return JsonConvert.DeserializeObject<SourceCode[]>(result.ToJsonString());
 
 
         }
@@ -226,5 +232,6 @@ namespace ChakraCore.NET
             sourceContext++;
             return sourceContext;
         }
+
     }
 }

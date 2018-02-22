@@ -50,7 +50,7 @@ namespace ChakraCore.NET.Debug
             commandQueue.Add(service.RequestAsyncBreak);
         }
 
-        public Task<String> GetScriptsAsync()
+        public Task<SourceCode[]> GetScriptsAsync()
         {
             return addCommand(() =>
             {
@@ -91,6 +91,14 @@ namespace ChakraCore.NET.Debug
                 {
                     service.RemoveBreakpoint(item.BreakpointId);
                 }
+            });
+        }
+
+        public Task<SourceCode> GetScriptSourceAsync(uint scriptId)
+        {
+            return addCommand(() =>
+            {
+                return service.GetScriptSource(scriptId);
             });
         }
 

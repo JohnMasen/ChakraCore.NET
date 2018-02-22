@@ -13,5 +13,6 @@ namespace ChakraCore.NET.Debug
         void AddScript(SourceCode sourceCode);
         Task OnBreakPoint(BreakPoint breakPoint, DebugEngine engine);
         Task OnStep(BreakPoint breakPoint, DebugEngine engine);
+        Task OnException(RuntimeException exception, DebugEngine engine);
     }
 }
