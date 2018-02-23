@@ -17,7 +17,7 @@
             "request": "attach",
             "sourceMap":[
                 {"name":"app.js","value":"${workspaceFolder}/app.js"},
-                // {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
+                {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
                 ],
             "name": "Attach",
             //"program": "${workspaceFolder}/app.js",

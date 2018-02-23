@@ -238,6 +238,10 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         private VariablesResponseBody loadVariableProperties(uint varibleHandle)
         {
+            if (varibleHandle==0)//if Eval function in script, the argument handle will be 0
+            {
+                return null;
+            }
             var t = currentEngine.GetObjectPropertiesAsync(varibleHandle);
             t.Wait();
             var properties = from item in t.Result.Properties

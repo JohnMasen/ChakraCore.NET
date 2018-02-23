@@ -11,6 +11,7 @@ export class app {
         let ff = function (a) {
             return a + a;
         };
+        //eval("let cc=10;"); //eval function will cause arguments handle to 0
         let ff2=F1(1,2);
         ff(1);
         //exceptionFunction();
