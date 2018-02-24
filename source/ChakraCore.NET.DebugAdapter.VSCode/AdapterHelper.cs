@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChakraCore.NET.Debug;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -15,10 +16,11 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             TcpListener serverSocket = new TcpListener(IPAddress.Loopback, port);
             serverSocket.Start();
             Console.WriteLine($"StartListening at {serverSocket.LocalEndpoint}");
-            token.Register(()=> {
+            token.Register(() =>
+            {
                 Console.WriteLine("Shuting down Server");
                 serverSocket.Stop();
-                });
+            });
             while (!token.IsCancellationRequested)
             {
                 var clientSocket = await serverSocket.AcceptSocketAsync();
@@ -40,6 +42,10 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
                 }
             }
 
+        }
+        public static Variable ToVSCodeVarible(this Debug.Variable value, string namePattern = "{0}")
+        {
+            return new Variable(string.Format(namePattern, value.Name), value.Display ?? value.Value, value.Type, value.PropertyAttributes.HasFlag(PropertyAttributesEnum.HAVE_CHILDRENS) ? (int)value.Handle : 0);
         }
     }
 }

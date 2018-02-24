@@ -17,7 +17,7 @@ namespace ChakraCore.NET.Debug
         [JsonProperty(propertyName: "display")]
         public string Display;
         [JsonProperty(propertyName: "propertyAttributes")]
-        public int PropertyAttributes;
+        public PropertyAttributesEnum PropertyAttributes;
         [JsonProperty(propertyName: "handle")]
         public uint Handle;
         [JsonProperty(propertyName: "value")]

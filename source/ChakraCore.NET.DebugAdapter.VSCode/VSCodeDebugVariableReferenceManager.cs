@@ -8,7 +8,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
     {
         Local,
         Globals,
-        Arguments
+        Scopes
     }
     internal struct VariableHandle
     {

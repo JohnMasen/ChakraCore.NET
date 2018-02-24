@@ -109,7 +109,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             {
                 new Scope("Local",handleManager.Create(frameid,VariableScopeEnum.Local).Id),//first item will be expanded by default
                 new Scope("Globals",handleManager.Create(frameid,VariableScopeEnum.Globals).Id),
-                new Scope("Arguments",handleManager.Create(frameid,VariableScopeEnum.Arguments).Id),
+                new Scope("Scopes",handleManager.Create(frameid,VariableScopeEnum.Scopes).Id)
             };
             SendResponse(response, new ScopesResponseBody(scopes));
         }
@@ -245,7 +245,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             var t = currentEngine.GetObjectPropertiesAsync(varibleHandle);
             t.Wait();
             var properties = from item in t.Result.Properties
-                             select new Variable(item.Name, item.Display ?? item.Value, item.Type, (int)item.Handle);
+                             select item.ToVSCodeVarible();
             return new VariablesResponseBody(properties.ToList());
         }
 
@@ -257,13 +257,30 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             switch (handle.Scope)
             {
                 case VariableScopeEnum.Local:
-                    var variables = from item in t.Result.Locals
-                                    select new Variable(item.Name, item.Display ?? item.Value, item.Type, (int)item.Handle);
-                    return new VariablesResponseBody(variables.ToList());
+                    var variables = (from item in t.Result.Locals
+                                    select item.ToVSCodeVarible()).ToList();
+                    variables.Insert(0,t.Result.ThisObject.ToVSCodeVarible("[{0}]"));
+                    if (t.Result.Arguments.Handle!=0)
+                    {
+                        variables.Insert(1,t.Result.Arguments.ToVSCodeVarible());
+                    }
+                    return new VariablesResponseBody(variables);
                 case VariableScopeEnum.Globals:
                     return loadVariableProperties(t.Result.Global.Handle);
-                case VariableScopeEnum.Arguments:
-                    return loadVariableProperties(t.Result.Arguments.Handle);
+                case VariableScopeEnum.Scopes:
+                    if (t.Result.Scopes.Length>0)
+                    {
+                        List<Variable> scopes = new List<Variable>();
+                        foreach (var item in t.Result.Scopes)
+                        {
+                            scopes.Add(new Variable($"Scope #{item.Index}", string.Empty, string.Empty,(int)item.Handle));
+                        }
+                        return new VariablesResponseBody(scopes);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(handle), "Invalid scope type");
             }

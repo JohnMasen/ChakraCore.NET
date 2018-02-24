@@ -15,5 +15,7 @@ namespace ChakraCore.NET.Debug
         public Variable[] Locals;
         [JsonProperty(propertyName: "globals")]
         public Variable Global;
+        [JsonProperty(propertyName: "scopes")]
+        public Scope[] Scopes;
     }
 }
