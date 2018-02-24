@@ -19,7 +19,7 @@
 
         /// <param name="error">The error.</param>
 
-        public static void ThrowIfError(JavaScriptErrorCode error)
+        public static void ThrowIfError(JavaScriptErrorCode error,bool ignoreScriptError=false)
 
         {
 
@@ -146,30 +146,19 @@
 
 
                     case JavaScriptErrorCode.ScriptException:
-
                         {
-                            string msg = extractErrorObject(out var errorObject);
-                            
-
-
-
-                            throw new JavaScriptScriptException(error, errorObject, $"Script threw an exception. {msg}");
-
+                            if (!ignoreScriptError)
+                            {
+                                string msg = extractErrorObject(out var errorObject);
+                                throw new JavaScriptScriptException(error, errorObject, $"Script threw an exception. {msg}");
+                            }
+                            break;
                         }
-
-
-
                     case JavaScriptErrorCode.ScriptCompile:
-
                         {
-
                             string msg = extractErrorObject(out var errorObject);
-
                             throw new JavaScriptScriptException(error, errorObject, $"Compile error. {msg}");
-
                         }
-
-
 
                     case JavaScriptErrorCode.ScriptTerminated:
 

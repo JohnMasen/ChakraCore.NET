@@ -16,14 +16,15 @@ namespace RunScript
         static void Main(string[] args)
         {
             CancellationTokenSource debugCTS=null;
-
+            ScriptConfig config=null;
+            JSApp app = null;
             if (args.Length == 0)
             {
                 showUsage();
+                return;
             }
             else
             {
-                ScriptConfig config = null;
                 try
                 {
                     config = ScriptConfig.Parse(args);
@@ -49,7 +50,7 @@ namespace RunScript
                 if (config.DebugMode)
                 {
                     debugCTS = new CancellationTokenSource();
-                    var adapter = new VSCodeDebugAdapter();
+                    var adapter = new VSCodeDebugAdapter(true);
                     hostingConfig.DebugAdapter = adapter;
                     adapter.OnAdapterMessage += (sender, msg) => { Console.WriteLine(msg); };
                     //RunServer(adapter, 4711);
@@ -62,7 +63,7 @@ namespace RunScript
                 Console.WriteLine("---Script Start---");
                 if (config.IsModule)
                 {
-                    var app=JavaScriptHosting.Default.GetModuleClass<JSApp>(config.FileName, config.ModuleClass, hostingConfig);
+                    app=JavaScriptHosting.Default.GetModuleClass<JSApp>(config.FileName, config.ModuleClass, hostingConfig);
                     app.EntryPoint = config.ModuleEntryPoint;
                     app.Run();
                 }
@@ -71,9 +72,26 @@ namespace RunScript
                     JavaScriptHosting.Default.RunScript(script, hostingConfig);
                 }
             }
+            if (config.IsModule)
+            {
+                Console.WriteLine("input \"exit\" to exit, anything else to run the module again");
+                string command = Console.ReadLine();
+                while (command != "exit")
+                {
+                    app.Run();
+                    Console.WriteLine("input \"exit\" to exit, anything else to run the module again");
+                    command = Console.ReadLine();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Press Enter to exit");
+                Console.Read();
+            }
+            
+            
 
-            Console.WriteLine("Press Enter to exit");
-            Console.Read();
+            
             debugCTS?.Cancel();
         }
         
@@ -94,42 +112,5 @@ namespace RunScript
             Console.WriteLine(sb);
         }
 
-        //private static void RunSession(VSCodeDebugAdapter session, Stream inputStream, Stream outputStream)
-        //{
-        //    session.Start(inputStream, outputStream).Wait();
-        //}
-
-        //private static void RunServer(VSCodeDebugAdapter session, int port)
-        //{
-        //    TcpListener serverSocket = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
-        //    serverSocket.Start();
-        //    Console.WriteLine($"StartListening at {serverSocket.LocalEndpoint}");
-        //    new System.Threading.Thread(() => {
-        //        while (true)
-        //        {
-        //            var clientSocket = serverSocket.AcceptSocket();
-        //            if (clientSocket != null)
-        //            {
-        //                Console.WriteLine(">> accepted connection from client");
-
-        //                new System.Threading.Thread(() => {
-        //                    using (var networkStream = new NetworkStream(clientSocket))
-        //                    {
-        //                        try
-        //                        {
-        //                            RunSession(session,networkStream, networkStream);
-        //                        }
-        //                        catch (Exception e)
-        //                        {
-        //                            Console.Error.WriteLine("Exception: " + e);
-        //                        }
-        //                    }
-        //                    clientSocket.Close();
-        //                    Console.Error.WriteLine(">> client connection closed");
-        //                }).Start();
-        //            }
-        //        }
-        //    }).Start();
-        //}
     }
 }

@@ -11,13 +11,20 @@ export class app {
         let ff = function (a) {
             return a + a;
         };
-        // eval("let cc=10;"); //eval function will cause arguments handle to 0
+        // eval("let abc=1;"); 
         let ff2=F1(1,2);
         ff(1);
         //exceptionFunction();
+        // this.longRunning();
         echo("---Script Finish---");
     }
     abc(v){
         return v+v;
+    }
+
+    longRunning(){
+        for (let index = 0; index < 1000000; index++) {
+            const element = index+123;
+        }
     }
 }

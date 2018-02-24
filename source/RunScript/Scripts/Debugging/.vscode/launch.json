@@ -4,15 +4,19 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "type": "mono",
             "request": "launch",
-            "name": "Ask for file name",
-            "program": "${workspaceFolder}/app.js",
-            "debugServer": 4711
-        },
-        {
+            "name": "Launch",
+            "sourceMap":[
+                {"name":"app.js","value":"${workspaceFolder}/app.js"},
+                {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
+                ],
+            // "pauseOnLaunch":true,
+            //"program": "${workspaceFolder}/app.js",
+            "debugServer": 4711,
+        }
+        ,{
             "type": "mono",
             "request": "attach",
             "sourceMap":[
@@ -20,6 +24,7 @@
                 {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
                 ],
             "name": "Attach",
+            // "pauseOnLaunch":true,
             //"program": "${workspaceFolder}/app.js",
             "debugServer": 4711,
             

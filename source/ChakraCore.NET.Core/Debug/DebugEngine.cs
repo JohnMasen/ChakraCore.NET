@@ -47,7 +47,7 @@ namespace ChakraCore.NET.Debug
 
         public void RequestAsyncBreak()
         {
-            commandQueue.Add(service.RequestAsyncBreak);
+            service.RequestAsyncBreak();
         }
 
         public Task<SourceCode[]> GetScriptsAsync()
@@ -118,11 +118,11 @@ namespace ChakraCore.NET.Debug
             });
         }
 
-        public Task<string> EvaluateAsync(string expression, uint stackFrameIndex, bool forceSetValueProp)
+        public Task<Variable> EvaluateAsync(string expression, uint stackFrameIndex, bool forceSetValueProp)
         {
             return addCommand(() =>
             {
-                return service.Evaluate(expression, stackFrameIndex, forceSetValueProp).ToJsonString();
+                return service.Evaluate(expression, stackFrameIndex, forceSetValueProp);
             });
         }
 

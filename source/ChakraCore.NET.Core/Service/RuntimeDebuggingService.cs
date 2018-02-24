@@ -67,7 +67,7 @@ namespace ChakraCore.NET
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventAsyncBreak:
                         engine = callWithEngine((e) =>
                         {
-                            return currentAdapter.OnDebugEvent(debugEvent, data, e);
+                            return currentAdapter.OnAsyncBreak(JsonConvert.DeserializeObject<BreakPoint>(data), e);
                         });
                         SetStepType(engine.StepType);
                         break;
@@ -112,12 +112,12 @@ namespace ChakraCore.NET
             currentAdapter = null;
         }
 
-        public JavaScriptValue Evaluate(string expression, uint stackFrameIndex, bool forceSetValueProp)
+        public Variable Evaluate(string expression, uint stackFrameIndex, bool forceSetValueProp)
         {
             JavaScriptValue exp = JavaScriptValue.FromString(expression);
 
-            Native.ThrowIfError(Native.JsDiagEvaluate(exp, stackFrameIndex, JavaScriptParseScriptAttributes.JsParseScriptAttributeNone, forceSetValueProp, out JavaScriptValue result));
-            return result;
+            Native.ThrowIfError(Native.JsDiagEvaluate(exp, stackFrameIndex, JavaScriptParseScriptAttributes.JsParseScriptAttributeNone, forceSetValueProp, out JavaScriptValue result),true);
+            return JsonConvert.DeserializeObject<Variable>(result.ToJsonString());
 
         }
 

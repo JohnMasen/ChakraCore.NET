@@ -21,6 +21,11 @@ namespace RunScript
             throw new NotImplementedException();
         }
 
+        public Task OnAsyncBreak(BreakPoint breakPoint, DebugEngine engine)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task OnBreakPoint(BreakPoint breakPoint, DebugEngine engine)
         {
             Console.WriteLine($"BreakPoint Hit:{breakPoint}");

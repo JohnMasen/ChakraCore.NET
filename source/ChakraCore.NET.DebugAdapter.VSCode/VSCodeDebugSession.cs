@@ -283,11 +283,12 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
     {
         public string result { get; }
         public int variablesReference { get; }
-
-        public EvaluateResponseBody(string value, int reff = 0)
+        public string type { get; }
+        public EvaluateResponseBody(string value,string type=null, int reff = 0)
         {
             result = value;
             variablesReference = reff;
+            this.type = type;
         }
     }
 
