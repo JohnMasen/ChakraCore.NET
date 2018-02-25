@@ -277,8 +277,11 @@ namespace ChakraCore.NET
 
             public void RunTask(Action action)
             {
+                if (!IsRunning)
+                {
+                    throw new InvalidOperationException("Cannot runtask while thread runner is idle");
+                }
                 TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-                
                 taskQueue.Add(()=>
                 {
                     action();
@@ -289,6 +292,10 @@ namespace ChakraCore.NET
 
             public T RunTask<T>(Func<T> func)
             {
+                if (!IsRunning)
+                {
+                    throw new InvalidOperationException("Cannot runtask while thread runner is idle");
+                }
                 TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
                 taskQueue.Add(()=>
                 {
