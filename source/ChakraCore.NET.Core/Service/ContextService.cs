@@ -148,7 +148,7 @@ namespace ChakraCore.NET
                     var valueService = CurrentNode.GetService<IJSValueService>();
                     valueService.ThrowIfErrorValue(jsvalue);
                 }
-                debugService.ScriptReady();
+                debugService.NotifyScriptReady();
                 return JavaScriptErrorCode.NoError;
             };
             #endregion

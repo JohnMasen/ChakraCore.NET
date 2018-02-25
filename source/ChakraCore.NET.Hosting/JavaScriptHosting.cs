@@ -24,10 +24,6 @@ namespace ChakraCore.NET.Hosting
         protected virtual void initContext(ChakraContext context,JavaScriptHostingConfig config)
         {
             PluginManager pluginManager = new PluginManager(context, config.LoadPlugin);
-            if (config.DebugAdapter!=null)
-            {
-                context.ServiceNode.GetService<IRuntimeDebuggingService>().AttachAdapter(config.DebugAdapter);
-            }
         }
 
 
@@ -35,6 +31,7 @@ namespace ChakraCore.NET.Hosting
         {
             var result = createContext(createRuntime());
             initContext(result, config);
+            config.DebugAdapter?.Init(result.ServiceNode.GetService<IRuntimeDebuggingService>());
             return result;
         }
 

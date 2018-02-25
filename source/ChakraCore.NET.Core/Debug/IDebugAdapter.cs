@@ -8,12 +8,6 @@ namespace ChakraCore.NET.Debug
 {
     public interface IDebugAdapter
     {
-        Task OnDebugEvent(JavaScriptDiagDebugEvent eventType,string data,DebugEngine engine);
-        Task ScriptReady(DebugEngine engine);
-        void AddScript(SourceCode sourceCode);
-        Task OnBreakPoint(BreakPoint breakPoint, DebugEngine engine);
-        Task OnStep(BreakPoint breakPoint, DebugEngine engine);
-        Task OnException(RuntimeException exception, DebugEngine engine);
-        Task OnAsyncBreak(BreakPoint breakPoint, DebugEngine engine);
+        void Init(IRuntimeDebuggingService debuggingService);
     }
 }

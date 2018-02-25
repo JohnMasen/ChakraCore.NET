@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ChakraCore.NET.API;
 using ChakraCore.NET.Debug;
@@ -11,10 +13,23 @@ namespace ChakraCore.NET
     public class RuntimeDebuggingService : ServiceBase, IRuntimeDebuggingService
     {
         JavaScriptRuntime runtime;
-        IDebugAdapter currentAdapter;
+        //IDebugAdapter currentAdapter;
         public bool IsDebugging { get; private set; }
         JavaScriptSourceContext sourceContext = new JavaScriptSourceContext();
         private JsDiagDebugEventCallback debugCallback;
+
+        public event EventHandler<BreakPoint> OnBreakPoint;
+        public event EventHandler<BreakPoint> OnStepComplete;
+        public event EventHandler<RuntimeException> OnException;
+        public event EventHandler<BreakPoint> OnAsyncBreak;
+        public event EventHandler<DebugEventArguments> OnDebugEvent;
+        public event EventHandler OnEngineReady;
+        public event EventHandler<SourceCode> OnScriptLoad;
+        //private JavaScriptDiagStepType StepType = JavaScriptDiagStepType.JsDiagStepTypeContinue;
+        TaskQueueRunner runner = new TaskQueueRunner();
+        private AutoResetEvent stepASE = new AutoResetEvent(false);
+        
+
         public RuntimeDebuggingService(JavaScriptRuntime runtime)
         {
             this.runtime = runtime;
@@ -28,48 +43,51 @@ namespace ChakraCore.NET
                 string data = null;
                 if (eventData.IsValid)
                 {
+                    
                     data = eventData.ToJsonString();
                 }
-                DebugEngine engine;
+                //DebugEngine engine;
+                //runner.With(() =>
+                //{
+                    OnDebugEvent?.Invoke(this, new DebugEventArguments() { EventType = debugEvent, EventData = data });
+                //});
                 switch (debugEvent)
                 {
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventSourceCompile:
-                        currentAdapter.AddScript(JsonConvert.DeserializeObject<SourceCode>(data));
-                        break;
-                    case JavaScriptDiagDebugEvent.JsDiagDebugEventCompileError:
-                    case JavaScriptDiagDebugEvent.JsDiagDebugEventDebuggerStatement:
-                        callWithEngine((e) =>
-                        {
-                            return currentAdapter.OnDebugEvent(debugEvent, data, e);
-                        });
+
+                        OnScriptLoad?.Invoke(this,JsonConvert.DeserializeObject<SourceCode>(data));
                         break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventRuntimeException:
-                        engine = callWithEngine((e) =>
+                        runner.With(() =>
                         {
-                            return currentAdapter.OnException(JsonConvert.DeserializeObject<RuntimeException>(data), e);
+                            OnException?.Invoke(this,JsonConvert.DeserializeObject<RuntimeException>(data));
+                            stepASE.WaitOne();
                         });
-                        SetStepType(engine.StepType);
+                        
                         break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventStepComplete:
-                        engine = callWithEngine((e) =>
+                        runner.With(() =>
                         {
-                            return currentAdapter.OnStep(JsonConvert.DeserializeObject<BreakPoint>(data), e);
+                            OnStepComplete?.Invoke(this,JsonConvert.DeserializeObject<BreakPoint>(data));
+                            stepASE.WaitOne();
                         });
-                        SetStepType(engine.StepType);
+                        
                         break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventBreakpoint:
-                        engine = callWithEngine((e) =>
+                        runner.With(() =>
                         {
-                            return currentAdapter.OnBreakPoint(JsonConvert.DeserializeObject<BreakPoint>(data), e);
+                            OnBreakPoint?.Invoke(this,JsonConvert.DeserializeObject<BreakPoint>(data));
+                            stepASE.WaitOne();
                         });
-                        SetStepType(engine.StepType);
+                        
                         break;
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventAsyncBreak:
-                        engine = callWithEngine((e) =>
+                        runner.With(() =>
                         {
-                            return currentAdapter.OnAsyncBreak(JsonConvert.DeserializeObject<BreakPoint>(data), e);
+                            OnAsyncBreak?.Invoke(this,JsonConvert.DeserializeObject<BreakPoint>(data));
+                            stepASE.WaitOne();
                         });
-                        SetStepType(engine.StepType);
+                        
                         break;
                     default:
                         break;
@@ -77,21 +95,8 @@ namespace ChakraCore.NET
 
             }
         }
-        private DebugEngine callWithEngine(Func<DebugEngine, Task> func)
-        {
-            DebugEngine engine = new DebugEngine(this);
-            Task.Factory.StartNew(() =>
-            {
-                var t = func(engine);
-                t.ContinueWith(_ => { engine.StopProcessing(); });
-            });
 
-            engine.StartProcessing();
-            return engine;
-        }
-
-        
-        public void AttachAdapter(IDebugAdapter adapter)
+        public void StartDebug()
         {
             if (IsDebugging)
             {
@@ -99,123 +104,139 @@ namespace ChakraCore.NET
             }
             Native.ThrowIfError(Native.JsDiagStartDebugging(runtime, debugCallback, IntPtr.Zero));
             IsDebugging = true;
-            currentAdapter = adapter;
         }
 
-        public void DetachAdapter()
+        public void StopDebug()
         {
-            if (currentAdapter != null)
+            if (IsDebugging)
             {
                 Native.ThrowIfError(Native.JsDiagStopDebugging(runtime, out IntPtr callbackState));
             }
             IsDebugging = false;
-            currentAdapter = null;
         }
+
+        public void NotifyScriptReady()
+        {
+            runner.With(() => { OnEngineReady?.Invoke(this, null); });
+            
+        }
+
 
         public Variable Evaluate(string expression, uint stackFrameIndex, bool forceSetValueProp)
         {
-            JavaScriptValue exp = JavaScriptValue.FromString(expression);
-
-            Native.ThrowIfError(Native.JsDiagEvaluate(exp, stackFrameIndex, JavaScriptParseScriptAttributes.JsParseScriptAttributeNone, forceSetValueProp, out JavaScriptValue result),true);
-            return JsonConvert.DeserializeObject<Variable>(result.ToJsonString());
+            return runner.RunTask(() =>
+            {
+                JavaScriptValue exp = JavaScriptValue.FromString(expression);
+                Native.ThrowIfError(Native.JsDiagEvaluate(exp, stackFrameIndex, JavaScriptParseScriptAttributes.JsParseScriptAttributeNone, forceSetValueProp, out JavaScriptValue result), true);
+                return JsonConvert.DeserializeObject<Variable>(result.ToJsonString());
+            });
+            
 
         }
 
         public BreakPoint[] GetBreakpoints()
         {
-            Native.ThrowIfError(Native.JsDiagGetBreakpoints(out JavaScriptValue result));
-            var json = result.ToJsonString();
-            return JsonConvert.DeserializeObject<BreakPoint[]>(json);
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagGetBreakpoints(out JavaScriptValue result));
+                var json = result.ToJsonString();
+                return JsonConvert.DeserializeObject<BreakPoint[]>(json);
+            });
+            
         }
 
         public Variable GetObjectFromHandle(uint objectHandle)
         {
-            Native.ThrowIfError(Native.JsDiagGetObjectFromHandle(objectHandle, out JavaScriptValue result));
-            return JsonConvert.DeserializeObject<Variable>(result.ToJsonString());
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagGetObjectFromHandle(objectHandle, out JavaScriptValue result));
+                return JsonConvert.DeserializeObject<Variable>(result.ToJsonString());
+            });
         }
 
         public VariableProperties GetProperties(uint objectHandle, uint from, uint to)
         {
-            Native.ThrowIfError(Native.JsDiagGetProperties(objectHandle, from, to, out JavaScriptValue result));
-            return JsonConvert.DeserializeObject<VariableProperties>(result.ToJsonString());
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagGetProperties(objectHandle, from, to, out JavaScriptValue result));
+                return JsonConvert.DeserializeObject<VariableProperties>(result.ToJsonString());
+            });
         }
 
         public SourceCode GetScriptSource(uint scriptId)
         {
-
-            Native.ThrowIfError(Native.JsDiagGetSource(scriptId, out JavaScriptValue source));
-            return JsonConvert.DeserializeObject<SourceCode>(source.ToJsonString());
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagGetSource(scriptId, out JavaScriptValue source));
+                return JsonConvert.DeserializeObject<SourceCode>(source.ToJsonString());
+            });
+            
         }
 
         public SourceCode[] GetScripts()
         {
-            IJSValueConverterService converter = CurrentNode.GetService<IJSValueConverterService>();
-
-            Native.ThrowIfError(Native.JsDiagGetScripts(out JavaScriptValue result));
-            return JsonConvert.DeserializeObject<SourceCode[]>(result.ToJsonString());
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagGetScripts(out JavaScriptValue result));
+                return JsonConvert.DeserializeObject<SourceCode[]>(result.ToJsonString());
+            });
+            
 
 
         }
 
         public StackProperties GetStackProperties(uint stackFrameIndex)
         {
-            Native.ThrowIfError(Native.JsDiagGetStackProperties(stackFrameIndex, out JavaScriptValue result));
-            return JsonConvert.DeserializeObject<StackProperties>(result.ToJsonString());
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagGetStackProperties(stackFrameIndex, out JavaScriptValue result));
+                return JsonConvert.DeserializeObject<StackProperties>(result.ToJsonString());
+            });
+            
         }
 
         public StackTrace[] GetStackTrace()
         {
-            Native.ThrowIfError(Native.JsDiagGetStackTrace(out JavaScriptValue result));
-            return JsonConvert.DeserializeObject<StackTrace[]>(result.ToJsonString());
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagGetStackTrace(out JavaScriptValue result));
+                return JsonConvert.DeserializeObject<StackTrace[]>(result.ToJsonString());
+            });
+            
         }
 
         public void RemoveBreakpoint(uint breakpointId)
         {
-            Native.ThrowIfError(Native.JsDiagRemoveBreakpoint(breakpointId));
-        }
-
-        public void ScriptReady()
-        {
-
-            if (IsDebugging)
+            runner.RunTask(() =>
             {
-                CurrentNode.WithContext(() =>
-                {
-                    callWithEngine(e =>
-                    {
-                        return currentAdapter.ScriptReady(e);
-                    });
-                });
-            }
+                Native.ThrowIfError(Native.JsDiagRemoveBreakpoint(breakpointId));
+            });
+            
         }
+
 
         public BreakPoint SetBreakpoint(uint scriptId, uint line, uint column)
         {
-
-            Native.ThrowIfError(Native.JsDiagSetBreakpoint(scriptId, line, column, out JavaScriptValue breakpoint));
-            string json = breakpoint.ToJsonString();
-            return JsonConvert.DeserializeObject<BreakPoint>(json);
+            return runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagSetBreakpoint(scriptId, line, column, out JavaScriptValue breakpoint));
+                string json = breakpoint.ToJsonString();
+                return JsonConvert.DeserializeObject<BreakPoint>(json);
+            });
+            
         }
 
         public void SetBreakpointOnException(JavaScriptDiagBreakOnExceptionAttributes attributes)
         {
-            Native.ThrowIfError(Native.JsDiagSetBreakOnException(runtime, attributes));
+            runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagSetBreakOnException(runtime, attributes));
+            });
+            stepASE.Set();
         }
 
-        public void SetStepType(JavaScriptDiagStepType stepType)
-        {
-            Native.ThrowIfError(Native.JsDiagSetStepType(stepType));
-        }
+        
 
-        //private void WithInternalContext(Action a)
-        //{
-        //    CurrentNode.GetService<IRuntimeService>().InternalContextSwitchService.With(a);
-        //}
-
-        //private T WithInternalContext<T>(Func<T> func)
-        //{
-        //    return CurrentNode.GetService<IRuntimeService>().InternalContextSwitchService.With(func);
-        //}
 
         public void RequestAsyncBreak()
         {
@@ -228,6 +249,73 @@ namespace ChakraCore.NET
             sourceContext++;
             return sourceContext;
         }
+
+        public void Step(JavaScriptDiagStepType stepType)
+        {
+            runner.RunTask(() =>
+            {
+                Native.ThrowIfError(Native.JsDiagSetStepType(stepType));
+            });
+            stepASE.Set();
+        }
+
+        private class TaskQueueRunner
+        {
+            private BlockingCollection<Action> taskQueue = new BlockingCollection<Action>();
+            public bool IsRunning { get; private set; } = false;
+            public void StartProcess()
+            {
+                if (IsRunning)
+                {
+                    throw new InvalidOperationException("Processor busy, please call StopProcess() before you can call StartProcess() again");
+                }
+                foreach (var item in taskQueue.GetConsumingEnumerable())
+                {
+                    item();
+                }
+            }
+
+            public void RunTask(Action action)
+            {
+                TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+                
+                taskQueue.Add(()=>
+                {
+                    action();
+                    tcs.SetResult(null);
+                });
+                tcs.Task.Wait();
+            }
+
+            public T RunTask<T>(Func<T> func)
+            {
+                TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+                taskQueue.Add(()=>
+                {
+                    tcs.SetResult(func());
+                });
+                tcs.Task.Wait();
+                return tcs.Task.Result;
+            }
+
+            public void StopProcess()
+            {
+                taskQueue.CompleteAdding();
+                taskQueue = new BlockingCollection<Action>();
+            }
+
+            public void With(Action action)
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    action();//run the action on new thread
+                    StopProcess(); 
+                });
+                StartProcess();//start process at current thread
+            }
+
+        }
+
 
     }
 }

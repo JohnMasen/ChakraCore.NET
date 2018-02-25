@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using ChakraCore.NET;
 using ChakraCore.NET.API;
 using ChakraCore.NET.Debug;
 
@@ -17,6 +18,11 @@ namespace RunScript
         }
 
         public void AddScriptSource(string name, string content)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Init(IRuntimeDebuggingService debuggingService)
         {
             throw new NotImplementedException();
         }

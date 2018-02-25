@@ -45,7 +45,10 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         }
         public static Variable ToVSCodeVarible(this Debug.Variable value, string namePattern = "{0}")
         {
-            return new Variable(string.Format(namePattern, value.Name), value.Display ?? value.Value, value.Type, value.PropertyAttributes.HasFlag(PropertyAttributesEnum.HAVE_CHILDRENS) ? (int)value.Handle : 0);
+            return new Variable(
+                string.Format(namePattern, value.Name), 
+                value.Display ?? value.Value, value.Type, 
+                value.PropertyAttributes.HasFlag(PropertyAttributesEnum.HAVE_CHILDRENS) ? (int)value.Handle : 0);
         }
     }
 }

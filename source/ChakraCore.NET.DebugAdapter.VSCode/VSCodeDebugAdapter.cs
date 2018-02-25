@@ -13,10 +13,10 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
     {
         public event EventHandler<string> OnAdapterMessage;
         private Thread currentThread = new Thread(1, "Thread1");
-        DebugEngine currentEngine;
-        ManualResetEvent scriptReadyMSE = new ManualResetEvent(false);
-        AutoResetEvent engineEventASE = new AutoResetEvent(false);
-        AutoResetEvent vscodeEventASE = new AutoResetEvent(false);
+        IRuntimeDebuggingService debuggingService;
+        ManualResetEvent configurationDoneEvent = new ManualResetEvent(false);
+        AutoResetEvent engineReadyEvent = new AutoResetEvent(false);
+        //AutoResetEvent vscodeEventASE = new AutoResetEvent(false);
         private List<SourceCode> sourceCodeList = new List<SourceCode>();
         private Dictionary<string, string> sourceMap = new Dictionary<string, string>();
         private bool waitForLaunch = false;
@@ -43,23 +43,22 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         public override void Continue(Response response, dynamic arguments)
         {
-            currentEngine.StepType = JavaScriptDiagStepType.JsDiagStepTypeContinue;
-            vscodeEventASE.Set();
+            debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
             SendResponse(response);
         }
 
         public override void Disconnect(Response response, dynamic arguments)
         {
             OnAdapterMessage?.Invoke(this, "Disconnect");
-            vscodeEventASE.Set();
+            //debuggingService.StopDebug();
+            //debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
         }
 
         public override void Evaluate(Response response, dynamic arguments)
         {
-            var t=currentEngine.EvaluateAsync((string)arguments.expression, (uint)arguments.frameId, false);
-            t.Wait();
-            var x = t.Result.ToVSCodeVarible();
-            if (t.Result.ClassName == "Error")
+            var t= debuggingService.Evaluate((string)arguments.expression, (uint)arguments.frameId, false);
+            var x = t.ToVSCodeVarible();
+            if (t.ClassName == "Error")
             {
                 SendResponse(response, new EvaluateResponseBody(x.value, x.type, 0));
             }
@@ -85,7 +84,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             });
 
             OnAdapterMessage?.Invoke(this, "Waiting for script ready");
-            scriptReadyMSE.WaitOne();
+            engineReadyEvent.WaitOne();
             OnAdapterMessage?.Invoke(this, "InitializedEvent Sent");
             SendEvent(new InitializedEvent());
             //SendEvent(new OutputEvent(string.Empty, "InitializedEvent"));
@@ -105,7 +104,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             bool pauseOnLaunch = arguments.pauseOnLaunch ?? false;
             if (pauseOnLaunch)
             {
-                currentEngine.RequestAsyncBreak();
+                debuggingService.RequestAsyncBreak();
             }
             SendResponse(response);
             SendEvent(new OutputEvent(string.Empty, "Launch received"));
@@ -122,15 +121,15 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         public override void Next(Response response, dynamic arguments)
         {
-            currentEngine.StepType = JavaScriptDiagStepType.JsDiagStepTypeStepOver;
+            debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeStepOver);
             SendResponse(response);
-            vscodeEventASE.Set();
+            
 
         }
 
         public override void Pause(Response response, dynamic arguments)
         {
-            currentEngine.RequestAsyncBreak();
+            debuggingService.RequestAsyncBreak();
         }
 
         public override void Scopes(Response response, dynamic arguments)
@@ -151,13 +150,11 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             List<Breakpoint> bps = new List<Breakpoint>();
             if (findSourceCode(fileName, out var sourceCode))
             {
-                currentEngine.ClearBreakPointOnScript(sourceCode.ScriptId).Wait();
+                clearBreakpointOnScript(sourceCode.ScriptId);
                 for (int i = 0; i < arguments.breakpoints.Count; i++)
                 {
                     uint line = (uint)ConvertDebuggerLineToClient((int)arguments.breakpoints[i].line);
-                    var t = currentEngine.SetBreakpointAsync(sourceCode.ScriptId, line, 0);
-                    t.Wait();
-                    BreakPoint bp = t.Result;
+                    BreakPoint bp = debuggingService.SetBreakpoint(sourceCode.ScriptId, line, 0);
                     bps.Add(new Breakpoint(true, ConvertClientLineToDebugger((int)bp.Line)));
                 }
             }
@@ -183,23 +180,19 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         public override void Source(Response response, dynamic arguments)
         {
             uint id = arguments.source.sourceReference;
-            var t = currentEngine.GetScriptSourceAsync(id);
-            t.Wait();
-            SendResponse(response, new SourceResponseBody(t.Result.Source));
+            var t = debuggingService.GetScriptSource(id);
+            SendResponse(response, new SourceResponseBody(t.Source));
         }
 
         public override void StackTrace(Response response, dynamic arguments)
         {
             List<StackFrame> frames = new List<StackFrame>();
-            var t = currentEngine.GetStackTraceAsync();
-            t.Wait();
-            var sts = t.Result;
+            var sts = debuggingService.GetStackTrace();
 
             foreach (var item in sts)
             {
-                var t1 = currentEngine.GetObjectFromHandleAsync(item.FunctionHandle);
-                t1.Wait();
-                string functionName = t1.Result.Name;
+                var t1 = debuggingService.GetObjectFromHandle(item.FunctionHandle);
+                string functionName = t1.Name;
                 SourceCode engineSource = sourceCodeList.First(x => x.ScriptId == item.ScriptId);
                 Source source;
                 if (engineSource.FileName != null && sourceMap.ContainsKey(engineSource.FileName))//eval() code does not have FileName
@@ -226,16 +219,16 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         public override void StepIn(Response response, dynamic arguments)
         {
-            currentEngine.StepType = JavaScriptDiagStepType.JsDiagStepTypeStepIn;
+            debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeStepIn);
             SendResponse(response);
-            vscodeEventASE.Set();
+            
         }
 
         public override void StepOut(Response response, dynamic arguments)
         {
-            currentEngine.StepType = JavaScriptDiagStepType.JsDiagStepTypeStepOut;
+            debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeStepOut);
             SendResponse(response);
-            vscodeEventASE.Set();
+            
         }
 
         public override void Threads(Response response, dynamic arguments)
@@ -267,38 +260,36 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             return loadVariableProperties((uint)varibleHandle);
         }
 
-        private VariablesResponseBody loadVariableProperties(uint varibleHandle)
+        private VariablesResponseBody loadVariableProperties(uint varibleHandle,uint from=0, uint to=99)
         {
-            var t = currentEngine.GetObjectPropertiesAsync(varibleHandle);
-            t.Wait();
-            var properties = from item in t.Result.Properties
+            var t = debuggingService.GetProperties(varibleHandle,from,to);
+            var properties = from item in t.Properties
                              select item.ToVSCodeVarible();
             return new VariablesResponseBody(properties.ToList());
         }
 
         private VariablesResponseBody loadVariablesFromScope(VariableHandle handle)
         {
-            var t = currentEngine.GetStackPropertiesAsync(handle.FrameId);
-            t.Wait();
+            var t = debuggingService.GetStackProperties(handle.FrameId);
 
             switch (handle.Scope)
             {
                 case VariableScopeEnum.Local:
-                    var variables = (from item in t.Result.Locals
+                    var variables = (from item in t.Locals
                                      select item.ToVSCodeVarible()).ToList();
-                    variables.Insert(0, t.Result.ThisObject.ToVSCodeVarible("[{0}]"));
-                    if (t.Result.Arguments.Handle != 0)
+                    variables.Insert(0, t.ThisObject.ToVSCodeVarible("[{0}]"));
+                    if (t.Arguments.Handle != 0)
                     {
-                        variables.Insert(1, t.Result.Arguments.ToVSCodeVarible());
+                        variables.Insert(1, t.Arguments.ToVSCodeVarible());
                     }
                     return new VariablesResponseBody(variables);
                 case VariableScopeEnum.Globals:
-                    return loadVariableProperties(t.Result.Global.Handle);
+                    return loadVariableProperties(t.Global.Handle);
                 case VariableScopeEnum.Scopes:
-                    if (t.Result.Scopes.Length > 0)
+                    if (t.Scopes.Length > 0)
                     {
                         List<Variable> scopes = new List<Variable>();
-                        foreach (var item in t.Result.Scopes)
+                        foreach (var item in t.Scopes)
                         {
                             scopes.Add(new Variable($"Scope #{item.Index}", string.Empty, string.Empty, (int)item.Handle));
                         }
@@ -320,73 +311,93 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             OnAdapterMessage?.Invoke(this, "ConfigurationDone");
             if (waitForLaunch)
             {
-                vscodeEventASE.Set();
+                configurationDoneEvent.Set();
             }
             SendResponse(response);
         }
 
+        
 
-
-        Task IDebugAdapter.OnBreakPoint(BreakPoint breakPoint, DebugEngine engine)
+        public void Init(IRuntimeDebuggingService debuggingService)
         {
-            OnAdapterMessage?.Invoke(this, $"Breakpoint hit at {breakPoint}");
-            currentEngine = engine;
-            SendEvent(new StoppedEvent(currentThread.id, "breakpoint", "breakpoint hit"));
-            vscodeEventASE.WaitOne();
-            return Task.CompletedTask;
+            this.debuggingService = debuggingService;
+            debuggingService.StartDebug();
+            debuggingService.OnAsyncBreak += DebuggingService_OnAsyncBreak;
+            debuggingService.OnBreakPoint += DebuggingService_OnBreakPoint;
+            debuggingService.OnDebugEvent += DebuggingService_OnDebugEvent;
+            debuggingService.OnEngineReady += DebuggingService_OnEngineReady;
+            debuggingService.OnException += DebuggingService_OnException;
+            debuggingService.OnScriptLoad += DebuggingService_OnScriptLoad;
+            debuggingService.OnStepComplete += DebuggingService_OnStepComplete;
         }
 
-        Task IDebugAdapter.OnDebugEvent(JavaScriptDiagDebugEvent eventType, string data, DebugEngine engine)
+        private void DebuggingService_OnStepComplete(object sender, BreakPoint e)
         {
-            OnAdapterMessage?.Invoke(this, $"[{eventType}],{data}");
-            return Task.CompletedTask;
+            OnAdapterMessage?.Invoke(this, $"Step complete at {e}");
+            SendEvent(new StoppedEvent(currentThread.id, "step"));
+            //vscodeEventASE.WaitOne();
+            //return Task.CompletedTask;
         }
 
-        Task IDebugAdapter.ScriptReady(DebugEngine engine)
+        
+
+        private void DebuggingService_OnScriptLoad(object sender, SourceCode e)
         {
-            currentEngine = engine;
+            sourceCodeList.Add(e);
+            OnAdapterMessage?.Invoke(this, $"Script {e.FileName} Loaded");
+        }
+
+        private void DebuggingService_OnException(object sender, RuntimeException e)
+        {
+            OnAdapterMessage?.Invoke(this, $"Exception occured at  {e}");
+            //currentEngine = engine;
+            SendEvent(new StoppedEvent(currentThread.id, "exception", e.ExceptionObject.Display));
+            //vscodeEventASE.WaitOne();
+            //return Task.CompletedTask;
+        }
+
+        private void DebuggingService_OnEngineReady(object sender, EventArgs e)
+        {
+            //currentEngine = engine;
             OnAdapterMessage?.Invoke(this, "Script ready, Waiting for debugger");
-            scriptReadyMSE.Set();
+            engineReadyEvent.Set();
             if (waitForLaunch)
             {
-                vscodeEventASE.WaitOne();
+                configurationDoneEvent.WaitOne();
             }
             OnAdapterMessage?.Invoke(this, "Script continue running");
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
-        void IDebugAdapter.AddScript(SourceCode sourceCode)
+        private void DebuggingService_OnDebugEvent(object sender, DebugEventArguments e)
         {
-            sourceCodeList.Add(sourceCode);
-            OnAdapterMessage?.Invoke(this, $"Script {sourceCode.FileName} Loaded");
+            OnAdapterMessage?.Invoke(this, $"[{e.EventType}],{e.EventData}");
         }
 
-
-        Task IDebugAdapter.OnStep(BreakPoint breakPoint, DebugEngine engine)
+        private void DebuggingService_OnBreakPoint(object sender, BreakPoint e)
         {
-            OnAdapterMessage?.Invoke(this, $"Step complete at {breakPoint}");
-            currentEngine = engine;
-            SendEvent(new StoppedEvent(currentThread.id, "step"));
-            vscodeEventASE.WaitOne();
-            return Task.CompletedTask;
+            OnAdapterMessage?.Invoke(this, $"Breakpoint hit at {e}");
+            //currentEngine = engine;
+            SendEvent(new StoppedEvent(currentThread.id, "breakpoint", "breakpoint hit"));
+            //vscodeEventASE.WaitOne();
+            //return Task.CompletedTask;
         }
 
-        Task IDebugAdapter.OnException(RuntimeException exception, DebugEngine engine)
+        private void DebuggingService_OnAsyncBreak(object sender, BreakPoint e)
         {
-            OnAdapterMessage?.Invoke(this, $"Exception occured at  {exception}");
-            currentEngine = engine;
-            SendEvent(new StoppedEvent(currentThread.id, "exception", exception.ExceptionObject.Display));
-            vscodeEventASE.WaitOne();
-            return Task.CompletedTask;
-        }
-
-        Task IDebugAdapter.OnAsyncBreak(BreakPoint breakPoint, DebugEngine engine)
-        {
-            OnAdapterMessage?.Invoke(this, $"Async break at  {breakPoint}");
-            currentEngine = engine;
+            OnAdapterMessage?.Invoke(this, $"Async break at  {e}");
             SendEvent(new StoppedEvent(currentThread.id, "async break"));
-            vscodeEventASE.WaitOne();
-            return Task.CompletedTask;
+            //vscodeEventASE.WaitOne();
+            //return Task.CompletedTask;
+        }
+
+        private void clearBreakpointOnScript(uint scriptId)
+        {
+            var bps = debuggingService.GetBreakpoints();
+            foreach (var item in bps.Where(x => x.ScriptId == scriptId))
+            {
+                debuggingService.RemoveBreakpoint(item.BreakpointId);
+            }
         }
     }
 }

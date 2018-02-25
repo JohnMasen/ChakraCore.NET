@@ -50,7 +50,7 @@ namespace RunScript
                 if (config.DebugMode)
                 {
                     debugCTS = new CancellationTokenSource();
-                    var adapter = new VSCodeDebugAdapter(true);
+                    var adapter = new VSCodeDebugAdapter(false);
                     hostingConfig.DebugAdapter = adapter;
                     adapter.OnAdapterMessage += (sender, msg) => { Console.WriteLine(msg); };
                     //RunServer(adapter, 4711);
