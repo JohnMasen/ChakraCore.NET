@@ -457,6 +457,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         {
             if (!IsConnected)
             {
+                clearBreakpointOnScript(e.ScriptId);
                 debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
                 return;
             }
