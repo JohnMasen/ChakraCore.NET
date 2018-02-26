@@ -261,14 +261,9 @@ namespace ChakraCore.NET
 
         private class TaskQueueRunner
         {
-            private BlockingCollection<Action> taskQueue = new BlockingCollection<Action>();
-            public bool IsRunning { get; private set; } = false;
+            private BlockingCollection<Action> taskQueue =null;
             public void StartProcess()
             {
-                if (IsRunning)
-                {
-                    throw new InvalidOperationException("Processor busy, please call StopProcess() before you can call StartProcess() again");
-                }
                 foreach (var item in taskQueue.GetConsumingEnumerable())
                 {
                     item();
@@ -277,10 +272,6 @@ namespace ChakraCore.NET
 
             public void RunTask(Action action)
             {
-                if (!IsRunning)
-                {
-                    throw new InvalidOperationException("Cannot runtask while thread runner is idle");
-                }
                 TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
                 taskQueue.Add(()=>
                 {
@@ -292,10 +283,6 @@ namespace ChakraCore.NET
 
             public T RunTask<T>(Func<T> func)
             {
-                if (!IsRunning)
-                {
-                    throw new InvalidOperationException("Cannot runtask while thread runner is idle");
-                }
                 TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
                 taskQueue.Add(()=>
                 {
@@ -308,11 +295,12 @@ namespace ChakraCore.NET
             public void StopProcess()
             {
                 taskQueue.CompleteAdding();
-                taskQueue = new BlockingCollection<Action>();
+                taskQueue = null;
             }
 
             public void With(Action action)
             {
+                taskQueue = new BlockingCollection<Action>();
                 Task.Factory.StartNew(() =>
                 {
                     action();//run the action on new thread

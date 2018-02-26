@@ -12,21 +12,87 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
     public class VSCodeDebugAdapter : DebugSession, IDebugAdapter
     {
         public event EventHandler<string> OnAdapterMessage;
-        private Thread currentThread = new Thread(1, "Thread1");
+        private Thread currentThread = new Thread(1, "Thread #1");
         IRuntimeDebuggingService debuggingService;
         ManualResetEvent configurationDoneEvent = new ManualResetEvent(false);
-        AutoResetEvent engineReadyEvent = new AutoResetEvent(false);
-        //AutoResetEvent vscodeEventASE = new AutoResetEvent(false);
+        ManualResetEvent engineReadyEvent = new ManualResetEvent(false);
+        private Action postAsyncBreakAction = null;
+        private Action postConfigurationDoneAction = null;
         private List<SourceCode> sourceCodeList = new List<SourceCode>();
         private Dictionary<string, string> sourceMap = new Dictionary<string, string>();
         private bool waitForLaunch = false;
         VSCodeDebugVariableReferenceManager handleManager = new VSCodeDebugVariableReferenceManager();
+        private DebugAdapterStatusEnum currentStatus = DebugAdapterStatusEnum.WaitingForEngineReady;
+        public event EventHandler<OnStatusChangArguments> OnStatusChang;
+        public bool IsConnected { get; private set; } = false;
         public VSCodeDebugAdapter(bool waitForLaunch=true)
         {
             this.waitForLaunch = waitForLaunch;
         }
+
+        public DebugAdapterStatusEnum DebugAdapterStatus {
+            get
+            {
+                return currentStatus;
+            } private set
+            {
+                switch (value)
+                {
+                    case DebugAdapterStatusEnum.WaitingForEngineReady:
+                        break;
+                    case DebugAdapterStatusEnum.Ready:
+                        if (DebugAdapterStatus == DebugAdapterStatusEnum.WaitingForEngineReady)
+                        {
+                            engineReadyEvent.Set();
+                        }
+                        break;
+                    case DebugAdapterStatusEnum.BreakPointHit:
+                    case DebugAdapterStatusEnum.AsyncBreakHit:
+                    case DebugAdapterStatusEnum.ExceptionOccured:
+                        break;
+                    default:
+                        break;
+                }
+                OnStatusChang?.Invoke(this, new OnStatusChangArguments(currentStatus, value));
+                currentStatus = value;
+            }
+        } 
+
+        private void sendLoadedScriptInfo()
+        {
+            foreach (var item in sourceCodeList.Where(x=>!(string.IsNullOrEmpty(x.FileName) || x.FileName.StartsWith("<"))))
+            {
+                SendOutput($"Script {item.FileName} loaded");
+            }
+        }
         public override void Attach(Response response, dynamic arguments)
         {
+            switch (DebugAdapterStatus)
+            {
+                case DebugAdapterStatusEnum.WaitingForEngineReady:
+                    throw new InvalidOperationException("Attach failed, engine is waiting for Launch");
+                
+                case DebugAdapterStatusEnum.BreakPointHit:
+                case DebugAdapterStatusEnum.StepComplete:
+                case DebugAdapterStatusEnum.AsyncBreakHit:
+                case DebugAdapterStatusEnum.ExceptionOccured:
+                    throw new InvalidOperationException($"Attach failed, engine is busy. Status={DebugAdapterStatus}");
+                case DebugAdapterStatusEnum.Ready:
+                    ManualResetEventSlim mse = new ManualResetEventSlim(false);
+                    postAsyncBreakAction = mse.Set;
+                    postConfigurationDoneAction = () => //continue the script excution when VSCode configuration is done
+                    {
+                        debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
+                    };
+                    debuggingService.RequestAsyncBreak();
+                    SendOutput("AsyncBreak request sent, waiting for engine response");
+                    mse.Wait();
+                    SendOutput("AsyncBreak hit, continue Attach progress");
+                    break;
+                default:
+                    break;
+            }
+
             OnAdapterMessage?.Invoke(this, "[Attach]");
             sourceMap.Clear();
             if (arguments.sourceMap != null)
@@ -37,7 +103,6 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
                 }
             }
             SendResponse(response);
-            SendEvent(new OutputEvent(string.Empty, "Attach received"));
         }
 
 
@@ -45,13 +110,26 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         {
             debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
             SendResponse(response);
+            DebugAdapterStatus = DebugAdapterStatusEnum.Ready;
         }
 
         public override void Disconnect(Response response, dynamic arguments)
         {
+            switch (DebugAdapterStatus)
+            {
+                case DebugAdapterStatusEnum.BreakPointHit:
+                case DebugAdapterStatusEnum.StepComplete:
+                case DebugAdapterStatusEnum.AsyncBreakHit:
+                case DebugAdapterStatusEnum.ExceptionOccured:
+                    debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
+                    DebugAdapterStatus = DebugAdapterStatusEnum.Ready;
+                    break;
+                default:
+                    break;
+            }
+            SendOutput("Debugger disconnected, continue script execution");
+            IsConnected = false;
             OnAdapterMessage?.Invoke(this, "Disconnect");
-            //debuggingService.StopDebug();
-            //debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
         }
 
         public override void Evaluate(Response response, dynamic arguments)
@@ -72,6 +150,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         public override void Initialize(Response response, dynamic args)
         {
+            IsConnected = true;
             OnAdapterMessage?.Invoke(this, "Initialize called");
             SendResponse(response, new Capabilities()
             {
@@ -87,12 +166,15 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             engineReadyEvent.WaitOne();
             OnAdapterMessage?.Invoke(this, "InitializedEvent Sent");
             SendEvent(new InitializedEvent());
-            //SendEvent(new OutputEvent(string.Empty, "InitializedEvent"));
         }
 
         public override void Launch(Response response, dynamic arguments)
         {
             OnAdapterMessage?.Invoke(this, "[Launch]");
+            if (DebugAdapterStatus!= DebugAdapterStatusEnum.WaitingForEngineReady)
+            {
+                throw new InvalidOperationException("Launch failed, engine already running");
+            }
             sourceMap.Clear();
             if (arguments.sourceMap != null)
             {
@@ -107,24 +189,15 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
                 debuggingService.RequestAsyncBreak();
             }
             SendResponse(response);
-            SendEvent(new OutputEvent(string.Empty, "Launch received"));
         }
 
-        private void sendLoadedScripts()
-        {
-            foreach (var item in sourceCodeList)
-            {
-                SendEvent(new LoadedSourceEvent("new", new Source(item.FileName, item.FileName, (int)item.ScriptId, "source hint")));
-            }
-            OnAdapterMessage?.Invoke(this, "Source code sent to VSCode");
-        }
+        
 
         public override void Next(Response response, dynamic arguments)
         {
             debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeStepOver);
             SendResponse(response);
-            
-
+            DebugAdapterStatus = DebugAdapterStatusEnum.Ready;
         }
 
         public override void Pause(Response response, dynamic arguments)
@@ -221,14 +294,14 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         {
             debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeStepIn);
             SendResponse(response);
-            
+            DebugAdapterStatus = DebugAdapterStatusEnum.Ready;
         }
 
         public override void StepOut(Response response, dynamic arguments)
         {
             debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeStepOut);
             SendResponse(response);
-            
+            DebugAdapterStatus = DebugAdapterStatusEnum.Ready;
         }
 
         public override void Threads(Response response, dynamic arguments)
@@ -313,7 +386,14 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             {
                 configurationDoneEvent.Set();
             }
+            if (postConfigurationDoneAction != null)
+            {
+                postConfigurationDoneAction();
+                postConfigurationDoneAction = null;
+            }
+            sendLoadedScriptInfo();
             SendResponse(response);
+            
         }
 
         
@@ -335,11 +415,8 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         {
             OnAdapterMessage?.Invoke(this, $"Step complete at {e}");
             SendEvent(new StoppedEvent(currentThread.id, "step"));
-            //vscodeEventASE.WaitOne();
-            //return Task.CompletedTask;
+            DebugAdapterStatus = DebugAdapterStatusEnum.StepComplete;
         }
-
-        
 
         private void DebuggingService_OnScriptLoad(object sender, SourceCode e)
         {
@@ -349,16 +426,18 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         private void DebuggingService_OnException(object sender, RuntimeException e)
         {
+            if (!IsConnected)
+            {
+                debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
+                return;
+            }
             OnAdapterMessage?.Invoke(this, $"Exception occured at  {e}");
-            //currentEngine = engine;
             SendEvent(new StoppedEvent(currentThread.id, "exception", e.ExceptionObject.Display));
-            //vscodeEventASE.WaitOne();
-            //return Task.CompletedTask;
+            DebugAdapterStatus = DebugAdapterStatusEnum.ExceptionOccured;
         }
 
         private void DebuggingService_OnEngineReady(object sender, EventArgs e)
         {
-            //currentEngine = engine;
             OnAdapterMessage?.Invoke(this, "Script ready, Waiting for debugger");
             engineReadyEvent.Set();
             if (waitForLaunch)
@@ -366,7 +445,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
                 configurationDoneEvent.WaitOne();
             }
             OnAdapterMessage?.Invoke(this, "Script continue running");
-            //return Task.CompletedTask;
+            DebugAdapterStatus = DebugAdapterStatusEnum.Ready;
         }
 
         private void DebuggingService_OnDebugEvent(object sender, DebugEventArguments e)
@@ -376,19 +455,35 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         private void DebuggingService_OnBreakPoint(object sender, BreakPoint e)
         {
+            if (!IsConnected)
+            {
+                debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
+                return;
+            }
             OnAdapterMessage?.Invoke(this, $"Breakpoint hit at {e}");
-            //currentEngine = engine;
             SendEvent(new StoppedEvent(currentThread.id, "breakpoint", "breakpoint hit"));
-            //vscodeEventASE.WaitOne();
-            //return Task.CompletedTask;
+            DebugAdapterStatus = DebugAdapterStatusEnum.BreakPointHit;
         }
 
         private void DebuggingService_OnAsyncBreak(object sender, BreakPoint e)
         {
+            if (!IsConnected)
+            {
+                debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
+                return;
+            }
             OnAdapterMessage?.Invoke(this, $"Async break at  {e}");
-            SendEvent(new StoppedEvent(currentThread.id, "async break"));
-            //vscodeEventASE.WaitOne();
-            //return Task.CompletedTask;
+            if (postAsyncBreakAction != null)//event is triggered by Attach command
+            {
+                postAsyncBreakAction();
+                postAsyncBreakAction = null;
+            }
+            else
+            {
+                SendEvent(new StoppedEvent(currentThread.id, "async break"));
+            }
+            
+            DebugAdapterStatus = DebugAdapterStatusEnum.AsyncBreakHit;
         }
 
         private void clearBreakpointOnScript(uint scriptId)

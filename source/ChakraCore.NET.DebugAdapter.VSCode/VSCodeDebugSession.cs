@@ -185,11 +185,12 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
     public class OutputEvent : Event
     {
-        public OutputEvent(string cat, string outpt)
+        public OutputEvent(string cat, string outpt,int reference)
             : base("output", new
             {
                 category = cat,
-                output = outpt
+                output = outpt,
+                variablesReference= reference
             })
         { }
     }
@@ -528,6 +529,10 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             {
                 return path;
             }
+        }
+        protected void SendOutput(string message,string category="console",int variableReference=0)
+        {
+            SendEvent(new OutputEvent(category, message+Environment.NewLine, variableReference));
         }
 
         protected string ConvertClientPathToDebugger(string clientPath)
