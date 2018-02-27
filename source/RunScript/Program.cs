@@ -51,17 +51,14 @@ namespace RunScript
                 {
                     debugCTS = new CancellationTokenSource();
                     var adapter = new VSCodeDebugAdapter(true);
-                    hostingConfig.DebugAdapter = adapter;
+                    adapter.OnLaunch += (sender,arguments)=> { Console.WriteLine($"Launch requested,arguments={arguments}"); };
+                    adapter.OnAttach+=(sender,arguments) => { Console.WriteLine($"Attach requested,arguments={arguments}"); };
                     adapter.OnAdapterMessage += (sender, msg) => { Console.WriteLine(msg); };
                     adapter.OnStatusChang += (sender, e) => { Console.WriteLine(e); };
-                    //RunServer(adapter, 4711);
-                    adapter.RunServer(4711, debugCTS.Token); ;
-                    //hostingConfig.DebugAdapter = new TestDebugAdapter();
+                    adapter.RunServer(4711, debugCTS.Token); 
+                    hostingConfig.DebugAdapter = adapter;
                 }
-
-
-                string script = File.ReadAllText(config.File);
-                Console.WriteLine("---Script Start---");
+                
                 if (config.IsModule)
                 {
                     app=JavaScriptHosting.Default.GetModuleClass<JSApp>(config.FileName, config.ModuleClass, hostingConfig);
@@ -70,18 +67,22 @@ namespace RunScript
                 }
                 else
                 {
+                    string script = File.ReadAllText(config.File);
+                    Console.WriteLine("---Script Start---");
                     JavaScriptHosting.Default.RunScript(script, hostingConfig);
                 }
             }
             if (config.IsModule)
             {
-                Console.WriteLine("input \"exit\" to exit, anything else to run the module again");
-                string command = Console.ReadLine();
-                while (command != "exit")
+                while (true)
                 {
-                    app.Run();
                     Console.WriteLine("input \"exit\" to exit, anything else to run the module again");
-                    command = Console.ReadLine();
+                    string command = Console.ReadLine();
+                    if (command.ToLower()=="exit")
+                    {
+                        break;
+                    }
+                    app.Run();
                 }
             }
             else
@@ -95,7 +96,6 @@ namespace RunScript
             
             debugCTS?.Cancel();
         }
-        
 
         
 

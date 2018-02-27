@@ -12,6 +12,8 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
     public class VSCodeDebugAdapter : DebugSession, IDebugAdapter
     {
         public event EventHandler<string> OnAdapterMessage;
+        public event EventHandler<dynamic> OnLaunch;
+        public event EventHandler<dynamic> OnAttach;
         private Thread currentThread = new Thread(1, "Thread #1");
         IRuntimeDebuggingService debuggingService;
         ManualResetEvent configurationDoneEvent = new ManualResetEvent(false);
@@ -94,6 +96,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             }
 
             OnAdapterMessage?.Invoke(this, "[Attach]");
+            OnAttach?.Invoke(this, arguments);
             sourceMap.Clear();
             if (arguments.sourceMap != null)
             {
@@ -162,8 +165,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
                 supportsLoadedSourcesRequest = true
             });
 
-            OnAdapterMessage?.Invoke(this, "Waiting for script ready");
-            engineReadyEvent.WaitOne();
+            
             OnAdapterMessage?.Invoke(this, "InitializedEvent Sent");
             SendEvent(new InitializedEvent());
         }
@@ -175,6 +177,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             {
                 throw new InvalidOperationException("Launch failed, engine already running");
             }
+            OnLaunch?.Invoke(this, arguments);
             sourceMap.Clear();
             if (arguments.sourceMap != null)
             {
@@ -221,6 +224,8 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         {
             string fileName = arguments.source.name;
             List<Breakpoint> bps = new List<Breakpoint>();
+            OnAdapterMessage?.Invoke(this, "Waiting for script ready");
+            engineReadyEvent.WaitOne();
             if (findSourceCode(fileName, out var sourceCode))
             {
                 clearBreakpointOnScript(sourceCode.ScriptId);
@@ -413,6 +418,11 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
 
         private void DebuggingService_OnStepComplete(object sender, BreakPoint e)
         {
+            if (!IsConnected)
+            {
+                debuggingService.Step(JavaScriptDiagStepType.JsDiagStepTypeContinue);
+                return;
+            }
             OnAdapterMessage?.Invoke(this, $"Step complete at {e}");
             SendEvent(new StoppedEvent(currentThread.id, "step"));
             DebugAdapterStatus = DebugAdapterStatusEnum.StepComplete;
