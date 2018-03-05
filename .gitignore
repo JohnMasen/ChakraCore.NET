@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /source/Chakra.NET/Shared/JSValueWithContextEX.cs
 /source/Chakra.NET/Shared/JSValueConverterEX.cs
+/source/out

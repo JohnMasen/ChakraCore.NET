@@ -1,0 +1,121 @@
+{
+	"name": "chakracore.net-debug",
+	"displayName": "Chakracore.NET Debug",
+	"version": "0.1.0",
+	"publisher": "JohnMasen",
+	"description": "VSCode debugger extension for chakracore.net",
+	"author": {
+		"name": "JohnMasen",
+		"email": "Chakracore.net@outlook.com"
+	},
+	"license": "MIT",
+	"keywords": [
+		"multi-root ready"
+	],
+	"engines": {
+		"vscode": "^1.18.0",
+		"node": "^7.9.0"
+	},
+	 "icon": "images/debug-icon.png",
+	"categories": [
+		"Debuggers"
+	],
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/JohnMasen/ChakraCore.NET"
+	},
+	"bugs": {
+		"url": "https://github.com/JohnMasen/ChakraCore.NET/issues"
+	},
+	"scripts": {
+		"prepublish": "tsc -p ./",
+		"compile": "tsc -p ./",
+		"tslint": "tslint ./**/*.ts",
+		"watch": "tsc -w -p ./",
+		"test": "mocha -u tdd ./out/tests/",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"package": "vsce package",
+		"publish": "vsce publish"
+	},
+	"dependencies": {
+		"await-notify": "1.0.1",
+		"vscode-debugadapter": "1.26.0",
+		"vscode-debugprotocol": "1.26.0"
+	},
+	"devDependencies": {
+		"@types/node": "7.0.43",
+		"@types/mocha": "2.2.45",
+		"typescript": "2.6.2",
+		"mocha": "4.0.1",
+		"vscode": "1.1.10",
+		"vscode-debugadapter-testsupport": "1.26.0",
+		"tslint": "5.8.0",
+		"vsce": "1.35.0"
+	},
+	"main": "./out/extension",
+	"activationEvents": [
+		"onDebug"
+	],
+	"contributes": {
+		"breakpoints": [
+			{
+				"language": "javascript"
+			}
+		],
+		"debuggers": [
+			{
+				"type": "ccn",
+				"label": "ChakraCore.NET",
+				"program": "./out/debugAdapter.js",
+				"runtime": "node",
+				"configurationAttributes": {
+					"launch": {
+						"required": [
+							"program"
+						],
+						"properties": {
+							"program": {
+								"type": "string",
+								"description": "Absolute path to application entry.",
+								"default": "${workspaceFolder}/app.js"
+							},
+							"pauseOnLaunch": {
+								"type": "boolean",
+								"description": "Automatically stop after launch.",
+								"default": true
+							},
+							"trace": {
+								"type": "boolean",
+								"description": "Enable logging of the Debug Adapter Protocol.",
+								"default": true
+							}
+						}
+					}
+				},
+				"initialConfigurations": [
+					{
+						"type": "ccn",
+						"request": "launch",
+						"name": "Launch",
+						"program": "${workspaceFolder}/app.js",
+						"pauseOnLaunch": true
+					}
+				],
+				"configurationSnippets": [
+					{
+						"label": "Mock Debug: Launch",
+						"description": "A new configuration for 'debugging' a user selected markdown file.",
+						"body": {
+							"type": "mock",
+							"request": "launch",
+							"name": "Ask for file name",
+							"program": "^\"\\${workspaceFolder}/app.js\"",
+							"pauseOnLaunch": true
+						}
+					}
+				]
+			}
+		]
+	}
+}
