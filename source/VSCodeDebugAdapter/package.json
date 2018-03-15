@@ -53,7 +53,7 @@
 		"tslint": "5.8.0",
 		"vsce": "1.35.0"
 	},
-	"main": "./out/extension",
+	"main": "./extension",
 	"activationEvents": [
 		"onDebug"
 	],
@@ -75,11 +75,6 @@
 							"program"
 						],
 						"properties": {
-							"program": {
-								"type": "string",
-								"description": "Absolute path to application entry.",
-								"default": "${workspaceFolder}/app.js"
-							},
 							"pauseOnLaunch": {
 								"type": "boolean",
 								"description": "Automatically stop after launch.",
@@ -89,6 +84,11 @@
 								"type": "boolean",
 								"description": "Enable logging of the Debug Adapter Protocol.",
 								"default": true
+							},
+							"sourceMap":{
+								"type": "array",
+								"description":"source file mapping,use \"name\" and \"value\" pair",
+								"default":[]
 							}
 						}
 					}
@@ -98,20 +98,20 @@
 						"type": "ccn",
 						"request": "launch",
 						"name": "Launch",
-						"program": "${workspaceFolder}/app.js",
-						"pauseOnLaunch": true
+						"pauseOnLaunch": true,
+						"sourceMap":[]
 					}
 				],
 				"configurationSnippets": [
 					{
-						"label": "Mock Debug: Launch",
+						"label": "ccn: Launch",
 						"description": "A new configuration for 'debugging' a user selected markdown file.",
 						"body": {
-							"type": "mock",
+							"type": "ccn",
 							"request": "launch",
-							"name": "Ask for file name",
-							"program": "^\"\\${workspaceFolder}/app.js\"",
-							"pauseOnLaunch": true
+							"name": "ccn Launch",
+							"pauseOnLaunch": true,
+							"sourceMap":[]
 						}
 					}
 				]

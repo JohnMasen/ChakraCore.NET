@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 import { WorkspaceFolder, DebugConfiguration, ProviderResult, CancellationToken } from 'vscode';
-import { MockDebugSession } from './mockDebug';
+
 import * as Net from 'net';
 
 /*
@@ -49,34 +49,34 @@ class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 		if (!config.type && !config.request && !config.name) {
 			const editor = vscode.window.activeTextEditor;
 			if (editor && editor.document.languageId === 'markdown' ) {
-				config.type = 'mock';
+				config.type = 'chakracore.net-debug';
 				config.name = 'Launch';
 				config.request = 'launch';
 				config.program = '${file}';
-				config.stopOnEntry = true;
+				config.pauseOnLaunch = true;
 			}
 		}
 
-		if (!config.program) {
-			return vscode.window.showInformationMessage("Cannot find a program to debug").then(_ => {
-				return undefined;	// abort launch
-			});
-		}
+		// if (!config.program) {
+		// 	return vscode.window.showInformationMessage("Cannot find a program to debug").then(_ => {
+		// 		return undefined;	// abort launch
+		// 	});
+		// }
 
 		if (EMBED_DEBUG_ADAPTER) {
 			// start port listener on launch of first debug session
-			if (!this._server) {
+			// if (!this._server) {
 
-				// start listening on a random port
-				this._server = Net.createServer(socket => {
-					const session = new MockDebugSession();
-					session.setRunAsServer(true);
-					session.start(<NodeJS.ReadableStream>socket, socket);
-				}).listen(0);
-			}
+			// 	// start listening on a random port
+			// 	this._server = Net.createServer(socket => {
+			// 		const session = new MockDebugSession();
+			// 		session.setRunAsServer(true);
+			// 		session.start(<NodeJS.ReadableStream>socket, socket);
+			// 	}).listen(0);
+			// }
 
 			// make VS Code connect to debug server instead of launching debug adapter
-			config.debugServer = this._server.address().port;
+			// config.debugServer = this._server.address().port;
 		}
 
 		return config;
