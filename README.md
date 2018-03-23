@@ -1,7 +1,16 @@
 # ChakraCore.NET
 A dotnet hosting library for chakracore (javascript) engine to provide 
-scripting capability to dotnet applications. The primary target is make it easy to learn and use.
+scripting capability to dotnet applications. 
 
+Allow user to
+* host javascript runtime in your manged code
+* export managed function to javascript
+* call javascript function from managed code
+* Task(C#) <-> promise(Javascript) convert
+* memory share between managed code and javascript(ArrayBuffer,TypedArray,DataView)
+* easily project ES6 module class to C# proxy class with flexible configuration
+* plug-in system allows publish/import 3rd party managed functions
+* VS-Code debugging support (kernel feature ready, debug adapter not ready yet)
 
 ## Platform
 This library is build with NetStandard 1.4 and Chakracore 1.7.3 
@@ -21,6 +30,8 @@ https://www.nuget.org/packages/ChakraCore.NET/
 
 
 ## Key features
+### Easy project ES6 module class to C# proxy class
+### Import/Export C# functions to/from javascript
 ### Read/Write javascript values
 ### Call javascript function from dotnet, support callback to dotnet
 ### Expose dotnet function to javascript, support callback to javascript
@@ -31,8 +42,9 @@ https://www.nuget.org/packages/ChakraCore.NET/
 
 ### Support ArrayBuffer,TypedArray,DataView
 ### Support Task <-> Promise convert
-### Support "require" feature
+### Support "require" feature (not enalbed by default)
 ### Support ES6 Modules
+
 
 ### Sample
 
