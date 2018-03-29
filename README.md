@@ -12,6 +12,13 @@ Allow user to
 * plug-in system allows publish/import 3rd party managed functions
 * VS-Code debugging support (kernel feature ready, debug adapter not ready yet)
 
+There're 2 major ways to use this library. 
+* 1: A javascript driven application platform (like node.js), in this case, managed api (C#,VB.net) are exposed as native modules via Plugin system
+* 2: javascript is used as algorithum module.
+
+
+To avoid confusing of proxy object converter and structure object converter. I'll hold the VS-code debugging adapter development for now, start a new demo project, the demo project will demostrates how to use javascript as a "algorithum module" inside a C# CSV file processor. It will show you how to expose API to javascript(proxy object), how to expose data structure to javascript(structure object) and other tips.
+
 ## Platform
 This library is build with NetStandard 1.4 and Chakracore 1.7.3 
 
