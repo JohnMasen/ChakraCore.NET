@@ -60,6 +60,9 @@ namespace ChakraCore.NET
         /// <typeparam name="T">Type of user object</typeparam>
         /// <returns>True is already registerd, otherwise False</returns>
         bool CanConvert<T>();
+
+
+        bool CanConvert(Type t);
        
     }
 }
