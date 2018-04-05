@@ -55,6 +55,8 @@ https://www.nuget.org/packages/ChakraCore.NET/
 
 ### Sample
 
+You can find the samples at   https://github.com/JohnMasen/Chakracore.NET-Samples
+
 Samples are still under development, suggest read the unit test code for a start by now.
 here's some simple code which demostrates the basic usage of the library
 
