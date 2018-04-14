@@ -43,6 +43,21 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             }
 
         }
+
+
+        public static async void RunClient(this VSCodeDebugAdapter session,int port,CancellationToken token)
+        {
+            TcpClient client = new TcpClient();
+            await client.ConnectAsync(IPAddress.Loopback, port);
+            token.Register(() =>
+            {
+                Console.WriteLine("Shuting down client");
+                session.Stop();
+                client.Dispose();
+            });
+            var stream = client.GetStream();
+            session.Start(stream, stream);
+        }
         public static Variable ToVSCodeVarible(this Debug.Variable value, string namePattern = "{0}")
         {
             return new Variable(
