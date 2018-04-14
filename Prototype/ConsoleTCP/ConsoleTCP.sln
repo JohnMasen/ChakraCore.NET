@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "ConsoleTCP", "ConsoleTCP\ConsoleTCP.njsproj", "{FA2A54A4-1C51-418F-A3AE-3E53BC35DCAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA2A54A4-1C51-418F-A3AE-3E53BC35DCAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA2A54A4-1C51-418F-A3AE-3E53BC35DCAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA2A54A4-1C51-418F-A3AE-3E53BC35DCAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA2A54A4-1C51-418F-A3AE-3E53BC35DCAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F49C7FA8-C1B1-48EF-BB72-000BB33C8653}
+	EndGlobalSection
+EndGlobal

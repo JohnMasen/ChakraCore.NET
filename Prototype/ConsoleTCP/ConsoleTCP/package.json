@@ -1,0 +1,12 @@
+{
+  "name": "console-tcp",
+  "version": "0.0.0",
+  "description": "ConsoleTCP",
+  "main": "app.js",
+  "author": {
+    "name": "buche"
+  },
+  "devDependencies": {
+    "@types/node": "^6.0.105"
+  }
+}

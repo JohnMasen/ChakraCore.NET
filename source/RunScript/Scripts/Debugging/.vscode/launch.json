@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "ccn",
+            "request": "launch",
+            "name": "ccn Launch",
+            "pauseOnLaunch": true,
+            "sourceMap": []
+        },
+        {
             "type": "mono",
             "request": "launch",
             "name": "Launch",
