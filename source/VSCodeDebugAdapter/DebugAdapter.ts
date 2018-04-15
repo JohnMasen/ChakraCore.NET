@@ -1,14 +1,8 @@
 import * as Net from 'net';
-let s:string;
-let isConnected=false;
-
+const port:number=Number(process.argv[2]);
 const server = Net.createServer((socket) => {
-   isConnected=true;
-   if (s) {
-       socket.write(s);
-   }
     socket.pipe(process.stdout);
     process.stdin.pipe(socket);
 });
 
-server.listen(1234);
+server.listen(port);

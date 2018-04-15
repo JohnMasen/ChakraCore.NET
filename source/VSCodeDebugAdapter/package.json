@@ -16,7 +16,7 @@
 		"vscode": "^1.18.0",
 		"node": "^7.9.0"
 	},
-	 "icon": "images/debug-icon.png",
+	"icon": "images/debug-icon.png",
 	"categories": [
 		"Debuggers"
 	],
@@ -48,7 +48,7 @@
 		"@types/mocha": "2.2.45",
 		"typescript": "2.6.2",
 		"mocha": "4.0.1",
-		"vscode": "1.1.10",
+		"vscode": "1.1.14",
 		"vscode-debugadapter-testsupport": "1.26.0",
 		"tslint": "5.8.0",
 		"vsce": "1.35.0"
@@ -85,10 +85,10 @@
 								"description": "Enable logging of the Debug Adapter Protocol.",
 								"default": true
 							},
-							"sourceMap":{
+							"sourceMap": {
 								"type": "array",
-								"description":"source file mapping,use \"name\" and \"value\" pair",
-								"default":[]
+								"description": "source file mapping,use \"name\" and \"value\" pair",
+								"default": []
 							}
 						}
 					}
@@ -99,7 +99,7 @@
 						"request": "launch",
 						"name": "Launch",
 						"pauseOnLaunch": true,
-						"sourceMap":[]
+						"sourceMap": []
 					}
 				],
 				"configurationSnippets": [
@@ -111,7 +111,7 @@
 							"request": "launch",
 							"name": "ccn Launch",
 							"pauseOnLaunch": true,
-							"sourceMap":[]
+							"sourceMap": []
 						}
 					}
 				]

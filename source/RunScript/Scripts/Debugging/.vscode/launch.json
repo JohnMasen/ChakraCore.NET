@@ -9,7 +9,11 @@
             "request": "launch",
             "name": "ccn Launch",
             "pauseOnLaunch": true,
-            "sourceMap": []
+            "sourceMap": [
+                {"name":"app.js","value":"${workspaceFolder}/app.js"},
+                {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
+                ],
+            "serverPort":1233
         },
         {
             "type": "mono",

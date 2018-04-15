@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 import { WorkspaceFolder, DebugConfiguration, ProviderResult, CancellationToken } from 'vscode';
-
+import * as path  from 'path';
 import * as Net from 'net';
 
 /*
@@ -34,11 +34,36 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 	// nothing to do
 }
+export interface DebugAdapterExecutable {
 
+	/**
+
+	 * The command path of the debug adapter executable.
+
+	 * A command must be either an absolute path or the name of an executable looked up via the PATH environment variable.
+
+	 * The special value 'node' will be mapped to VS Code's built-in node runtime.
+
+	 */
+
+	readonly command: string;
+
+
+
+	/**
+
+	 * Optional arguments passed to the debug adapter executable.
+
+	 */
+
+	readonly args: string[];
+
+
+}
 class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 
 	private _server?: Net.Server;
-
+	private _port?:string;
 	/**
 	 * Massage a debug configuration just before a debug session is being launched,
 	 * e.g. add all missing attributes to the debug configuration.
@@ -48,7 +73,7 @@ class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 		// if launch.json is missing or empty
 		if (!config.type && !config.request && !config.name) {
 			const editor = vscode.window.activeTextEditor;
-			if (editor && editor.document.languageId === 'markdown' ) {
+			if (editor && editor.document.languageId === 'javascript' ) {
 				config.type = 'chakracore.net-debug';
 				config.name = 'Launch';
 				config.request = 'launch';
@@ -56,6 +81,7 @@ class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 				config.pauseOnLaunch = true;
 			}
 		}
+		this._port=config.serverPort;
 
 		// if (!config.program) {
 		// 	return vscode.window.showInformationMessage("Cannot find a program to debug").then(_ => {
@@ -82,6 +108,16 @@ class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 		return config;
 	}
 
+	debugAdapterExecutable?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugAdapterExecutable>	{
+		let v=vscode.extensions.getExtension("JohnMasen.chakracore.net-debug");
+		if (!v) {
+			return null;
+		}
+		const p=path.join(v.extensionPath,"./out/DebugAdapter.js");
+		const port=this._port||"1234";
+		let result:DebugAdapterExecutable={command:"node",args:[p,port] };
+		return result;
+	}
 	dispose() {
 		if (this._server) {
 			this._server.close();

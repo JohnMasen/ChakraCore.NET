@@ -4,6 +4,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const path = require("path");
 /*
  * Set the following compile time flag to true if the
  * debug adapter should run inside the extension host.
@@ -36,7 +37,7 @@ class MockConfigurationProvider {
         // if launch.json is missing or empty
         if (!config.type && !config.request && !config.name) {
             const editor = vscode.window.activeTextEditor;
-            if (editor && editor.document.languageId === 'markdown') {
+            if (editor && editor.document.languageId === 'javascript') {
                 config.type = 'chakracore.net-debug';
                 config.name = 'Launch';
                 config.request = 'launch';
@@ -44,6 +45,7 @@ class MockConfigurationProvider {
                 config.pauseOnLaunch = true;
             }
         }
+        this._port = config.serverPort;
         // if (!config.program) {
         // 	return vscode.window.showInformationMessage("Cannot find a program to debug").then(_ => {
         // 		return undefined;	// abort launch
@@ -63,6 +65,16 @@ class MockConfigurationProvider {
             // config.debugServer = this._server.address().port;
         }
         return config;
+    }
+    debugAdapterExecutable(folder, token) {
+        let v = vscode.extensions.getExtension("JohnMasen.chakracore.net-debug");
+        if (!v) {
+            return null;
+        }
+        const p = path.join(v.extensionPath, "./out/DebugAdapter.js");
+        const port = this._port || "1234";
+        let result = { command: "node", args: [p, port] };
+        return result;
     }
     dispose() {
         if (this._server) {

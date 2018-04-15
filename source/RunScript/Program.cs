@@ -55,7 +55,8 @@ namespace RunScript
                     adapter.OnAttach+=(sender,arguments) => { Console.WriteLine($"Attach requested,arguments={arguments}"); };
                     adapter.OnAdapterMessage += (sender, msg) => { Console.WriteLine(msg); };
                     adapter.OnStatusChang += (sender, e) => { Console.WriteLine(e); };
-                    adapter.RunServer(4711, debugCTS.Token); 
+                    //adapter.RunServer(4711, debugCTS.Token);
+                    adapter.RunClient(1233, debugCTS.Token);
                     hostingConfig.DebugAdapter = adapter;
                 }
                 
