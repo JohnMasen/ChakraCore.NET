@@ -50,7 +50,8 @@ namespace RunScript
                 if (config.DebugMode)
                 {
                     debugCTS = new CancellationTokenSource();
-                    var adapter = new VSCodeDebugAdapter(true);
+                    //var adapter = new VSCodeDebugAdapter(true);//wait for launch command from VSCode, user can reconnect with attach command after launch debug is done
+                    var adapter = new VSCodeDebugAdapter(false);//start program, wait for attach command from VSCode
                     adapter.OnLaunch += (sender,arguments)=> { Console.WriteLine($"Launch requested,arguments={arguments}"); };
                     adapter.OnAttach+=(sender,arguments) => { Console.WriteLine($"Attach requested,arguments={arguments}"); };
                     adapter.OnAdapterMessage += (sender, msg) => { Console.WriteLine(msg); };
