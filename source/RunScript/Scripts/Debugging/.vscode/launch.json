@@ -23,7 +23,7 @@
                 {"name":"app.js","value":"${workspaceFolder}/app.js"},
                 {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
                 ],
-            "runAsServer": true,
+            "runAsServer": false,
             "port": 3515
         }
         
