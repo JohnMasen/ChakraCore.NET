@@ -71,24 +71,51 @@
 				"runtime": "node",
 				"configurationAttributes": {
 					"launch": {
-						"required": [
-							"program"
-						],
 						"properties": {
 							"pauseOnLaunch": {
 								"type": "boolean",
 								"description": "Automatically stop after launch.",
-								"default": true
-							},
-							"trace": {
-								"type": "boolean",
-								"description": "Enable logging of the Debug Adapter Protocol.",
-								"default": true
+								"default": false
 							},
 							"sourceMap": {
 								"type": "array",
 								"description": "source file mapping,use \"name\" and \"value\" pair",
 								"default": []
+							},
+							"runAsServer":{
+								"type":"boolean",
+								"description":"if the VSCode should wait for host to connect to",
+								"default":false
+							},
+							"port":{
+								"type":"number",
+								"description":"debug server port",
+								"default":3515
+							}
+						}
+						
+					},
+					"attach": {
+						"properties": {
+							"pauseOnLaunch": {
+								"type": "boolean",
+								"description": "Automatically stop after launch.",
+								"default": false
+							},
+							"sourceMap": {
+								"type": "array",
+								"description": "source file mapping,use \"name\" and \"value\" pair",
+								"default": []
+							},
+							"runAsServer":{
+								"type":"boolean",
+								"description":"if the VSCode should wait for host to connect to",
+								"default":false
+							},
+							"port":{
+								"type":"number",
+								"description":"debug server port",
+								"default":3515
 							}
 						}
 					}
@@ -98,20 +125,37 @@
 						"type": "ccn",
 						"request": "launch",
 						"name": "Launch",
-						"pauseOnLaunch": true,
-						"sourceMap": []
+						"pauseOnLaunch": false,
+						"sourceMap": [],
+						"runAsServer":false,
+						"port":3515
 					}
 				],
 				"configurationSnippets": [
 					{
 						"label": "ccn: Launch",
-						"description": "A new configuration for 'debugging' a user selected markdown file.",
+						"description": "A new configuration for debugging javascript files on chakracore.net host.",
 						"body": {
 							"type": "ccn",
 							"request": "launch",
 							"name": "ccn Launch",
-							"pauseOnLaunch": true,
-							"sourceMap": []
+							"pauseOnLaunch": false,
+							"sourceMap": [],
+							"runAsServer":false,
+							"port":3515
+						}
+					},
+					{
+						"label": "ccn: Attach",
+						"description": "A new configuration for debugging javascript files on chakracore.net host.",
+						"body": {
+							"type": "ccn",
+							"request": "attach",
+							"name": "ccn Attach",
+							"pauseOnLaunch": false,
+							"sourceMap": [],
+							"runAsServer":false,
+							"port":3515
 						}
 					}
 				]

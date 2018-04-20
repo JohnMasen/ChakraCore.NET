@@ -1,44 +1,30 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+
     "version": "0.2.0",
     "configurations": [
         {
             "type": "ccn",
+            "request": "attach",
+            "name": "ccn Attach",
+            "pauseOnLaunch": false,
+            "sourceMap": [
+                {"name":"app.js","value":"${workspaceFolder}/app.js"},
+                {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
+            ],
+            "runAsServer": false,
+            "port": 3515
+        },
+        {
+            "type": "ccn",
             "request": "launch",
             "name": "ccn Launch",
-            "pauseOnLaunch": true,
+            "pauseOnLaunch": false,
             "sourceMap": [
                 {"name":"app.js","value":"${workspaceFolder}/app.js"},
                 {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
                 ],
-            "serverPort":1233
-        },
-        {
-            "type": "mono",
-            "request": "launch",
-            "name": "Launch",
-            "sourceMap":[
-                {"name":"app.js","value":"${workspaceFolder}/app.js"},
-                {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
-                ],
-            // "pauseOnLaunch":true,
-            //"program": "${workspaceFolder}/app.js",
-            "debugServer": 4711,
-        }
-        ,{
-            "type": "mono",
-            "request": "attach",
-            "sourceMap":[
-                {"name":"app.js","value":"${workspaceFolder}/app.js"},
-                {"name":"Module1","value":"${workspaceFolder}/Module1.js"}
-                ],
-            "name": "Attach",
-            // "pauseOnLaunch":true,
-            //"program": "${workspaceFolder}/app.js",
-            "debugServer": 4711,
-            
+            "runAsServer": true,
+            "port": 3515
         }
         
         
