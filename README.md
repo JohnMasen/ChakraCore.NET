@@ -39,8 +39,6 @@ If you're using it on other platform than Windows 10, feel free to send me a fee
 
 ## nuget:
 https://www.nuget.org/packages/ChakraCore.NET/
-
-
 ## Key features
 ### Easy project ES6 module class to C# proxy class
 ### Import/Export C# functions to/from javascript
@@ -56,16 +54,17 @@ https://www.nuget.org/packages/ChakraCore.NET/
 ### Support Task <-> Promise convert
 ### Support "require" feature (not enalbed by default)
 ### Support ES6 Modules
+### Support VSCode debug
 
 
-### Sample
+## Samples
 
 You can find the samples at   https://github.com/JohnMasen/Chakracore.NET-Samples
 
-Samples are still under development, suggest read the unit test code for a start by now.
-here's some simple code which demostrates the basic usage of the library
+Documents and samples are still  under development, there's another sample project "RunScript" in the main repository "Tools" folder.
+It is strongly suggest use the Chakracore.Net.Hosting to host your script(which is the Samples project using). The following code shows some features of the engine. some of the code will be updated to use Hosting namespace in the future.
 
-Setup runtime and context, then run a script
+Setup runtime and context, then run a script (**will be replaced with Hosting namespace**)
 ```   
     ChakraRuntime runtime=ChakraRuntime.Create();
     ChakraContext context=runtime.CreateContext(true);
@@ -123,7 +122,7 @@ map a dotnet object instance to js
     context.GlobalObject.WriteProperty<DebugEcho>("debugEcho", obj); //js: var debugEcho=[native object]
 
 ```
-using "require"
+using "require" (obsolete, please use ES6 import/export instead)
 ```
 c#	
 	JSRequireLoader.EnableRequire(context,"Script\\Require"); //enable require, set root folder to "Script\Require"
@@ -143,7 +142,7 @@ TestLib.js
 
 ```
 
-ES6 module (project exported class as global object)
+ES6 module (project exported class as global object) (**will be replaced with Hosting namespace**)
 ```
         protected JSValue projectModuleClass(string moduleName,string className)
         {
