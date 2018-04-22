@@ -2,6 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <Authors>QianFan Jiang (John Masen)</Authors>
+    <Company>QianFan Jiang (John Masen)</Company>
+    <Product>ChakraCore.NET</Product>
+    <Description>The VSCode debug adapter for chakracore.net
+</Description>
+    <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
+    <PackageTags>chakracore,netcore</PackageTags>
+    <Version>1.0.0</Version>
+    <PackageReleaseNotes>initial release</PackageReleaseNotes>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

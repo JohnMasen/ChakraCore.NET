@@ -11,11 +11,10 @@
     <PackageTags>chakracore,netcore</PackageTags>
     <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
-    <Version>1.0.1</Version>
-    <PackageReleaseNotes>separate GetSDK() to single interface
-add UWP "AddModuleFolder" helper function</PackageReleaseNotes>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.2</Version>
+    <PackageReleaseNotes>add debugging support</PackageReleaseNotes>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.6" />

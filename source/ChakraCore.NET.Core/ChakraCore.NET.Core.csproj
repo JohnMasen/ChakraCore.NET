@@ -12,10 +12,10 @@ this package contains all core features</Description>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <PackageTags>chakracore,netcore</PackageTags>
-    <Version>1.0.9</Version>
-    <PackageReleaseNotes>move module resolving to stand alone thread</PackageReleaseNotes>
-    <AssemblyVersion>1.0.9.0</AssemblyVersion>
-    <FileVersion>1.0.9.0</FileVersion>
+    <Version>1.1.0</Version>
+    <PackageReleaseNotes>add debugging feature</PackageReleaseNotes>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
