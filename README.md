@@ -10,14 +10,19 @@ Allow user to
 * memory share between managed code and javascript(ArrayBuffer,TypedArray,DataView)
 * easily project ES6 module class to C# proxy class with flexible configuration
 * plug-in system allows publish/import 3rd party managed functions
-* VS-Code debugging support (kernel feature ready, debug adapter not ready yet)
+* VS-Code debugging support 
 
 There're 2 major ways to use this library. 
 * 1: A javascript driven application platform (like node.js), in this case, managed api (C#,VB.net) are exposed as native modules via Plugin system
 * 2: javascript is used as algorithum module.
 
+As the feature implementation is almost done, I'll focus on documents and demos from now.
 
-To avoid confusing of proxy object converter and structure object converter. I'll hold the VS-code debugging adapter development for now, start a new demo project, the demo project will demostrates how to use javascript as a "algorithum module" inside a C# CSV file processor. It will show you how to expose API to javascript(proxy object), how to expose data structure to javascript(structure object) and other tips.
+Debugging:
+The debug extension is available at VSCode market place, you can find the debugging howto at https://github.com/JohnMasen/ChakraCore.NET/issues/12 .
+![image](https://user-images.githubusercontent.com/7631912/39090476-2761c618-4613-11e8-963f-8c942b9851a4.png)
+
+
 
 ## Platform
 This library is build with NetStandard 1.4 and Chakracore 1.7.3 
