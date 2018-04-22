@@ -19,7 +19,7 @@ There're 2 major ways to use this library.
 As the feature implementation is almost done, I'll focus on documents and demos from now.
 
 Debugging:
-The debug extension is available at VSCode market place, you can find the debugging howto at https://github.com/JohnMasen/ChakraCore.NET/issues/12 .
+The debug extension is available at VSCode marketplace, you can find a simple how-to at https://github.com/JohnMasen/ChakraCore.NET/issues/12 .
 ![image](https://user-images.githubusercontent.com/7631912/39090476-2761c618-4613-11e8-963f-8c942b9851a4.png)
 
 
