@@ -50,7 +50,7 @@ class CCNConfigurationProvider {
         return config;
     }
     debugAdapterExecutable(folder, token) {
-        let v = vscode.extensions.getExtension("JohnMasen.chakracore.net-debug");
+        let v = vscode.extensions.getExtension("JohnMasen.chakracorenet-debug");
         if (!v) {
             return null;
         }

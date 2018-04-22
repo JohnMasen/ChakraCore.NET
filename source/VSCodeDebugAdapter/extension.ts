@@ -88,7 +88,7 @@ class CCNConfigurationProvider implements vscode.DebugConfigurationProvider {
 	}
 
 	debugAdapterExecutable?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugAdapterExecutable>	{
-		let v=vscode.extensions.getExtension("JohnMasen.chakracore.net-debug");
+		let v=vscode.extensions.getExtension("JohnMasen.chakracorenet-debug");
 		if (!v) {
 			return null;
 		}
