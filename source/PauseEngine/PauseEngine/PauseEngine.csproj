@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ChakraCore.NET.Hosting\ChakraCore.NET.Hosting.csproj" />
+    <ProjectReference Include="..\..\ChakraCore.NET\ChakraCore.NET.csproj" />
+    <ProjectReference Include="..\..\Plugins\ChakraCore.NET.Plugin.Common\ChakraCore.NET.Plugin.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Scripts\app.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

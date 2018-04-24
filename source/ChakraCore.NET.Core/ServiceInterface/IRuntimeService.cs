@@ -17,8 +17,15 @@ namespace ChakraCore.NET
         void CollectGarbage();
 
         /// <summary>
+        /// Obsolete: Use Diabled property instead.
         /// Stop running script without clean the context
         /// </summary>
+        [Obsolete]
         void TerminateRuningScript();
+
+        /// <summary>
+        /// Indicates if the runtime is able to execute script
+        /// </summary>
+        bool Disabled { get; set; }
     }
 }

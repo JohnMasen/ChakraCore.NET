@@ -32,7 +32,14 @@ namespace ChakraCore.NET
         public void TerminateRuningScript()
         {
             runtime.Disabled = true;
-            runtime.Disabled = false;
         }
+
+
+        public bool Disabled
+        {
+            get { return runtime.Disabled; }
+            set { runtime.Disabled = value; }
+        }
+
     }
 }

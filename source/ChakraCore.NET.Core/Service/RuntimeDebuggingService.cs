@@ -261,10 +261,12 @@ namespace ChakraCore.NET
 
         private class TaskQueueRunner
         {
-            private BlockingCollection<Action> taskQueue =null;
-            public void StartProcess()
+            private BlockingCollection<Action> taskQueue = null;
+            private AutoResetEvent processASE = new AutoResetEvent(false);
+            public void StartProcess(BlockingCollection<Action> queue)
             {
-                foreach (var item in taskQueue.GetConsumingEnumerable())
+                processASE.Set();
+                foreach (var item in queue.GetConsumingEnumerable())
                 {
                     item();
                 }
@@ -294,6 +296,7 @@ namespace ChakraCore.NET
 
             public void StopProcess()
             {
+                processASE.WaitOne();
                 taskQueue.CompleteAdding();
                 taskQueue = null;
             }
@@ -304,9 +307,10 @@ namespace ChakraCore.NET
                 Task.Factory.StartNew(() =>
                 {
                     action();//run the action on new thread
+                    
                     StopProcess(); 
                 });
-                StartProcess();//start process at current thread
+                StartProcess(taskQueue);//start process at current thread
             }
 
         }
