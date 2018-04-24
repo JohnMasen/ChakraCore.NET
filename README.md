@@ -10,14 +10,19 @@ Allow user to
 * memory share between managed code and javascript(ArrayBuffer,TypedArray,DataView)
 * easily project ES6 module class to C# proxy class with flexible configuration
 * plug-in system allows publish/import 3rd party managed functions
-* VS-Code debugging support (kernel feature ready, debug adapter not ready yet)
+* VS-Code debugging support 
 
 There're 2 major ways to use this library. 
 * 1: A javascript driven application platform (like node.js), in this case, managed api (C#,VB.net) are exposed as native modules via Plugin system
 * 2: javascript is used as algorithum module.
 
+As the feature implementation is almost done, I'll focus on documents and demos from now.
 
-To avoid confusing of proxy object converter and structure object converter. I'll hold the VS-code debugging adapter development for now, start a new demo project, the demo project will demostrates how to use javascript as a "algorithum module" inside a C# CSV file processor. It will show you how to expose API to javascript(proxy object), how to expose data structure to javascript(structure object) and other tips.
+Debugging:
+The debug extension is available at VSCode marketplace, you can find a simple how-to at https://github.com/JohnMasen/ChakraCore.NET/issues/12 .
+![image](https://user-images.githubusercontent.com/7631912/39090476-2761c618-4613-11e8-963f-8c942b9851a4.png)
+
+
 
 ## Platform
 This library is build with NetStandard 1.4 and Chakracore 1.7.3 
@@ -34,8 +39,6 @@ If you're using it on other platform than Windows 10, feel free to send me a fee
 
 ## nuget:
 https://www.nuget.org/packages/ChakraCore.NET/
-
-
 ## Key features
 ### Easy project ES6 module class to C# proxy class
 ### Import/Export C# functions to/from javascript
@@ -51,16 +54,17 @@ https://www.nuget.org/packages/ChakraCore.NET/
 ### Support Task <-> Promise convert
 ### Support "require" feature (not enalbed by default)
 ### Support ES6 Modules
+### Support VSCode debug
 
 
-### Sample
+## Samples
 
 You can find the samples at   https://github.com/JohnMasen/Chakracore.NET-Samples
 
-Samples are still under development, suggest read the unit test code for a start by now.
-here's some simple code which demostrates the basic usage of the library
+Documents and samples are still  under development, there's another sample project "RunScript" in the main repository "Tools" folder.
+It is strongly suggest use the Chakracore.Net.Hosting to host your script(which is the Samples project using). The following code shows some features of the engine. some of the code will be updated to use Hosting namespace in the future.
 
-Setup runtime and context, then run a script
+Setup runtime and context, then run a script (**will be replaced with Hosting namespace**)
 ```   
     ChakraRuntime runtime=ChakraRuntime.Create();
     ChakraContext context=runtime.CreateContext(true);
@@ -118,7 +122,7 @@ map a dotnet object instance to js
     context.GlobalObject.WriteProperty<DebugEcho>("debugEcho", obj); //js: var debugEcho=[native object]
 
 ```
-using "require"
+using "require" (obsolete, please use ES6 import/export instead)
 ```
 c#	
 	JSRequireLoader.EnableRequire(context,"Script\\Require"); //enable require, set root folder to "Script\Require"
@@ -138,7 +142,7 @@ TestLib.js
 
 ```
 
-ES6 module (project exported class as global object)
+ES6 module (project exported class as global object) (**will be replaced with Hosting namespace**)
 ```
         protected JSValue projectModuleClass(string moduleName,string className)
         {
