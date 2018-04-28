@@ -43,14 +43,9 @@ namespace ChakraCore.NET
                 string data = null;
                 if (eventData.IsValid)
                 {
-                    
                     data = eventData.ToJsonString();
                 }
-                //DebugEngine engine;
-                //runner.With(() =>
-                //{
-                    OnDebugEvent?.Invoke(this, new DebugEventArguments() { EventType = debugEvent, EventData = data });
-                //});
+                OnDebugEvent?.Invoke(this, new DebugEventArguments() { EventType = debugEvent, EventData = data });
                 switch (debugEvent)
                 {
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventSourceCompile:
@@ -60,7 +55,7 @@ namespace ChakraCore.NET
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventRuntimeException:
                         runner.With(() =>
                         {
-                            OnException?.Invoke(this,JsonConvert.DeserializeObject<RuntimeException>(data));
+                            OnException(this,JsonConvert.DeserializeObject<RuntimeException>(data));
                             stepASE.WaitOne();
                         });
                         
@@ -68,7 +63,7 @@ namespace ChakraCore.NET
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventStepComplete:
                         runner.With(() =>
                         {
-                            OnStepComplete?.Invoke(this,JsonConvert.DeserializeObject<BreakPoint>(data));
+                            OnStepComplete(this,JsonConvert.DeserializeObject<BreakPoint>(data));
                             stepASE.WaitOne();
                         });
                         
@@ -76,7 +71,7 @@ namespace ChakraCore.NET
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventBreakpoint:
                         runner.With(() =>
                         {
-                            OnBreakPoint?.Invoke(this,JsonConvert.DeserializeObject<BreakPoint>(data));
+                            OnBreakPoint(this,JsonConvert.DeserializeObject<BreakPoint>(data));
                             stepASE.WaitOne();
                         });
                         
@@ -84,7 +79,7 @@ namespace ChakraCore.NET
                     case JavaScriptDiagDebugEvent.JsDiagDebugEventAsyncBreak:
                         runner.With(() =>
                         {
-                            OnAsyncBreak?.Invoke(this,JsonConvert.DeserializeObject<BreakPoint>(data));
+                            OnAsyncBreak(this,JsonConvert.DeserializeObject<BreakPoint>(data));
                             stepASE.WaitOne();
                         });
                         
@@ -94,6 +89,10 @@ namespace ChakraCore.NET
                 }
 
             }
+            else
+            {
+                throw new InvalidOperationException("Invalid internal state, debug evnet occured while debug is turned off");
+            }
         }
 
         public void StartDebug()
@@ -102,8 +101,26 @@ namespace ChakraCore.NET
             {
                 throw new InvalidOperationException("Debugging is already in progress, detach current adapter first");
             }
+            checkIFEventHandled();
             Native.ThrowIfError(Native.JsDiagStartDebugging(runtime, debugCallback, IntPtr.Zero));
             IsDebugging = true;
+        }
+
+        private void checkIFEventHandled()
+        {
+            throwIfHandlerIsNull(OnException,nameof(OnException));
+            throwIfHandlerIsNull(OnStepComplete, nameof(OnStepComplete));
+            throwIfHandlerIsNull(OnBreakPoint, nameof(OnBreakPoint));
+            throwIfHandlerIsNull(OnAsyncBreak, nameof(OnAsyncBreak));
+
+        }
+
+        private void throwIfHandlerIsNull(Delegate handler,string handlerName)
+        {
+            if (handler==null)
+            {
+                throw new InvalidOperationException($"Event handler {handlerName} cannot be null");
+            }
         }
 
         public void StopDebug()

@@ -406,7 +406,6 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
         public void Init(IRuntimeDebuggingService debuggingService)
         {
             this.debuggingService = debuggingService;
-            debuggingService.StartDebug();
             debuggingService.OnAsyncBreak += DebuggingService_OnAsyncBreak;
             debuggingService.OnBreakPoint += DebuggingService_OnBreakPoint;
             debuggingService.OnDebugEvent += DebuggingService_OnDebugEvent;
@@ -414,6 +413,7 @@ namespace ChakraCore.NET.DebugAdapter.VSCode
             debuggingService.OnException += DebuggingService_OnException;
             debuggingService.OnScriptLoad += DebuggingService_OnScriptLoad;
             debuggingService.OnStepComplete += DebuggingService_OnStepComplete;
+            debuggingService.StartDebug();
         }
 
         private void DebuggingService_OnStepComplete(object sender, BreakPoint e)
