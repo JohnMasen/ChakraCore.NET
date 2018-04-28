@@ -11,9 +11,9 @@ this package contains all features in one package.</Description>
     <PackageTags>chakracore,netcore</PackageTags>
     <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
-    <Version>1.3.0</Version>
-    <PackageReleaseNotes>Add debugging support</PackageReleaseNotes>
-    <AssemblyVersion>1.3.0.0</AssemblyVersion>
+    <Version>1.3.1</Version>
+    <PackageReleaseNotes>improve error handling in debug engine.</PackageReleaseNotes>
+    <AssemblyVersion>1.3.1.0</AssemblyVersion>
     <FileVersion>1.3.0.0</FileVersion>
   </PropertyGroup>
 
