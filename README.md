@@ -2,6 +2,11 @@
 A dotnet hosting library for chakracore (javascript) engine to provide 
 scripting capability to dotnet applications. 
 
+## Before you start
+### Please use the chakracore.net.hosting to load javascript class to your host environment instead of using the chakracore runtime/context directly. I'll update the samples section later to reflect this suggestion.
+### After several projects of using this library, I found the better solution is use the javascript class instead of run the whole script
+### There's a RunScript project in the source folder demostrates the usage of chakracore.net.hosting namespace, the samples repository (https://github.com/JohnMasen/Chakracore.NET-Samples) also provides a good start.
+
 Allow user to
 * host javascript runtime in your manged code
 * export managed function to javascript
