@@ -262,3 +262,7 @@ __pycache__/
 /source/Chakra.NET/Shared/JSValueWithContextEX.cs
 /source/Chakra.NET/Shared/JSValueConverterEX.cs
 /source/out
+
+# Cake Tools
+tools/*
+!tools/packages.config
