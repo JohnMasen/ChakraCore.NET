@@ -223,7 +223,7 @@
             return Marshal.PtrToStringUni(message);
         }
 
-        const string DllName = "ChakraCore.dll";
+        const string DllName = "ChakraCore";
 
 
 
