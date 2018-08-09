@@ -47,8 +47,14 @@ namespace ChakraCore.NET
         {
             if(Enter())
             {
-                a();
-                Leave();
+                try
+                {
+                    a();
+                }
+                finally
+                {                
+                    Leave();
+                }
             }
             else
             {
@@ -61,8 +67,14 @@ namespace ChakraCore.NET
             T result;
             if (Enter())
             {
-                result=f();
-                Leave();
+                try
+                {
+                    result = f();
+                }
+                finally
+                {                
+                    Leave();
+                }
             }
             else
             {
