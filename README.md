@@ -2,6 +2,8 @@
 A dotnet hosting library for chakracore (javascript) engine to provide 
 scripting capability to dotnet applications. 
 
+[![Build Status](https://johnwork.visualstudio.com/ChakraCore.NET%20Build/_apis/build/status/ChakraCore.NET%20Build-ASP.NET%20Core-CI)](https://johnwork.visualstudio.com/ChakraCore.NET%20Build/_build/latest?definitionId=3)
+
 ## Due to the workload of my daily job and baby sitting my 2yr old son, I have to hold the update of this library for several month. during this period, bug fix and feature update will be on hold. I may add some samples if I have enough bandwith. the planned continute date will be about 2018/12/1.  
 ## Thanks for your support.
 
