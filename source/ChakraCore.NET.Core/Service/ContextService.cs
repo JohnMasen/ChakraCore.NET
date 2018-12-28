@@ -98,7 +98,7 @@ namespace ChakraCore.NET
                         {
                             contextSwitch.With(item.parse);
                         }
-                        
+                        GC.KeepAlive(item);
                     }
                     catch(OperationCanceledException)
                     {
@@ -109,7 +109,7 @@ namespace ChakraCore.NET
                         moduleLoadException = ex;
                         moduleReadyEvent.Set();
                     }
-                    
+
                 }
             },ContextShutdownCTS.Token);
         }
