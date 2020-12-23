@@ -31,12 +31,13 @@ namespace ChakraCore.NET.UnitTest
         {
             //System.Diagnostics.Debug.WriteLine("ReadWriteTest start");
             ReadWrite<string>("hello");
-            ReadWrite<string>("helloÖÐÎÄ");
+            ReadWrite<string>("helloä¸­æ–‡");
             ReadWrite<int>(1000);
             ReadWrite<float>(100.11f);
             ReadWrite<byte>(0x0f);
             ReadWrite<double>(-33.4455);
             ReadWrite<bool>(false);
+            ReadWrite<DateTime>(new DateTime(2020,1,1));
             StringBuilder longString = new StringBuilder();
             for (int i = 0; i < 100; i++)
             {

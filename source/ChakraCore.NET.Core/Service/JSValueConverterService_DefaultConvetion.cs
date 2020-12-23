@@ -7,6 +7,7 @@ namespace ChakraCore.NET
 {
     public partial class JSValueConverterService 
     {
+        private readonly DateTime jsDateStart = new DateTime(1970, 1, 1);
         private void initDefault()
         {
             RegisterConverter<string>(
@@ -134,6 +135,36 @@ namespace ChakraCore.NET
                 }
                 );
             this.RegisterArrayConverter<decimal>();
+
+            this.RegisterConverter<DateTime>(
+                (node, value) =>
+                {
+                    //return node.WithContext<JavaScriptValue>(() =>
+                    //{
+                    //    return JavaScriptValue.FromDouble(Convert.ToDouble(value));
+                    //});
+                    return node.WithContext<JavaScriptValue>(() =>
+                    {
+                        var valueService = node.GetService<IJSValueService>();
+                        var globalObject = valueService.JSGlobalObject;
+                        JavaScriptPropertyId DateMethod = JavaScriptPropertyId.FromString("Date");
+                        var constructor=globalObject.GetProperty(DateMethod);
+                        return constructor.ConstructObject(globalObject, JavaScriptValue.FromDouble((value - jsDateStart).TotalMilliseconds));
+                    });
+                    //throw new NotImplementedException();
+                },
+                (node, value) =>
+                {
+                    return node.WithContext<DateTime>(() =>
+                    {
+                        return jsDateStart.AddMilliseconds(value.ConvertToNumber().ToDouble());
+                    });
+                }
+                );
+            this.RegisterArrayConverter<DateTime>();
+
+
+
             this.RegisterConverter<JSValue>(
                 (node,value)=>
                 {
