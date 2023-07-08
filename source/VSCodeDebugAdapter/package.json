@@ -48,7 +48,7 @@
 		"@types/mocha": "2.2.45",
 		"typescript": "2.6.2",
 		"mocha": "4.0.1",
-		"vscode": "1.1.14",
+		"vscode": "1.1.37",
 		"vscode-debugadapter-testsupport": "1.26.0",
 		"tslint": "5.8.0",
 		"vsce": "1.103.1"
